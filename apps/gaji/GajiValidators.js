@@ -1,11 +1,11 @@
 const _ = require("lodash");
 const { body } = require("express-validator");
 const GajiServiceGet = require("./services/GajiServiceGet");
-const BarangServiceGet = require("../barang/services/BarangServiceGet");
+const PotonganServiceGet = require("../Potongan/services/PotonganServiceGet");
 const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
 const BaseValidatorHandleUndefined = require("../base/validators/BaseValidatorHandleUndefined");
-const PemasokValidators = require("../pemasok/PemasokValidators");
-const BarangValidators = require("../barang/BarangValidators");
+const PendapatanValidators = require("../Pendapatan/PendapatanValidators");
+const PotonganValidators = require("../Potongan/PotonganValidators");
 
 const GajiValidators = {
     ID_Gaji: (location = body, forCreate = true, field = "ID_Gaji") => {
@@ -25,15 +25,15 @@ const GajiValidators = {
                 return Promise.resolve(true);
             });
     },
-    tanggal: (location = body, field = "tanggal") => {
+    Tanggal: (location = body, field = "Tanggal") => {
         return location(field)
             .notEmpty()
             .withMessage("Tanggal transaksi wajib")
             .bail()
             .trim();
     },
-    kodePemasok: (location = body, field = "kodePemasok") => {
-        return PemasokValidators.kodePemasok(location, false, field);
+    kodePendapatan: (location = body, field = "kodePendapatan") => {
+        return PendapatanValidators.kodePendapatan(location, false, field);
     },
     dibayar: (location = body, field = "dibayar") => {
         return location(field)
@@ -79,47 +79,47 @@ const GajiValidators = {
     //             .bail()
     //             .isArray({ min: 1 })
     //             .withMessage(
-    //                 "Item harus berupa array dan minimal 1 barang di dalamnya."
+    //                 "Item harus berupa array dan minimal 1 Potongan di dalamnya."
     //             );
     //     },
     //     inner: {
-    //         kodeBarang: (location = body, field = "items.*.kodeBarang") => {
-    //             return BarangValidators.kodeBarang(location, false, field);
+    //         kodePotongan: (location = body, field = "items.*.kodePotongan") => {
+    //             return PotonganValidators.kodePotongan(location, false, field);
     //         },
-    //         namaBarang: (location = body, field = "items.*.namaBarang") => {
-    //             return BarangValidators.namaBarang(location, field)
+    //         namaPotongan: (location = body, field = "items.*.namaPotongan") => {
+    //             return PotonganValidators.namaPotongan(location, field)
     //                 .bail()
     //                 .custom(async (value, { req, location, path }) => {
     //                     const index = _.toPath(path)[1];
-    //                     const barang = await BarangServiceGet(
-    //                         "kodeBarang",
-    //                         req[location].items[index].kodeBarang
+    //                     const Potongan = await PotonganServiceGet(
+    //                         "kodePotongan",
+    //                         req[location].items[index].kodePotongan
     //                     );
 
-    //                     BaseValidatorHandleUndefined(barang, "Kode Barang");
+    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
 
-    //                     if (barang.namaBarang !== value) {
+    //                     if (Potongan.namaPotongan !== value) {
     //                         throw new Error(
-    //                             "Nama barang tidak sama dengan nama barang aslinya."
+    //                             "Nama Potongan tidak sama dengan nama Potongan aslinya."
     //                         );
     //                     }
     //                 });
     //         },
     //         hargaBeli: (location = body, field = "items.*.hargaBeli") => {
-    //             return BarangValidators.hargaBeli(location, field)
+    //             return PotonganValidators.hargaBeli(location, field)
     //                 .bail()
     //                 .custom(async (value, { req, location, path }) => {
     //                     const index = _.toPath(path)[1];
-    //                     const barang = await BarangServiceGet(
-    //                         "kodeBarang",
-    //                         req[location].items[index].kodeBarang
+    //                     const Potongan = await PotonganServiceGet(
+    //                         "kodePotongan",
+    //                         req[location].items[index].kodePotongan
     //                     );
 
-    //                     BaseValidatorHandleUndefined(barang, "Kode Barang");
+    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
 
-    //                     if (barang.hargaBeli !== value) {
+    //                     if (Potongan.hargaBeli !== value) {
     //                         return Promise.reject(
-    //                             "Harga beli barang tidak sama dengan harga beli aslinya."
+    //                             "Harga beli Potongan tidak sama dengan harga beli aslinya."
     //                         );
     //                     }
 
@@ -157,15 +157,15 @@ const GajiValidators = {
     //                 .bail()
     //                 .custom(async (value, { req, location, path }) => {
     //                     const index = _.toPath(path)[1];
-    //                     const barang = await BarangServiceGet(
-    //                         "kodeBarang",
-    //                         req[location].items[index].kodeBarang
+    //                     const Potongan = await PotonganServiceGet(
+    //                         "kodePotongan",
+    //                         req[location].items[index].kodePotongan
     //                     );
 
-    //                     BaseValidatorHandleUndefined(barang, "Kode Barang");
+    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
 
     //                     const calculateSubtotal =
-    //                         barang.hargaBeli * req[location].items[index].jumlahBeli;
+    //                         Potongan.hargaBeli * req[location].items[index].jumlahBeli;
     //                     if (calculateSubtotal !== value) {
     //                         return Promise.reject("Subtotal tidak valid.");
     //                     }
