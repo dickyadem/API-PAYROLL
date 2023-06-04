@@ -7,8 +7,8 @@ const { query, param } = require("express-validator");
 const GajiServiceList = require("./services/GajiServiceList");
 const GajiServiceGet = require("./services/GajiServiceGet");
 const GajiServiceGetItemBeli = require("./services/GajiServiceGetItemBeli");
-const PemasokServiceGet = require("../pemasok/services/PemasokServiceGet");
-const GajiServiceFakturExcel = require("./services/GajiServiceFakturExcel");
+const PendapatanServiceGet = require("../Pendapatan/services/PendapatanServiceGet");
+const GajiServiceID_GajiExcel = require("./services/GajiServiceID_GajiExcel");
 const GajiServiceReportPeriod = require("./services/GajiServiceReportPeriod");
 const GajiServiceReportPeriodExcel = require("./services/GajiServiceReportPeriodExcel");
 
@@ -18,15 +18,15 @@ GajiControllers.post(
     "/",
     [
         UserServiceTokenAuthentication,
-        GajiValidators.faktur(),
+        GajiValidators.ID_Gaji(),
         GajiValidators.tanggal(),
         GajiValidators.total(),
-        GajiValidators.kodePemasok(),
+        GajiValidators.kodePendapatan(),
         GajiValidators.dibayar(),
         GajiValidators.kembali(),
         GajiValidators.items.self(),
-        GajiValidators.items.inner.kodeBarang(),
-        GajiValidators.items.inner.namaBarang(),
+        GajiValidators.items.inner.kodePotongan(),
+        GajiValidators.items.inner.namaPotongan(),
         GajiValidators.items.inner.hargaBeli(),
         GajiValidators.items.inner.jumlahBeli(),
         GajiValidators.items.inner.subtotal(),
@@ -34,12 +34,12 @@ GajiControllers.post(
     ],
     async (req, res) => {
         const Gaji = await GajiServiceCreate(
-            req.body.faktur,
+            req.body.ID_Gaji,
             req.body.tanggal,
             req.body.total,
             req.body.dibayar,
             req.body.kembali,
-            req.body.kodePemasok,
+            req.body.kodePendapatan,
             req.body.items
         );
         res.status(201).json(Gaji);
@@ -64,21 +64,21 @@ GajiControllers.get(
 );
 
 GajiControllers.get(
-    "/:faktur",
+    "/:ID_Gaji",
     [
         UserServiceTokenAuthentication,
-        GajiValidators.faktur(param, false),
+        GajiValidators.ID_Gaji(param, false),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const Gaji = await GajiServiceGet(
-            "faktur",
-            req.params.faktur,
+            "ID_Gaji",
+            req.params.ID_Gaji,
             false
         );
         const items = await GajiServiceGetItemBeli(
-            "faktur",
-            req.params.faktur,
+            "ID_Gaji",
+            req.params.ID_Gaji,
             true
         );
 
@@ -87,26 +87,26 @@ GajiControllers.get(
 );
 
 GajiControllers.post(
-    "/:faktur/faktur-excel",
+    "/:ID_Gaji/ID_Gaji-excel",
     [
         UserServiceTokenAuthentication,
-        GajiValidators.faktur(param, false),
+        GajiValidators.ID_Gaji(param, false),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const Gaji = await GajiServiceGet(
-            "faktur",
-            req.params.faktur,
+            "ID_Gaji",
+            req.params.ID_Gaji,
             false
         );
 
-        const pemasok = await PemasokServiceGet(
-            "kodePemasok",
-            Gaji.kodePemasok
+        const Pendapatan = await PendapatanServiceGet(
+            "kodePendapatan",
+            Gaji.kodePendapatan
         );
         const items = await GajiServiceGetItemBeli(
-            "faktur",
-            req.params.faktur,
+            "ID_Gaji",
+            req.params.ID_Gaji,
             true
         );
 
@@ -116,10 +116,10 @@ GajiControllers.post(
         );
         res.setHeader(
             "Content-Disposition",
-            `${req.params.faktur}-${new Date().getTime()}.xlsx`
+            `${req.params.ID_Gaji}-${new Date().getTime()}.xlsx`
         );
 
-        const xlsx = await GajiServiceFakturExcel(Gaji, pemasok, items);
+        const xlsx = await GajiServiceID_GajiExcel(Gaji, Pendapatan, items);
         await xlsx.write(res);
         return res.end();
     }
