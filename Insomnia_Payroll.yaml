@@ -1,0 +1,959 @@
+_type: export
+__export_format: 4
+__export_date: 2023-06-04T13:08:08.237Z
+__export_source: insomnia.desktop.app:v2023.2.2
+resources:
+  - _id: req_3f10778006bc4f528e11c963339f15e0
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884021296
+    created: 1685884021296
+    url: ""
+    name: New Request
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685884021296
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    parentId: null
+    modified: 1685884011962
+    created: 1685884011963
+    name: Payroll
+    description: ""
+    scope: collection
+    _type: workspace
+  - _id: req_7321e69c230741de936fbfe9a4b9feec
+    parentId: fld_fedf00dee0b54a9c86d1f22564c36681
+    modified: 1685884011983
+    created: 1685884011983
+    url: " http://localhost:4000/user/register"
+    name: Register
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"ID_User": "00001",
+        	"NamaDepan": "Dicky",
+        	"NamaBelakang": "Mahendra",
+        	"Status": "User",
+        	"email": "dickyadem@gmail.com",
+        	"password": "dickyade12345"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: 0
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_fedf00dee0b54a9c86d1f22564c36681
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884011980
+    created: 1685884011980
+    name: User
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 0
+    _type: request_group
+  - _id: req_df1fb63766094eb483c5532543bcc2fa
+    parentId: fld_fedf00dee0b54a9c86d1f22564c36681
+    modified: 1685884011989
+    created: 1685884011989
+    url: " http://localhost:4000/user/login"
+    name: Login
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "dickyadem@gmail.com",
+        	"password": "dickyade12345"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: 100
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_226c81e244d04c8bb98cdac1cd195340
+    parentId: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    modified: 1685884011997
+    created: 1685884011997
+    url: " http://localhost:4000/profil"
+    name: Create Profil
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        				"ID_Profil":"00001",
+                "Nama":"Diki Ade Mahendra",
+                "Alamat": "jl. jalan ke kota",
+                "Telepon":"0878765432167",
+                "Fax":"89897867898",
+                "Email":"dicky@gmail.com",
+                "Website" : "www.google.com"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: 0
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884011995
+    created: 1685884011995
+    name: Profil
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 100
+    _type: request_group
+  - _id: req_eefd20cb766849c5b3b43220a556254a
+    parentId: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    modified: 1685884012002
+    created: 1685884012002
+    url: " http://localhost:4000/profil"
+    name: Profil List
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: 100
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_7a14990fcc2a44a7830e87342bbe127b
+    parentId: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    modified: 1685884012017
+    created: 1685884012017
+    url: " http://localhost:4000/profil"
+    name: Detail Profil
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: 150
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_fb1f0a7b64e345fcb3239ea510566972
+    parentId: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    modified: 1685884012008
+    created: 1685884012008
+    url: " http://localhost:4000/profil"
+    name: Edit Profil
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: 200
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_b33a2e0123c44fe6af7dca763c9f6e9c
+    parentId: fld_b44bfd0632df43e5999f73aa27e2b5d8
+    modified: 1685884012013
+    created: 1685884012013
+    url: " http://localhost:4000/profil"
+    name: Delete Profil
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: 300
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_de219475c87a4a02b244ba1813b6dce8
+    parentId: fld_71386890cdf04a71b845d34b2d6a8550
+    modified: 1685884012039
+    created: 1685884012039
+    url: " http://localhost:4000/potongan"
+    name: Delete Potongan
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849692050
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_71386890cdf04a71b845d34b2d6a8550
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012023
+    created: 1685884012023
+    name: Potongan
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 200
+    _type: request_group
+  - _id: req_937af9020a47458bae73467318a1da15
+    parentId: fld_71386890cdf04a71b845d34b2d6a8550
+    modified: 1685884012035
+    created: 1685884012035
+    url: " http://localhost:4000/potongan"
+    name: Edit Potongan
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844089313
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_986b58c774274ecbb323bfc0a3e57622
+    parentId: fld_71386890cdf04a71b845d34b2d6a8550
+    modified: 1685884012030
+    created: 1685884012030
+    url: " http://localhost:4000/potongan"
+    name: List Potongan
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843772250
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c1ec417f14504d088b2b91315d9bd305
+    parentId: fld_71386890cdf04a71b845d34b2d6a8550
+    modified: 1685884012025
+    created: 1685884012025
+    url: " http://localhost:4000/potongan"
+    name: Create Potongan
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	 			"ID_Potongan":"00001",
+                "Nama_Potongan":"transportasi"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1685843500166
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_67d7efc8a95e422ca10152838ca0a73e
+    parentId: fld_152217ed1a6648a99045f819d91af733
+    modified: 1685884012064
+    created: 1685884012064
+    url: " http://localhost:4000/golongan"
+    name: Delete Golongan
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849735842
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_152217ed1a6648a99045f819d91af733
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012046
+    created: 1685884012046
+    name: Golongan
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 300
+    _type: request_group
+  - _id: req_65a325f2c1da42479f6cb9d4aaf28377
+    parentId: fld_152217ed1a6648a99045f819d91af733
+    modified: 1685884012060
+    created: 1685884012060
+    url: " http://localhost:4000/golongan"
+    name: Edit Potongan
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844111750
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_d0440b82d93d4f2db12a67308dec3877
+    parentId: fld_152217ed1a6648a99045f819d91af733
+    modified: 1685884012054
+    created: 1685884012054
+    url: " http://localhost:4000/golongan"
+    name: List Golongan
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843799215
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_512acd4c71d040ee8d6488db7c11cc93
+    parentId: fld_152217ed1a6648a99045f819d91af733
+    modified: 1685884012049
+    created: 1685884012049
+    url: " http://localhost:4000/golongan"
+    name: Create Golongan
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        "ID_Golongan": "00001",
+            "Nama_Golongan":"golongan 1",
+            "Tunjangan_Golongan":"500000"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1685843502288
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_823c5e877cd64da7a656cb0d0267214a
+    parentId: fld_e226376726e045ec91b40d52af4d5b31
+    modified: 1685884012086
+    created: 1685884012086
+    url: " http://localhost:4000/pendapatan"
+    name: Delete Pendapatan
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849759189
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_e226376726e045ec91b40d52af4d5b31
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012069
+    created: 1685884012069
+    name: Pendapatan
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 400
+    _type: request_group
+  - _id: req_188c4af2dfbc48f6aa661ace5680776b
+    parentId: fld_e226376726e045ec91b40d52af4d5b31
+    modified: 1685884012081
+    created: 1685884012081
+    url: " http://localhost:4000/pendapatan"
+    name: Edit Pendapatan
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844131640
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_f42c6ce207b44e498c795b2a09fd1d5f
+    parentId: fld_e226376726e045ec91b40d52af4d5b31
+    modified: 1685884012077
+    created: 1685884012077
+    url: " http://localhost:4000/pendapatan"
+    name: List Pendapatan
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843817585
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_02a9da9604214163a4d4fd20f1793dbc
+    parentId: fld_e226376726e045ec91b40d52af4d5b31
+    modified: 1685884012072
+    created: 1685884012072
+    url: " http://localhost:4000/pendapatan"
+    name: Create Pendapatan
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"ID_Pendapatan":"00001",
+            "Nama_Pendapatan": "Gaji Pokok"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1685843503433
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8e6bb10d570946a996c615727592f425
+    parentId: fld_8357e23a51f0493cb3ddffa988aaff0f
+    modified: 1685884012108
+    created: 1685884012108
+    url: " http://localhost:4000/jabatan"
+    name: Delete Jabatan
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849793403
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_8357e23a51f0493cb3ddffa988aaff0f
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012092
+    created: 1685884012092
+    name: Jabatan
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 500
+    _type: request_group
+  - _id: req_a489e0672a334d36a6ae3979cb847991
+    parentId: fld_8357e23a51f0493cb3ddffa988aaff0f
+    modified: 1685884012104
+    created: 1685884012104
+    url: " http://localhost:4000/jabatan"
+    name: Edit Jabatan
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844157661
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_2e83a3acdba84cc0bdedfe5b2d64e0c3
+    parentId: fld_8357e23a51f0493cb3ddffa988aaff0f
+    modified: 1685884012099
+    created: 1685884012099
+    url: " http://localhost:4000/jabatan"
+    name: LIst Jabatan
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843955297
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_160ceae1c2504c31add98968026f8a67
+    parentId: fld_8357e23a51f0493cb3ddffa988aaff0f
+    modified: 1685884012095
+    created: 1685884012095
+    url: " http://localhost:4000/jabatan"
+    name: Create Jabatan
+    description: ""
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"ID_Jabatan":"00001",
+           "Nama_Jabatan": "Staff",
+            "Tunjangan_Jabatan":"3000000",
+            "Tunjangan_Keluarga":"500000",
+        	"Tunjungan_Anak": "500000"
+        }
+    parameters: []
+    headers:
+      - name: Content-Type
+        value: application/json
+    authentication: {}
+    metaSortKey: -1685843504111
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_e9c8b484587b471ebc4ddf75c568286b
+    parentId: fld_c6cd55f23f70439db4ac7606cd3ad0be
+    modified: 1685884012129
+    created: 1685884012129
+    url: " http://localhost:4000/karyawan"
+    name: Delete Karyawan
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849818437
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_c6cd55f23f70439db4ac7606cd3ad0be
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012113
+    created: 1685884012113
+    name: Karyawan
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 600
+    _type: request_group
+  - _id: req_50b6033b80e6474e99c41166590eb959
+    parentId: fld_c6cd55f23f70439db4ac7606cd3ad0be
+    modified: 1685884012125
+    created: 1685884012125
+    url: " http://localhost:4000/karyawan"
+    name: Edit Karyawan
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844186629
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_c4953b5f4896420ebbbf44ae3b7de4ea
+    parentId: fld_c6cd55f23f70439db4ac7606cd3ad0be
+    modified: 1685884012120
+    created: 1685884012120
+    url: " http://localhost:4000/karyawan"
+    name: List Karyawan
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843971017
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_10931644da0c4e5c8796f8d6afb0f687
+    parentId: fld_c6cd55f23f70439db4ac7606cd3ad0be
+    modified: 1685884012116
+    created: 1685884012116
+    url: " http://localhost:4000/karyawan"
+    name: Create Karyawan
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843504749
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_ba95b57d3ded458b9204ba8e08a8725e
+    parentId: fld_9f5fc4058b604c488b25d7aff304d67a
+    modified: 1685884012153
+    created: 1685884012153
+    url: " http://localhost:4000/gaji"
+    name: Delete Gaji
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849847269
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_9f5fc4058b604c488b25d7aff304d67a
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012135
+    created: 1685884012135
+    name: Gaji
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 700
+    _type: request_group
+  - _id: req_b770664700724e07bdc084d14872aeb9
+    parentId: fld_9f5fc4058b604c488b25d7aff304d67a
+    modified: 1685884012150
+    created: 1685884012150
+    url: " http://localhost:4000/gaji"
+    name: Edit Gaji
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844281732
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8756db31738044549dd3573b644cd4f6
+    parentId: fld_9f5fc4058b604c488b25d7aff304d67a
+    modified: 1685884012143
+    created: 1685884012143
+    url: " http://localhost:4000/gaji"
+    name: LIst Gaji
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844004851
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_74d6521ff6144f06a45b2ae949d36d9a
+    parentId: fld_9f5fc4058b604c488b25d7aff304d67a
+    modified: 1685884012137
+    created: 1685884012137
+    url: " http://localhost:4000/gaji"
+    name: Create Gaji
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843507437
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_6cecbc81bf424a1ab5bf9b56b14728b8
+    parentId: fld_78d1eb939d4b42fc9aea2e1508dc5047
+    modified: 1685884012174
+    created: 1685884012174
+    url: " http://localhost:4000/gajidetail"
+    name: Delete Gaji Detail
+    description: ""
+    method: DELETE
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849891349
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: fld_78d1eb939d4b42fc9aea2e1508dc5047
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012159
+    created: 1685884012159
+    name: Gaji Detail
+    description: ""
+    environment: {}
+    environmentPropertyOrder: null
+    metaSortKey: 800
+    _type: request_group
+  - _id: req_66bc54ecb3774ec7bdd54f7deddfe272
+    parentId: fld_78d1eb939d4b42fc9aea2e1508dc5047
+    modified: 1685884012170
+    created: 1685884012170
+    url: " http://localhost:4000/gajidetail"
+    name: Edit Detail Gaji
+    description: ""
+    method: PUT
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685849874226
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_8af0aa7bed9c43ac9f62554b64ffab2a
+    parentId: fld_78d1eb939d4b42fc9aea2e1508dc5047
+    modified: 1685884012166
+    created: 1685884012166
+    url: " http://localhost:4000/gajidetail"
+    name: List Gaji Detail
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685844021655
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: req_97811acd3cf740d89bed6efd1fb749d7
+    parentId: fld_78d1eb939d4b42fc9aea2e1508dc5047
+    modified: 1685884012161
+    created: 1685884012161
+    url: " http://localhost:4000/gajidetail"
+    name: Create GajiDetail
+    description: ""
+    method: POST
+    body: {}
+    parameters: []
+    headers: []
+    authentication: {}
+    metaSortKey: -1685843508451
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: env_fa8ad22a75584da9a70d70524d7ac288
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884011964
+    created: 1685884011964
+    name: Base Environment
+    data:
+      BASE_URL: http://localhost:4000
+      TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1hRGVwYW4iOiJEaWNreSIsIk5hbWFCZWxha2FuZyI6Ik1haGVuZHJhIiwiZW1haWwiOiJkaWNreWFkZW1AZ21haWwuY29tIiwiaWF0IjoxNjg1ODgzOTE2LCJleHAiOjE2ODU5NzAzMTZ9.T9ZKG0NxLmwN5ab3GaXJIqkdR7tT-6onLwFJK35iUf4
+    dataPropertyOrder:
+      "&":
+        - BASE_URL
+        - TOKEN
+    color: null
+    isPrivate: false
+    metaSortKey: 1685363320369
+    _type: environment
+  - _id: jar_205ff36c6c4942a1959ddc18bd4ad80b
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884011969
+    created: 1685884011969
+    name: Default Jar
+    cookies: []
+    _type: cookie_jar
+  - _id: spc_c8c0c85d84df4fa8b81b73e0d9bd3de5
+    parentId: wrk_ece7c467d2cc452a97fe497a9babaf5d
+    modified: 1685884012185
+    created: 1685884011976
+    fileName: Payroll
+    contents: ""
+    contentType: yaml
+    _type: api_spec
