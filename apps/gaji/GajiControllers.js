@@ -1,45 +1,42 @@
 const UserServiceTokenAuthentication = require("../user/services/UserServiceTokenAuthentication");
 const GajiValidators = require("./GajiValidators");
 const BaseValidatorRun = require("../base/validators/BaseValidatorRun");
-const GajiServiceCreate = require("./services/GajiServiceCreate");
+const GajiServiceCreate = require("./services/GajiServicesCreate");
 const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
 const { query, param } = require("express-validator");
-const GajiServiceList = require("./services/GajiServiceList");
-const GajiServiceGet = require("./services/GajiServiceGet");
-const GajiServiceGetItemBeli = require("./services/GajiServiceGetItemBeli");
-const PendapatanServiceGet = require("../Pendapatan/services/PendapatanServiceGet");
-const GajiServiceID_GajiExcel = require("./services/GajiServiceID_GajiExcel");
-const GajiServiceReportPeriod = require("./services/GajiServiceReportPeriod");
-const GajiServiceReportPeriodExcel = require("./services/GajiServiceReportPeriodExcel");
-
+const GajiServiceList = require("./services/GajiServicesList");
+const GajiServiceGet = require("./services/GajiServicesGet");
+const GajiServiceGetItem = require("./services/GajiServicesGetSlip");
+const PendapatanServiceGet = require("../pendapatan/services/PendapatanServiceGet");
 const GajiControllers = require("express").Router();
 
 GajiControllers.post(
     "/",
     [
-        UserServiceTokenAuthentication,
+        // UserServiceTokenAuthentication,
         GajiValidators.ID_Gaji(),
-        GajiValidators.tanggal(),
-        GajiValidators.total(),
-        GajiValidators.kodePendapatan(),
-        GajiValidators.dibayar(),
-        GajiValidators.kembali(),
+        GajiValidators.Tanggal(),
+        GajiValidators.ID_Karyawan(),
+        GajiValidators.Total_Pendapatan(),
+        GajiValidators.Total_Potongan(),
+        GajiValidators.Gaji_Bersih(),
         GajiValidators.items.self(),
-        GajiValidators.items.inner.kodePotongan(),
-        GajiValidators.items.inner.namaPotongan(),
-        GajiValidators.items.inner.hargaBeli(),
-        GajiValidators.items.inner.jumlahBeli(),
-        GajiValidators.items.inner.subtotal(),
+        GajiValidators.items.inner.ID_Pendapatan(),
+        GajiValidators.items.inner.Nama_Pendapatan(),
+        GajiValidators.items.inner.Jumlah_Pendapatan(),
+        GajiValidators.items.inner.ID_Potongan(),
+        GajiValidators.items.inner.Nama_Potongan(),
+        GajiValidators.items.inner.Jumlah_Potongan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const Gaji = await GajiServiceCreate(
             req.body.ID_Gaji,
-            req.body.tanggal,
-            req.body.total,
-            req.body.dibayar,
-            req.body.kembali,
-            req.body.kodePendapatan,
+            req.body.Tanggal,
+            req.body.ID_Karyawan,
+            req.body.Total_Pendapatan,
+            req.body.Total_Potongan,
+            req.body.Gaji_Bersih,
             req.body.items
         );
         res.status(201).json(Gaji);
@@ -76,7 +73,7 @@ GajiControllers.get(
             req.params.ID_Gaji,
             false
         );
-        const items = await GajiServiceGetItemBeli(
+        const items = await GajiServiceGetItem(
             "ID_Gaji",
             req.params.ID_Gaji,
             true
@@ -86,74 +83,5 @@ GajiControllers.get(
     }
 );
 
-GajiControllers.post(
-    "/:ID_Gaji/ID_Gaji-excel",
-    [
-        UserServiceTokenAuthentication,
-        GajiValidators.ID_Gaji(param, false),
-        BaseValidatorRun(),
-    ],
-    async (req, res) => {
-        const Gaji = await GajiServiceGet(
-            "ID_Gaji",
-            req.params.ID_Gaji,
-            false
-        );
-
-        const Pendapatan = await PendapatanServiceGet(
-            "kodePendapatan",
-            Gaji.kodePendapatan
-        );
-        const items = await GajiServiceGetItemBeli(
-            "ID_Gaji",
-            req.params.ID_Gaji,
-            true
-        );
-
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `${req.params.ID_Gaji}-${new Date().getTime()}.xlsx`
-        );
-
-        const xlsx = await GajiServiceID_GajiExcel(Gaji, Pendapatan, items);
-        await xlsx.write(res);
-        return res.end();
-    }
-);
-
-GajiControllers.post(
-    "/report-period-excel",
-    [
-        UserServiceTokenAuthentication,
-        GajiValidators.reporting.terms(),
-        GajiValidators.reporting.startDate(),
-        GajiValidators.reporting.endDate(),
-        BaseValidatorRun(),
-    ],
-    async (req, res) => {
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx`
-        );
-
-        const results = await GajiServiceReportPeriod(
-            req.body.startDate,
-            req.body.endDate,
-            req.body.terms
-        );
-
-        const xlsx = await GajiServiceReportPeriodExcel(results);
-        await xlsx.write(res);
-        return res.end();
-    }
-);
 
 module.exports = GajiControllers;

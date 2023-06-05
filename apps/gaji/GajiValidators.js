@@ -1,11 +1,12 @@
 const _ = require("lodash");
 const { body } = require("express-validator");
-const GajiServiceGet = require("./services/GajiServiceGet");
-const PotonganServiceGet = require("../Potongan/services/PotonganServiceGet");
-const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
-const BaseValidatorHandleUndefined = require("../base/validators/BaseValidatorHandleUndefined");
-const PendapatanValidators = require("../Pendapatan/PendapatanValidators");
-const PotonganValidators = require("../Potongan/PotonganValidators");
+const GajiServiceGet = require("./services/GajiServicesGet");
+const PendapatanValidators = require("../pendapatan/PendapatanValidators");
+const PotonganValidators = require("../potongan/PotonganValidators");
+const UserValidators = require("../user/UserValidators");
+const KaryawanValidators = require("../karyawan/KaryawanValidators");
+const ProfilValidators = require("../profil/ProfilValidators");
+const GajiDetailValidators = require("../gajidetail/GajiDetailValidators");
 
 const GajiValidators = {
     ID_Gaji: (location = body, forCreate = true, field = "ID_Gaji") => {
@@ -32,198 +33,129 @@ const GajiValidators = {
             .bail()
             .trim();
     },
-    kodePendapatan: (location = body, field = "kodePendapatan") => {
-        return PendapatanValidators.kodePendapatan(location, false, field);
+    ID_Karyawan: (location = body, field = "ID_Karyawan") => {
+        return KaryawanValidators.ID_Karyawan(location, false, field);
     },
-    dibayar: (location = body, field = "dibayar") => {
+    ID_User: (location = body, field = "ID_User") => {
+        return UserValidators.ID_User(location, false, field);
+    },
+    ID_Profil: (location = body, field = "ID_Profil") => {
+        return ProfilValidators.ID_Profil(location, false, field);
+    },
+    items: {
+        self: (location = body, field = "items") => {
+            return location(field)
+                .notEmpty()
+                .withMessage("Pilihan wajib diisi.")
+                .bail()
+                .isArray({ min: 1 })
+                .withMessage("Item harus berupa array dan minimal 1 list di dalamnya.");
+        },
+        inner: {
+            ID_Pendapatan: (location = body, field = "items.*.ID_Pendapatan") => {
+                return PendapatanValidators.ID_Pendapatan(location, false, field)
+                    .notEmpty()
+                    .withMessage("ID Pendapatan wajib diisi.");
+            },
+            Nama_Pendapatan: (location = body, field = "items.*.Nama_Pendapatan") => {
+                return PendapatanValidators.Nama_Pendapatan(location, false, field)
+                    .notEmpty()
+                    .withMessage("Nama Pendapatan wajib diisi.");
+            },
+            Jumlah_Pendapatan: (location = body, field = "items.*.Jumlah_Pendapatan") => {
+                return GajiDetailValidators.Jumlah_Pendapatan(location, false, field)
+                    .notEmpty()
+                    .withMessage("Jumlah Pendapatan wajib diisi.");
+            },
+            ID_Potongan: (location = body, field = "items.*.ID_Potongan") => {
+                return PotonganValidators.ID_Potongan(location, false, field)
+                    .notEmpty()
+                    .withMessage("ID Potongan wajib diisi.");
+            },
+            Nama_Potongan: (location = body, field = "items.*.Nama_Potongan") => {
+                return PotonganValidators.Nama_Potongan(location, false, field)
+                    .notEmpty()
+                    .withMessage("Nama Potongan wajib diisi.");
+            },
+            Jumlah_Potongan: (location = body, field = "items.*.Jumlah_Potongan") => {
+                return GajiDetailValidators.Jumlah_Potongan(location, false, field)
+                    .notEmpty()
+                    .withMessage("Jumlah Potongan wajib diisi.");
+            },
+        },
+    },
+
+    Keterangan: (location = body, field = "Keterangan") => {
         return location(field)
             .notEmpty()
-            .withMessage("Dibayar wajib.")
+            .withMessage("Keterangan wajib diisi.")
             .bail()
-            .isInt()
-            .withMessage("Dibayar harus angka.")
-            .bail()
-            .customSanitizer((value) => parseInt(value))
-            .custom((value, { req }) => {
-                if (value < req.body.total) {
-                    throw new Error("Uang dibayar kurang.");
-                }
-                return true;
-            });
+            .trim()
+            .customSanitizer((value) =>
+                value.replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                })
+            );
     },
-    kembali: (location = body, field = "kembali") => {
+
+    Gaji_Bersih: (location = body, field = "Gaji_Bersih") => {
         return location(field)
             .notEmpty()
-            .withMessage("Kembali wajib.")
+            .withMessage("Gaji Bersih wajib diisi.")
             .bail()
             .isInt()
-            .withMessage("Total harus angka.")
+            .withMessage("Gaji Bersih harus berupa angka.")
             .bail()
-            .customSanitizer((value) => parseInt(value))
-            .custom((value, { req }) => {
-                const calculateKembali = req.body.dibayar - req.body.total;
-                if (calculateKembali < 0) {
-                    throw new Error("Uang kembalian tidak boleh minus.");
-                } else if (calculateKembali !== value) {
-                    throw new Error("Uang kembalian tidak valid.");
+            .custom(async (value, { req, location, path }) => {
+                const index = _.toPath(path)[1];
+                const totalPendapatan = req[location].items[index].Total_Pendapatan;
+                const totalPotongan = req[location].items[index].Total_Potongan;
+                const gajiBersih = totalPendapatan - totalPotongan;
+
+                if (value != gajiBersih) {
+                    return Promise.reject("Gaji Bersih tidak valid.");
                 }
 
-                return true;
+                return Promise.resolve(true);
             });
     },
-    // items: {
-    //     self: (location = body, field = "items") => {
-    //         return location(field)
-    //             .notEmpty()
-    //             .withMessage("Item Gaji wajib.")
-    //             .bail()
-    //             .isArray({ min: 1 })
-    //             .withMessage(
-    //                 "Item harus berupa array dan minimal 1 Potongan di dalamnya."
-    //             );
-    //     },
-    //     inner: {
-    //         kodePotongan: (location = body, field = "items.*.kodePotongan") => {
-    //             return PotonganValidators.kodePotongan(location, false, field);
-    //         },
-    //         namaPotongan: (location = body, field = "items.*.namaPotongan") => {
-    //             return PotonganValidators.namaPotongan(location, field)
-    //                 .bail()
-    //                 .custom(async (value, { req, location, path }) => {
-    //                     const index = _.toPath(path)[1];
-    //                     const Potongan = await PotonganServiceGet(
-    //                         "kodePotongan",
-    //                         req[location].items[index].kodePotongan
-    //                     );
+    Total_Potongan: (location = body, field = "Total_Potongan") => {
+        return location(field)
+            .custom(async (value, { req, location }) => {
+                const items = req[location].items;
+                let totalPotongan = 0;
 
-    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
+                for (const item of items) {
+                    const jumlahPotongan = item.Jumlah_Potongan;
+                    totalPotongan += jumlahPotongan;
+                }
 
-    //                     if (Potongan.namaPotongan !== value) {
-    //                         throw new Error(
-    //                             "Nama Potongan tidak sama dengan nama Potongan aslinya."
-    //                         );
-    //                     }
-    //                 });
-    //         },
-    //         hargaBeli: (location = body, field = "items.*.hargaBeli") => {
-    //             return PotonganValidators.hargaBeli(location, field)
-    //                 .bail()
-    //                 .custom(async (value, { req, location, path }) => {
-    //                     const index = _.toPath(path)[1];
-    //                     const Potongan = await PotonganServiceGet(
-    //                         "kodePotongan",
-    //                         req[location].items[index].kodePotongan
-    //                     );
+                if (value != totalPotongan) {
+                    return Promise.reject("Total Potongan tidak valid.");
+                }
 
-    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
+                return Promise.resolve(true);
+            });
+    },
+    Total_Pendapatan: (location = body, field = "Total_Pendapatan") => {
+        return location(field)
+            .custom(async (value, { req, location }) => {
+                const items = req[location].items;
+                let totalPendapatan = 0;
 
-    //                     if (Potongan.hargaBeli !== value) {
-    //                         return Promise.reject(
-    //                             "Harga beli Potongan tidak sama dengan harga beli aslinya."
-    //                         );
-    //                     }
+                for (const item of items) {
+                    const jumlahPendapatan = item.Jumlah_Pendapatan;
+                    totalPendapatan += jumlahPendapatan;
+                }
 
-    //                     return Promise.resolve(true);
-    //                 });
-    //         },
-    //         jumlahBeli: (location = body, field = "items.*.jumlahBeli") => {
-    //             return location(field)
-    //                 .notEmpty()
-    //                 .withMessage("Jumlah beli wajib.")
-    //                 .bail()
-    //                 .isInt()
-    //                 .withMessage("Jumlah beli harus angka.")
-    //                 .bail()
-    //                 .customSanitizer((value) => parseInt(value))
-    //                 .custom((value) => {
-    //                     if (value <= 0) {
-    //                         throw new Error("Jumlah beli tidak boleh 0");
-    //                     }
-    //                     return true;
-    //                 });
-    //         },
-    //         subtotal: (location = body, field = "items.*.subtotal") => {
-    //             return location(field)
-    //                 .notEmpty()
-    //                 .withMessage("Subtotal wajib.")
-    //                 .bail()
-    //                 .customSanitizer((value) => parseInt(value))
-    //                 .custom((value) => {
-    //                     if (value <= 0) {
-    //                         throw new Error("Nilai subtotal tidak boleh 0 atau dibawahnya.");
-    //                     }
-    //                     return true;
-    //                 })
-    //                 .bail()
-    //                 .custom(async (value, { req, location, path }) => {
-    //                     const index = _.toPath(path)[1];
-    //                     const Potongan = await PotonganServiceGet(
-    //                         "kodePotongan",
-    //                         req[location].items[index].kodePotongan
-    //                     );
+                if (value != totalPendapatan) {
+                    return Promise.reject("Total Pendapatan tidak valid.");
+                }
 
-    //                     BaseValidatorHandleUndefined(Potongan, "Kode Potongan");
+                return Promise.resolve(true);
+            });
+    },
 
-    //                     const calculateSubtotal =
-    //                         Potongan.hargaBeli * req[location].items[index].jumlahBeli;
-    //                     if (calculateSubtotal !== value) {
-    //                         return Promise.reject("Subtotal tidak valid.");
-    //                     }
-
-    //                     return Promise.resolve(true);
-    //                 });
-    //         },
-    //     },
-    // },
-    // total: (location = body, field = "total") => {
-    //     return location(field)
-    //         .notEmpty()
-    //         .withMessage("Jumlah beli wajib.")
-    //         .bail()
-    //         .isInt()
-    //         .withMessage("Total harus angka.")
-    //         .bail()
-    //         .customSanitizer((value) => parseInt(value))
-    //         .custom((value) => {
-    //             if (value <= 0) {
-    //                 throw new Error("Total tidak boleh bernilai 0 atau di bawahnya.");
-    //             }
-    //             return true;
-    //         })
-    //         .custom((value, { req }) => {
-    //             let total = 0;
-    //             for (const item of req.body.items) {
-    //                 total = total + item.subtotal;
-    //             }
-
-    //             if (total !== value) {
-    //                 throw new Error("Total tidak valid.");
-    //             }
-
-    //             return true;
-    //         });
-    // },
-    // reporting: {
-    //     terms: (location = body, field = "terms") => {
-    //         return BaseValidatorFields.terms(location, field);
-    //     },
-    //     startDate: (location = body, field = "startDate") => {
-    //         return location(field)
-    //             .notEmpty()
-    //             .withMessage("Start date wajib diisi.")
-    //             .bail()
-    //             .isDate()
-    //             .withMessage("Start date tidak valid.");
-    //     },
-    //     endDate: (location = body, field = "endDate") => {
-    //         return location(field)
-    //             .notEmpty()
-    //             .withMessage("End date wajib diisi.")
-    //             .bail()
-    //             .isDate()
-    //             .withMessage("End date tidak valid.");
-    //     },
-    // },
 };
 
 module.exports = GajiValidators;

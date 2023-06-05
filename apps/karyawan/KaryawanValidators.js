@@ -56,7 +56,7 @@ const KaryawanValidators = {
     ID_Jabatan: (location = body, field = "ID_Jabatan") => {
         return JabatanValidators.ID_Jabatan(location, false, field);
     },
-    Divisi : (location = body, field = "Divisi") => {
+    Divisi: (location = body, field = "Divisi") => {
         return location(field)
             .notEmpty()
             .withMessage("Divisi wajib diisi")
@@ -95,6 +95,8 @@ const KaryawanValidators = {
                 return true;
             });
     },
+    
+
 };
 
 module.exports = KaryawanValidators;
