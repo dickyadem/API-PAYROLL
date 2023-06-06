@@ -14,7 +14,7 @@ const PendapatanControllers = require("express").Router();
 PendapatanControllers.post(
     "/",
     [
-        // UserServiceTokenAuthentication,
+        UserServiceTokenAuthentication,
         PendapatanValidators.ID_Pendapatan(),
         PendapatanValidators.Nama_Pendapatan(),
         BaseValidatorRun(),

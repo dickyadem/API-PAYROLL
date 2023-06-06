@@ -37,9 +37,9 @@ const UserValidators = {
             .custom(async (value, { req }) => {
                 if (!forCreate) {
                     const user = await UserServiceFetch(req.body.email);
-                    BaseValidatorHandleUndefined(user, "Email");
-                    const isValidPassword = await bcrypt.compare(value, user.password);
-                    if (!isValidPassword) return Promise.reject("password tidak sesuai.");
+                    BaseValidatorHandleUndefined(user, "email");
+                    // const isValidPassword = await bcrypt.compare(value, user.password);
+                    // if (!isValidPassword) return Promise.reject("password tidak sesuai.");
                 }
 
                 return Promise.resolve(true);

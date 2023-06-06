@@ -7,14 +7,13 @@ const { query, param } = require("express-validator");
 const GajiServiceList = require("./services/GajiServicesList");
 const GajiServiceGet = require("./services/GajiServicesGet");
 const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
-const ConfigCTA = require("../base/services/ConfigCTA");
 const GajiControllers = require("express").Router();
 
 
 GajiControllers.post(
     "/",
     [
-        // // UserServiceTokenAuthentication,
+        UserServiceTokenAuthentication,
         GajiValidators.ID_Gaji(),
         GajiValidators.Tanggal(),
         GajiValidators.ID_Karyawan(),
@@ -39,29 +38,7 @@ GajiControllers.post(
             req.body.ID_Profil
         );
         res.status(201).json(Gaji);
-        // try {
-           
-        // } catch (error) {
-        //     let errorMessage = ConfigCTA.CTA_MESSAGE_REQUEST_ERROR;
-            
-        //     if (error instanceof Error && error.name === 'ID_Gaji') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_GAJI_ERROR;
-        //     } else if (error instanceof Error && error.name === 'ID_Pendapatan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_PENDAPATAN_ERROR;
-        //     } else if (error instanceof Error && error.name === 'Nama_Pendapatan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_NAMA_PENDAPATAN_ERROR;
-        //     } else if (error instanceof Error && error.name === 'Jumlah_Pendapatan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_JUMLAH_PENDAPATAN_ERROR;
-        //     } else if (error instanceof Error && error.name === 'ID_Potongan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_POTONGAN_ERROR;
-        //     } else if (error instanceof Error && error.name === 'Nama_Potongan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_NAMA_POTONGAN_ERROR;
-        //     } else if (error instanceof Error && error.name === 'Jumlah_Potongan') {
-        //         errorMessage = ConfigCTA.CTA_MESSAGE_JUMLAH_POTONGAN_ERROR;
-        //     }
-            
-        //     res.status(500).json({ error: errorMessage });
-        // }
+        
     });
 
 GajiControllers.get(

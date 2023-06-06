@@ -13,7 +13,7 @@ const GajiDetailControllers = require("express").Router();
 GajiDetailControllers.post(
     "/",
     [
-        // UserServiceTokenAuthentication,
+        UserServiceTokenAuthentication,
         GajiDetailValidators.ID_Gaji(),
         GajiDetailValidators.ID_Pendapatan(),
         GajiDetailValidators.Jumlah_Pendapatan(),

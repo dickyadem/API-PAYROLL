@@ -1,14 +1,17 @@
-const { body } = require("express-validator");
+
+const { body } = require("express-validator")
 const BaseValidatorRun = require("../base/validators/BaseValidatorRun");
 const UserValidators = require("./UserValidators");
 const UserServiceCreateJWT = require("./services/UserServiceCreateJWT");
 const UserServiceRegister = require("./services/UserServiceRegister");
-
 const router = require("express").Router();
 
 router.post(
     "/login",
     [   
+        UserValidators.email(body, false),
+        UserValidators.password(body, false),
+        BaseValidatorRun(),
     ],
     async (req, res) => {
         const token = await UserServiceCreateJWT(req.body.email);

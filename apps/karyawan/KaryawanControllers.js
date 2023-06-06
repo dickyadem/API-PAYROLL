@@ -14,7 +14,7 @@ const KaryawanControllers = require("express").Router();
 KaryawanControllers.post(
     "/",
     [
-        // UserServiceTokenAuthentication,
+        UserServiceTokenAuthentication,
         KaryawanValidators.ID_Karyawan(),
         KaryawanValidators.Nama_Karyawan(),
         KaryawanValidators.Gaji_Pokok(),
