@@ -14,7 +14,7 @@ const JabatanControllers = require("express").Router();
 JabatanControllers.post(
     "/",
     [
-        UserServiceTokenAuthentication,
+        // UserServiceTokenAuthentication,
         JabatanValidators.ID_Jabatan(),
         JabatanValidators.Nama_Jabatan(),
         JabatanValidators.Tunjangan_Jabatan(),

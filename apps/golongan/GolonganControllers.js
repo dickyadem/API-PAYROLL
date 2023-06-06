@@ -14,7 +14,7 @@ const GolonganControllers = require("express").Router();
 GolonganControllers.post(
     "/",
     [
-        UserServiceTokenAuthentication,
+        // UserServiceTokenAuthentication,
         GolonganValidators.ID_Golongan(),
         GolonganValidators.Nama_Golongan(),
         GolonganValidators.Tunjangan_Golongan(),

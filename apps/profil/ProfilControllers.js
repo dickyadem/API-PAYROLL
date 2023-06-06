@@ -14,7 +14,7 @@ const ProfilControllers = require("express").Router();
 ProfilControllers.post(
     "/",
     [
-        UserServiceTokenAuthentication,
+        // UserServiceTokenAuthentication,
         ProfilValidators.ID_Profil(),
         ProfilValidators.Nama(),
         ProfilValidators.Alamat(),

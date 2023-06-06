@@ -4,7 +4,7 @@ const UserServiceFetch = require("./UserServiceFetch");
 const UserServiceCreateJWT = async (email, expiresIn = "24h") => {
     const user = await UserServiceFetch(email);
     const token = jwt.sign(
-        { NamaDepan: user.NamaDepan, NamaBelakang: user.NamaBelakang, email },
+        {NamaDepan: user.NamaDepan, NamaBelakang: user.NamaBelakang, email },
         process.env.TOKEN,
         { expiresIn }
     );

@@ -1,8 +1,5 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
-const {
-    GAJI_CONFIG_MAIN_TABLE,
-    GAJI_CONFIG_ITEM_BELI_TABLE,
-} = require("../config");
+const { GAJI_CONFIG_MAIN_TABLE } = require("../config");
 
 const GajiServiceCreate = async (
     ID_Gaji,
@@ -10,8 +7,10 @@ const GajiServiceCreate = async (
     ID_Karyawan,
     Total_Pendapatan,
     Total_Potongan,
+    Keterangan,
     Gaji_Bersih,
-    items
+    email,
+    ID_Profil
 ) => {
     const dataGaji = {
         ID_Gaji,
@@ -19,32 +18,22 @@ const GajiServiceCreate = async (
         ID_Karyawan,
         Total_Pendapatan,
         Total_Potongan,
+        Keterangan,
         Gaji_Bersih,
+        email,
+        ID_Profil
     };
 
-    const dataItemGaji = items.map((item) => {
-        return {
-            faktur,
-            ID_Pendapatan: item.ID_Pendapatan,
-            Nama_Pendapatan: item.Nama_Pendapatan,
-            Jumlah_Pendapatan: item.Jumlah_Pendapatan,
-            ID_Potongan: item.ID_Potongan,
-            Nama_Potongan: item.Nama_Potongan,
-            Jumlah_Potongan: item.Jumlah_Potongan
-        };
-    });
+
 
     await BaseServiceQueryBuilder.transaction(async (trx) => {
         await BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE)
             .insert(dataGaji)
             .transacting(trx);
-
-        await BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE)
-            .insert(dataItemGaji)
-            .transacting(trx);
     });
 
-    return { ...dataGaji, items: dataItemGaji };
+
+    return { ...dataGaji };
 };
 
 module.exports = GajiServiceCreate;

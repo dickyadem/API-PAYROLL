@@ -1,7 +1,6 @@
 const { param } = require("express-validator");
 const BaseValidatorRun = require("../base/validators/BaseValidatorRun");
 const UserServiceTokenAuthentication = require("../user/services/UserServiceTokenAuthentication");
-
 const GajiDetailServiceEdit = require("./services/GajiDetailServicesEdit");
 const GajiDetailServiceGet = require("./services/GajiDetailServicesGet");
 const GajiDetailServiceCreate = require("./services/GajiDetailServicesCreate");

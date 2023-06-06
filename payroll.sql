@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 04, 2023 at 03:08 PM
+-- Generation Time: Jun 06, 2023 at 07:06 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -35,9 +35,16 @@ CREATE TABLE `tblgaji` (
   `Total_Potongan` int(11) DEFAULT NULL,
   `Gaji_Bersih` int(11) DEFAULT NULL,
   `Keterangan` varchar(50) DEFAULT NULL,
-  `ID_User` char(5) DEFAULT NULL,
+  `email` varchar(30) DEFAULT NULL,
   `ID_Profil` char(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tblgaji`
+--
+
+INSERT INTO `tblgaji` (`ID_Gaji`, `Tanggal`, `ID_Karyawan`, `Total_Pendapatan`, `Total_Potongan`, `Gaji_Bersih`, `Keterangan`, `email`, `ID_Profil`) VALUES
+('GI00000001', '0000-00-00 00:00:00', '00001', 2000, 1000, 0, '1000', 'Ade@gmail.com', '00');
 
 -- --------------------------------------------------------
 
@@ -52,6 +59,13 @@ CREATE TABLE `tblgajidetail` (
   `ID_Potongan` char(2) DEFAULT NULL,
   `Jumlah_Potongan` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tblgajidetail`
+--
+
+INSERT INTO `tblgajidetail` (`ID_Gaji`, `ID_Pendapatan`, `Jumlah_Pendapatan`, `ID_Potongan`, `Jumlah_Potongan`) VALUES
+('GI00000001', '00', 500000, '00', 4000000);
 
 -- --------------------------------------------------------
 
@@ -109,6 +123,13 @@ CREATE TABLE `tblkaryawan` (
   `Status_Pernikahan` varchar(50) DEFAULT NULL,
   `Jumlah_Anak` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tblkaryawan`
+--
+
+INSERT INTO `tblkaryawan` (`ID_Karyawan`, `Nama_Karyawan`, `Gaji_Pokok`, `ID_Golongan`, `ID_Jabatan`, `Divisi`, `Status_Pernikahan`, `Jumlah_Anak`) VALUES
+('00001', 'Ade', NULL, '000', '000', 'It', 'Single', 0);
 
 -- --------------------------------------------------------
 
@@ -176,20 +197,19 @@ INSERT INTO `tblprofil` (`ID_Profil`, `Nama`, `Alamat`, `Telepon`, `Fax`, `Email
 --
 
 CREATE TABLE `tbluser` (
-  `ID_User` char(5) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `NamaDepan` varchar(50) DEFAULT NULL,
-  `NamaBelakang` varchar(30) DEFAULT NULL,
+  `NamaBelakang` varchar(50) DEFAULT NULL,
   `Status` varchar(50) DEFAULT NULL,
-  `email` varchar(30) DEFAULT NULL,
-  `password` varchar(300) NOT NULL
+  `password` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `tbluser`
 --
 
-INSERT INTO `tbluser` (`ID_User`, `NamaDepan`, `NamaBelakang`, `Status`, `email`, `password`) VALUES
-('00001', 'Dicky', 'Mahendra', 'User', 'dickyadem@gmail.com', '$2a$10$YjqdzKyVJN.Lzl3deXg0LefPvuueidbLISn0P6xXU/VdxcXmvCDHK');
+INSERT INTO `tbluser` (`email`, `NamaDepan`, `NamaBelakang`, `Status`, `password`) VALUES
+('Ade@gmail.com', 'Ade', 'Mahendra', 'User', '$2a$10$kWLeo654n05AiqklLjTWbe.dFKGZ9sSsntvNF1kMiI7');
 
 --
 -- Indexes for dumped tables
@@ -201,7 +221,7 @@ INSERT INTO `tbluser` (`ID_User`, `NamaDepan`, `NamaBelakang`, `Status`, `email`
 ALTER TABLE `tblgaji`
   ADD PRIMARY KEY (`ID_Gaji`),
   ADD KEY `ID_Karyawan` (`ID_Karyawan`),
-  ADD KEY `ID_User` (`ID_User`),
+  ADD KEY `email` (`email`),
   ADD KEY `ID_Profil` (`ID_Profil`);
 
 --
@@ -254,7 +274,7 @@ ALTER TABLE `tblprofil`
 -- Indexes for table `tbluser`
 --
 ALTER TABLE `tbluser`
-  ADD PRIMARY KEY (`ID_User`);
+  ADD PRIMARY KEY (`email`);
 
 --
 -- Constraints for dumped tables
@@ -265,7 +285,7 @@ ALTER TABLE `tbluser`
 --
 ALTER TABLE `tblgaji`
   ADD CONSTRAINT `tblgaji_ibfk_1` FOREIGN KEY (`ID_Karyawan`) REFERENCES `tblkaryawan` (`ID_Karyawan`),
-  ADD CONSTRAINT `tblgaji_ibfk_2` FOREIGN KEY (`ID_User`) REFERENCES `tbluser` (`ID_User`),
+  ADD CONSTRAINT `tblgaji_ibfk_2` FOREIGN KEY (`email`) REFERENCES `tbluser` (`email`),
   ADD CONSTRAINT `tblgaji_ibfk_3` FOREIGN KEY (`ID_Profil`) REFERENCES `tblprofil` (`ID_Profil`);
 
 --

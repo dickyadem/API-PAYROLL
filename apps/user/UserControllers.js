@@ -8,10 +8,7 @@ const router = require("express").Router();
 
 router.post(
     "/login",
-    [
-        UserValidators.email(body, false),
-        UserValidators.password(body, false),
-        BaseValidatorRun(),
+    [   
     ],
     async (req, res) => {
         const token = await UserServiceCreateJWT(req.body.email);
@@ -21,18 +18,17 @@ router.post(
 router.post(
     "/register",
     [
-        UserValidators.email(),
+  
         UserValidators.password(),
         UserValidators.Status(),
         UserValidators.NamaBelakang(),
         UserValidators.NamaDepan(),
-        UserValidators.ID_User(),
+        UserValidators.email(),
         
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const user = await UserServiceRegister(
-            req.body.ID_User,
             req.body.NamaDepan,
             req.body.NamaBelakang,
             req.body.Status,

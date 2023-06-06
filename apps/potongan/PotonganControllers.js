@@ -14,7 +14,7 @@ const PotonganControllers = require("express").Router();
 PotonganControllers.post(
     "/",
     [
-        UserServiceTokenAuthentication,
+        // UserServiceTokenAuthentication,
         PotonganValidators.ID_Potongan(),
         PotonganValidators.Nama_Potongan(),
     ],

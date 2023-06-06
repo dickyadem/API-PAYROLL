@@ -14,21 +14,7 @@ const GajiDetailValidators = {
     ID_Pendapatan: (location = body, field = "ID_Pendapatan") => {
         return PendapatanValidators.ID_Pendapatan(location, false, field);
     },
-    Jumlah_Pendapatan: (location = body, field = "Jumlah_Pendapatan") => {
-        return location(field)
-            .notEmpty()
-            .withMessage("Jumlah Pendapatan wajib diisi.")
-            .bail()
-            .isNumeric()
-            .withMessage("Jumlah Pendapatan harus berupa angka.")
-            .bail()
-            .custom((value) => {
-                if (value < 0) {
-                    throw new Error("Jumlah Pendapatan tidak boleh negatif.");
-                }
-                return true;
-            });
-    },
+    
     ID_Potongan: (location = body, field = "ID_Potongan") => {
         return PotonganValidators.ID_Potongan(location, false, field);
     },
@@ -47,7 +33,21 @@ const GajiDetailValidators = {
                 return true;
             });
     },
-
+    Jumlah_Pendapatan: (location = body, field = "Jumlah_Pendapatan") => {
+        return location(field)
+        .notEmpty()
+        .withMessage("Jumlah Pendapatan wajib diisi.")
+        .bail()
+        // .isNumeric()
+        // .withMessage("Jumlah Pendapatan harus berupa angka.")
+        // .bail()
+        // .custom((value) => {
+        //     if (value < 0) {
+        //     throw new Error("Jumlah Pendapatan tidak boleh negatif.");
+        //     }
+        //     return true;
+        // });
+  },
 };
 
 module.exports = GajiDetailValidators;

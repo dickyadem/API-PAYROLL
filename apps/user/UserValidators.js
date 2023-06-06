@@ -5,16 +5,7 @@ const UserServiceFetch = require("./services/UserServiceFetch");
 const BaseValidatorHandleUndefined = require("../base/validators/BaseValidatorHandleUndefined");
 
 const UserValidators = {
-    ID_User: (location = body, field = "ID_User") => {
-        return location(field)
-            .notEmpty()
-            .withMessage("ID User wajib diisi.")
-            .bail()
-            .trim()
-            .customSanitizer((value) =>
-                value.toUpperCase()
-            );
-    },
+
     email: (location = body, forCreate = true, field = "email") => {
         return location(field)
             .notEmpty()

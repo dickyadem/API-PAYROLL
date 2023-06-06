@@ -6,27 +6,24 @@ const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
 const { query, param } = require("express-validator");
 const GajiServiceList = require("./services/GajiServicesList");
 const GajiServiceGet = require("./services/GajiServicesGet");
-const GajiServiceGetItem = require("./services/GajiServicesGetSlip");
-const PendapatanServiceGet = require("../pendapatan/services/PendapatanServiceGet");
+const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
+const ConfigCTA = require("../base/services/ConfigCTA");
 const GajiControllers = require("express").Router();
+
 
 GajiControllers.post(
     "/",
     [
-        // UserServiceTokenAuthentication,
+        // // UserServiceTokenAuthentication,
         GajiValidators.ID_Gaji(),
         GajiValidators.Tanggal(),
         GajiValidators.ID_Karyawan(),
         GajiValidators.Total_Pendapatan(),
         GajiValidators.Total_Potongan(),
         GajiValidators.Gaji_Bersih(),
-        GajiValidators.items.self(),
-        GajiValidators.items.inner.ID_Pendapatan(),
-        GajiValidators.items.inner.Nama_Pendapatan(),
-        GajiValidators.items.inner.Jumlah_Pendapatan(),
-        GajiValidators.items.inner.ID_Potongan(),
-        GajiValidators.items.inner.Nama_Potongan(),
-        GajiValidators.items.inner.Jumlah_Potongan(),
+        GajiValidators.Keterangan(),
+        GajiValidators.email(),
+        GajiValidators.ID_Profil(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -37,11 +34,35 @@ GajiControllers.post(
             req.body.Total_Pendapatan,
             req.body.Total_Potongan,
             req.body.Gaji_Bersih,
-            req.body.items
+            req.body.Keterangan,
+            req.body.email,
+            req.body.ID_Profil
         );
         res.status(201).json(Gaji);
-    }
-);
+        // try {
+           
+        // } catch (error) {
+        //     let errorMessage = ConfigCTA.CTA_MESSAGE_REQUEST_ERROR;
+            
+        //     if (error instanceof Error && error.name === 'ID_Gaji') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_GAJI_ERROR;
+        //     } else if (error instanceof Error && error.name === 'ID_Pendapatan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_PENDAPATAN_ERROR;
+        //     } else if (error instanceof Error && error.name === 'Nama_Pendapatan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_NAMA_PENDAPATAN_ERROR;
+        //     } else if (error instanceof Error && error.name === 'Jumlah_Pendapatan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_JUMLAH_PENDAPATAN_ERROR;
+        //     } else if (error instanceof Error && error.name === 'ID_Potongan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_ID_POTONGAN_ERROR;
+        //     } else if (error instanceof Error && error.name === 'Nama_Potongan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_NAMA_POTONGAN_ERROR;
+        //     } else if (error instanceof Error && error.name === 'Jumlah_Potongan') {
+        //         errorMessage = ConfigCTA.CTA_MESSAGE_JUMLAH_POTONGAN_ERROR;
+        //     }
+            
+        //     res.status(500).json({ error: errorMessage });
+        // }
+    });
 
 GajiControllers.get(
     "/",
@@ -73,7 +94,7 @@ GajiControllers.get(
             req.params.ID_Gaji,
             false
         );
-        const items = await GajiServiceGetItem(
+        const items = await GajiServiceGetSlip(
             "ID_Gaji",
             req.params.ID_Gaji,
             true
