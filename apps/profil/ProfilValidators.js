@@ -76,7 +76,7 @@ const ProfilValidators = {
                 return true;
             });
     },
-   Email: (location = body, forCreate = true, field = "email") => {
+   Email: (location = body, forCreate = true, field = "Email") => {
         return location(field)
             .notEmpty()
             .withMessage("Email wajib diisi.")
@@ -84,19 +84,8 @@ const ProfilValidators = {
             .trim()
             .isEmail()
             .withMessage("Email tidak valid.")
-            .bail()
-            .custom(async (value) => {
-                const user = await UserServiceIsEmailExist(value);
-                if (forCreate && user) {
-                    return Promise.reject("Email sudah terdaftar.");
-                } else if (!forCreate && !user) {
-                    return Promise.reject("User tidak tersedia.");
-                }
-
-                return Promise.resolve(true);
-            });
     },
-  Website: (location = body, field = "website") => {
+  Website: (location = body, field = "Website") => {
         return location(field)
             .notEmpty()
             .withMessage("Website wajib diisi.")
