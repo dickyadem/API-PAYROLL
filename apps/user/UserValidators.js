@@ -41,11 +41,10 @@ const UserValidators = {
                     // const isValidPassword = await bcrypt.compare(value, user.password);
                     // if (!isValidPassword) return Promise.reject("password tidak sesuai.");
                 }
-
                 return Promise.resolve(true);
             });
     },
-    NamaDepan: (location = body, field = "NamaDepan") => {
+    NamaLengkap: (location = body, field = "NamaLengkap") => {
         return location(field)
             .notEmpty()
             .withMessage("Nama depan wajib diisi")
@@ -57,18 +56,7 @@ const UserValidators = {
                 })
             );
     },
-    NamaBelakang: (location = body, field = "NamaBelakang") => {
-        return location(field)
-            .notEmpty()
-            .withMessage("Nama belakang wajib diisi.")
-            .bail()
-            .trim()
-            .customSanitizer((value) =>
-                value.replace(/\w\S*/g, function (txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                })
-            );
-    },
+
    Status: (location = body, field = "Status") => {
         return location(field)
             .notEmpty()
