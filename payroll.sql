@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 06, 2023 at 07:06 AM
+-- Generation Time: Jun 07, 2023 at 06:02 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -35,16 +35,9 @@ CREATE TABLE `tblgaji` (
   `Total_Potongan` int(11) DEFAULT NULL,
   `Gaji_Bersih` int(11) DEFAULT NULL,
   `Keterangan` varchar(50) DEFAULT NULL,
-  `email` varchar(30) DEFAULT NULL,
+  `email` char(20) DEFAULT NULL,
   `ID_Profil` char(2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tblgaji`
---
-
-INSERT INTO `tblgaji` (`ID_Gaji`, `Tanggal`, `ID_Karyawan`, `Total_Pendapatan`, `Total_Potongan`, `Gaji_Bersih`, `Keterangan`, `email`, `ID_Profil`) VALUES
-('GI00000001', '0000-00-00 00:00:00', '00001', 2000, 1000, 0, '1000', 'Ade@gmail.com', '00');
 
 -- --------------------------------------------------------
 
@@ -60,13 +53,6 @@ CREATE TABLE `tblgajidetail` (
   `Jumlah_Potongan` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tblgajidetail`
---
-
-INSERT INTO `tblgajidetail` (`ID_Gaji`, `ID_Pendapatan`, `Jumlah_Pendapatan`, `ID_Potongan`, `Jumlah_Potongan`) VALUES
-('GI00000001', '00', 500000, '00', 4000000);
-
 -- --------------------------------------------------------
 
 --
@@ -78,13 +64,6 @@ CREATE TABLE `tblgolongan` (
   `Nama_Golongan` varchar(50) DEFAULT NULL,
   `Tunjangan_Golongan` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tblgolongan`
---
-
-INSERT INTO `tblgolongan` (`ID_Golongan`, `Nama_Golongan`, `Tunjangan_Golongan`) VALUES
-('000', 'Golongan 1', NULL);
 
 -- --------------------------------------------------------
 
@@ -99,13 +78,6 @@ CREATE TABLE `tbljabatan` (
   `Tunjangan_Keluarga` int(11) DEFAULT NULL,
   `Tunjangan_Anak` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbljabatan`
---
-
-INSERT INTO `tbljabatan` (`ID_Jabatan`, `Nama_Jabatan`, `Tunjangan_Jabatan`, `Tunjangan_Keluarga`, `Tunjangan_Anak`) VALUES
-('000', 'Staff', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -124,13 +96,6 @@ CREATE TABLE `tblkaryawan` (
   `Jumlah_Anak` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tblkaryawan`
---
-
-INSERT INTO `tblkaryawan` (`ID_Karyawan`, `Nama_Karyawan`, `Gaji_Pokok`, `ID_Golongan`, `ID_Jabatan`, `Divisi`, `Status_Pernikahan`, `Jumlah_Anak`) VALUES
-('00001', 'Ade', NULL, '000', '000', 'It', 'Single', 0);
-
 -- --------------------------------------------------------
 
 --
@@ -142,13 +107,6 @@ CREATE TABLE `tblpendapatan` (
   `Nama_Pendapatan` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tblpendapatan`
---
-
-INSERT INTO `tblpendapatan` (`ID_Pendapatan`, `Nama_Pendapatan`) VALUES
-('00', 'Gaji Pokok');
-
 -- --------------------------------------------------------
 
 --
@@ -159,13 +117,6 @@ CREATE TABLE `tblpotongan` (
   `ID_Potongan` char(2) NOT NULL,
   `Nama_Potongan` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tblpotongan`
---
-
-INSERT INTO `tblpotongan` (`ID_Potongan`, `Nama_Potongan`) VALUES
-('00', 'Transportasi');
 
 -- --------------------------------------------------------
 
@@ -183,13 +134,6 @@ CREATE TABLE `tblprofil` (
   `Website` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tblprofil`
---
-
-INSERT INTO `tblprofil` (`ID_Profil`, `Nama`, `Alamat`, `Telepon`, `Fax`, `Email`, `Website`) VALUES
-('00', 'Diki Ade Mahendra', 'jl. jalan ke kota', '0878765432167', '89897867898', 'dicky@gmail.com', 'www.google.com');
-
 -- --------------------------------------------------------
 
 --
@@ -197,19 +141,11 @@ INSERT INTO `tblprofil` (`ID_Profil`, `Nama`, `Alamat`, `Telepon`, `Fax`, `Email
 --
 
 CREATE TABLE `tbluser` (
-  `email` varchar(50) NOT NULL,
-  `NamaDepan` varchar(50) DEFAULT NULL,
-  `NamaBelakang` varchar(50) DEFAULT NULL,
+  `email` char(20) NOT NULL,
+  `NamaLengkap` varchar(50) DEFAULT NULL,
   `Status` varchar(50) DEFAULT NULL,
   `password` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tbluser`
---
-
-INSERT INTO `tbluser` (`email`, `NamaDepan`, `NamaBelakang`, `Status`, `password`) VALUES
-('Ade@gmail.com', 'Ade', 'Mahendra', 'User', '$2a$10$kWLeo654n05AiqklLjTWbe.dFKGZ9sSsntvNF1kMiI7');
 
 --
 -- Indexes for dumped tables

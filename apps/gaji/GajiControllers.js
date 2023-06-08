@@ -9,7 +9,6 @@ const GajiServiceGet = require("./services/GajiServicesGet");
 const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
 const GajiControllers = require("express").Router();
 
-
 GajiControllers.post(
     "/",
     [
@@ -23,23 +22,35 @@ GajiControllers.post(
         GajiValidators.Keterangan(),
         GajiValidators.email(),
         GajiValidators.ID_Profil(),
+        GajiValidators.items.self(),
+        GajiValidators.items.inner.ID_Potongan(),
+        GajiValidators.items.inner.Jumlah_Potongan(),
+        GajiValidators.items.inner.ID_Pendapatan(),
+        GajiValidators.items.inner.Jumlah_Pendapatan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const Gaji = await GajiServiceCreate(
-            req.body.ID_Gaji,
-            req.body.Tanggal,
-            req.body.ID_Karyawan,
-            req.body.Total_Pendapatan,
-            req.body.Total_Potongan,
-            req.body.Gaji_Bersih,
-            req.body.Keterangan,
-            req.body.email,
-            req.body.ID_Profil
-        );
-        res.status(201).json(Gaji);
-        
-    });
+        try {
+            const Gaji = await GajiServiceCreate(
+                req.body.ID_Gaji,
+                req.body.Tanggal,
+                req.body.ID_Karyawan,
+                req.body.Total_Pendapatan,
+                req.body.Total_Potongan,
+                req.body.Gaji_Bersih,
+                req.body.Keterangan,
+                req.body.email,
+                req.body.ID_Profil,
+                req.body.items
+            );
+            
+            res.status(201).json(Gaji);
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
 
 GajiControllers.get(
     "/",
@@ -50,11 +61,13 @@ GajiControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const daftarGaji = await GajiServiceList(
-            req.query.terms,
-            req.query.page
-        );
-        return res.status(200).json(daftarGaji);
+        try {
+            const daftarGaji = await GajiServiceList(req.query.terms, req.query.page);
+            res.status(200).json(daftarGaji);
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
     }
 );
 
@@ -66,20 +79,19 @@ GajiControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const Gaji = await GajiServiceGet(
-            "ID_Gaji",
-            req.params.ID_Gaji,
-            false
-        );
-        const items = await GajiServiceGetSlip(
-            "ID_Gaji",
-            req.params.ID_Gaji,
-            true
-        );
-
-        return res.status(200).json({ ...Gaji, items });
+        try {
+            const Gaji = await GajiServiceGet("ID_Gaji", req.params.ID_Gaji, false);
+            const items = await GajiServiceGetSlip(
+                "ID_Gaji",
+                req.params.ID_Gaji,
+                true
+            );
+            res.status(200).json({ ...Gaji, items });
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
     }
 );
-
 
 module.exports = GajiControllers;

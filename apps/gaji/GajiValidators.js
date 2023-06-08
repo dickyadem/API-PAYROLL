@@ -6,7 +6,6 @@ const PotonganValidators = require("../potongan/PotonganValidators");
 const UserValidators = require("../user/UserValidators");
 const KaryawanValidators = require("../karyawan/KaryawanValidators");
 const ProfilValidators = require("../profil/ProfilValidators");
-const GajiDetailValidators = require("../gajidetail/GajiDetailValidators")
 
 const GajiValidators = {
     ID_Gaji: (location = body, forCreate = true, field = "ID_Gaji") => {
@@ -26,6 +25,9 @@ const GajiValidators = {
                 return Promise.resolve(true);
             });
     },
+    ID_Profil: (location = body, field = "ID_Profil") => {
+        return ProfilValidators.ID_Profil(location, false, field);
+    },
     Tanggal: (location = body, field = "Tanggal") => {
         return location(field)
             .notEmpty()
@@ -39,21 +41,60 @@ const GajiValidators = {
     email: (location = body, field = "email") => {
         return UserValidators.email(location, false, field);
     },
-    ID_Profil: (location = body, field = "ID_Profil") => {
-        return ProfilValidators.ID_Profil(location, false, field);
-    },
     ID_Pendapatan: (location = body, field = "ID_Pendapatan") => {
         return PendapatanValidators.ID_Pendapatan(location, false, field);
     },
-    ID_Potongan: (location = body, field = "ID_Potongan") => {
-        return PotonganValidators.ID_Potongan(location, false, field);
+    items: {
+        self: (location = body, field = "items") => {
+            return location(field)
+                .notEmpty()
+                .withMessage("Item pembelian wajib.")
+                .bail()
+                .isArray({ min: 1 })
+                .withMessage("Item harus berupa array dan minimal 1 barang di dalamnya.");
+        },
+        inner: {
+            ID_Pendapatan: (location = body, field = "items.*.ID_Pendapatan") => {
+                return PendapatanValidators.ID_Pendapatan(location, false, field);
+            },
+            Jumlah_Pendapatan: (location = body, field = "items.*.Jumlah_Pendapatan") => {
+                return location(field)
+                    .notEmpty()
+                    .withMessage("Jumlah Pendapatan wajib.")
+                    .bail()
+                    .isInt()
+                    .withMessage("Jumlah Pendapatan harus angka.")
+                    .bail()
+                    .customSanitizer((value) => parseInt(value))
+                    .custom((value) => {
+                        if (value <= 0) {
+                            throw new Error("Jumlah Pendapatan tidak boleh 0");
+                        }
+                        return true;
+                    });
+            },
+            ID_Potongan: (location = body, field = "items.*.ID_Potongan") => {
+                return PotonganValidators.ID_Potongan(location, false, field);
+            },
+            Jumlah_Potongan: (location = body, field = "items.*.Jumlah_Potongan") => {
+                return location(field)
+                    .notEmpty()
+                    .withMessage("Jumlah Potongan wajib.")
+                    .bail()
+                    .isInt()
+                    .withMessage("Jumlah Potongan harus angka.")
+                    .bail()
+                    .customSanitizer((value) => parseInt(value))
+                    .custom((value) => {
+                        if (value <= 0) {
+                            throw new Error("Jumlah Potongan tidak boleh 0");
+                        }
+                        return true;
+                    });
+            },
+        },
     },
-    Jumlah_Pendapatan: (location = body, field = "Jumlah_Pendapatan") => {
-        return GajiDetailValidators.Jumlah_Pendapatan(location, false, field);
-    },
-    Jumlah_Potongan: (location = body, field = "Jumlah_Potongan") => {
-        return GajiDetailValidators.Jumlah_Potongan(location, false, field);
-    },
+
     Keterangan: (location = body, field = "Keterangan") => {
         return location(field)
             .notEmpty()
@@ -69,12 +110,6 @@ const GajiValidators = {
 
     Gaji_Bersih: (location = body, field = "Gaji_Bersih") => {
         return location(field)
-            .notEmpty()
-            .withMessage("Gaji Bersih wajib diisi.")
-            .bail()
-            .isInt()
-            .withMessage("Gaji Bersih harus berupa angka.")
-        
     },
     Total_Potongan: (location = body, field = "Total_Potongan") => {
         return location(field)

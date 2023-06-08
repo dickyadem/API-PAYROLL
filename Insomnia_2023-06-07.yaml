@@ -1,11 +1,44 @@
 _type: export
 __export_format: 4
-__export_date: 2023-06-06T05:08:42.618Z
+__export_date: 2023-06-07T16:03:20.739Z
 __export_source: insomnia.desktop.app:v2023.2.2
 resources:
+  - _id: req_0df81cd41cf34718a3543102568545d1
+    parentId: wrk_e69eb47dd72c4eda92e2dfb49ca3e61f
+    modified: 1686135600923
+    created: 1686135365046
+    url: http://localhost:4000/download
+    name: New Request
+    description: ""
+    method: GET
+    body: {}
+    parameters: []
+    headers:
+      - id: pair_336f3f1a77284e0ca47220f89a111f5d
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
+    authentication: {}
+    metaSortKey: -1686135365046
+    isPrivate: false
+    settingStoreCookies: true
+    settingSendCookies: true
+    settingDisableRenderRequestBody: false
+    settingEncodeUrl: true
+    settingRebuildPath: true
+    settingFollowRedirects: global
+    _type: request
+  - _id: wrk_e69eb47dd72c4eda92e2dfb49ca3e61f
+    parentId: null
+    modified: 1685798625403
+    created: 1685363320355
+    name: Payroll
+    description: ""
+    scope: collection
+    _type: workspace
   - _id: req_a216cd7ace494de7a1c7031c650eed67
     parentId: fld_bc14e1e24479483581c6cf270a8f5193
-    modified: 1686027246081
+    modified: 1686142483110
     created: 1685365349476
     url: " http://localhost:4000/user/register"
     name: Register
@@ -15,16 +48,27 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"NamaDepan": "Ade",
-        	"NamaBelakang": "Mahendra",
+        	"NamaLengkap": "Adem",
         	"Status": "User",
-        	"email": "Ade@gmail.com",
+        	"email": "Adem@gmail.com",
         	"password": "dickyade12345"
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+      - id: pair_634924452eba4200bc0ff18af9fdfa6c
+        name: ""
+        value: ""
+        description: ""
+      - id: pair_19249225fb2748f5bf143994f5d6e75b
+        name: ""
+        value: ""
+        description: ""
+      - id: pair_2e12615737084b0eb657dc1326a6df71
+        name: ""
+        value: ""
+        description: ""
     authentication: {}
     metaSortKey: 0
     isPrivate: false
@@ -45,17 +89,9 @@ resources:
     environmentPropertyOrder: null
     metaSortKey: 0
     _type: request_group
-  - _id: wrk_e69eb47dd72c4eda92e2dfb49ca3e61f
-    parentId: null
-    modified: 1685798625403
-    created: 1685363320355
-    name: Payroll
-    description: ""
-    scope: collection
-    _type: workspace
   - _id: req_3197554db8754298b670d843906d7670
     parentId: fld_bc14e1e24479483581c6cf270a8f5193
-    modified: 1686026140218
+    modified: 1686142506675
     created: 1685798658385
     url: " http://localhost:4000/user/login"
     name: Login
@@ -65,7 +101,7 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"email": "Ade@gmail.com",
+        	"email": "Adem@gmail.com",
         	"password": "dickyade12345"
         }
     parameters: []
@@ -84,9 +120,9 @@ resources:
     _type: request
   - _id: req_ea9cef5f888142569a8f5d8248b32a0c
     parentId: fld_55172711e6d044f283268f878d5314eb
-    modified: 1685871087882
+    modified: 1686142544824
     created: 1685843132705
-    url: " http://localhost:4000/profil"
+    url: "{{ _.BASE_URL }}/profil"
     name: Create Profil
     description: ""
     method: POST
@@ -94,18 +130,23 @@ resources:
       mimeType: application/json
       text: |-
         {
-        				"ID_Profil":"00001",
-                "Nama":"Diki Ade Mahendra",
+        				"ID_Profil":"01",
+                "Nama":"PT Jalan Bersama",
                 "Alamat": "jl. jalan ke kota",
                 "Telepon":"0878765432167",
                 "Fax":"89897867898",
-                "Email":"dicky@gmail.com",
+                "Email":"adem@gmail.com",
                 "Website" : "www.google.com"
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_7d6847c6c8d24d98b8aed73866bc8cfd
+      - id: pair_a8f558b0d0874127a52d7301b03735b1
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: 0
     isPrivate: false
@@ -128,15 +169,23 @@ resources:
     _type: request_group
   - _id: req_8270c69a353b43c8bb4071c7350f27fe
     parentId: fld_55172711e6d044f283268f878d5314eb
-    modified: 1685849518592
+    modified: 1686100682729
     created: 1685843165005
-    url: " http://localhost:4000/profil"
+    url: "{{ _.BASE_URL }}/profil"
     name: Profil List
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_739c6947e5dc453f8ba3ccbf38ff6799
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
+      - id: pair_8fa7f6d3e35149db8e81005b67a69b8c
+        name: ""
+        value: ""
+        description: ""
     authentication: {}
     metaSortKey: 100
     isPrivate: false
@@ -149,15 +198,19 @@ resources:
     _type: request
   - _id: req_9a457d84226e49679b676b82069f794e
     parentId: fld_55172711e6d044f283268f878d5314eb
-    modified: 1685849523191
+    modified: 1686100732900
     created: 1685843297928
-    url: " http://localhost:4000/profil"
+    url: "{{ _.BASE_URL }}/profil/00"
     name: Detail Profil
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_1f9995042082460aa96f90305d380dfb
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: 150
     isPrivate: false
@@ -170,15 +223,32 @@ resources:
     _type: request
   - _id: req_0d67e448d47b4439aceb5916dbba3939
     parentId: fld_55172711e6d044f283268f878d5314eb
-    modified: 1685849528890
+    modified: 1686101376618
     created: 1685843189410
-    url: " http://localhost:4000/profil"
+    url: "{{ _.BASE_URL }}/profil/00"
     name: Edit Profil
     description: ""
     method: PUT
-    body: {}
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"ID_Profil": "02",
+        	"Nama": "Adem",
+        	"Alamat": "jl. jalan ke kota",
+        	"Telepon": "0878765432167",
+        	"Fax": "89897867898",
+        	"Email": "adem@gmail.com",
+        	"Website": "www.google.com"
+        }
     parameters: []
-    headers: []
+    headers:
+      - id: pair_f9437a112d2948988eb82d396bf50f69
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
     authentication: {}
     metaSortKey: 200
     isPrivate: false
@@ -191,15 +261,19 @@ resources:
     _type: request
   - _id: req_ed6e64e5f7034371860879b5394a1c5d
     parentId: fld_55172711e6d044f283268f878d5314eb
-    modified: 1685849535140
+    modified: 1686100790830
     created: 1685843240341
-    url: " http://localhost:4000/profil"
+    url: " {{ _.BASE_URL }}/profil"
     name: Delete Profil
     description: ""
     method: DELETE
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_8290ed7db07b4573ae108388440de5ec
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: 300
     isPrivate: false
@@ -243,15 +317,19 @@ resources:
     _type: request_group
   - _id: req_3267ba5b7a6547cd967788fc21c8553e
     parentId: fld_ed2de1dc970c49d1a4ecebf5c1e6e8bc
-    modified: 1685849556027
+    modified: 1686102141383
     created: 1685844089313
-    url: " http://localhost:4000/potongan"
+    url: "{{ _.BASE_URL }}/potongan"
     name: Edit Potongan
     description: ""
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_08f3e807f7f541598be15e1b5dfef338
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844089313
     isPrivate: false
@@ -264,15 +342,19 @@ resources:
     _type: request
   - _id: req_ae62141fe0e746a1a2fb60f531aa0e43
     parentId: fld_ed2de1dc970c49d1a4ecebf5c1e6e8bc
-    modified: 1685849554251
+    modified: 1686102087493
     created: 1685843772250
-    url: " http://localhost:4000/potongan"
+    url: "{{ _.BASE_URL }}/potongan"
     name: List Potongan
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_12dbd32ee9f64e15b951579dbffd0b9a
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843772250
     isPrivate: false
@@ -285,9 +367,9 @@ resources:
     _type: request
   - _id: req_5bd8178a31594f74b39f2a3199f32a97
     parentId: fld_ed2de1dc970c49d1a4ecebf5c1e6e8bc
-    modified: 1685872147923
+    modified: 1686102061569
     created: 1685843500166
-    url: " http://localhost:4000/potongan"
+    url: "{{ _.BASE_URL }}/potongan"
     name: Create Potongan
     description: ""
     method: POST
@@ -295,13 +377,18 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	 			"ID_Potongan":"00001",
-                "Nama_Potongan":"transportasi"
+        	 			"ID_Potongan":"01",
+                "Nama_Potongan":"BPJS"
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_76bbbd08d1044f1e982f66acfc4c1927
+      - id: pair_97ec601f068d4cb2a92d7254a64b98a4
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843500166
     isPrivate: false
@@ -345,15 +432,27 @@ resources:
     _type: request_group
   - _id: req_b7107c8bbb4249979867b704b03bc70b
     parentId: fld_4dee93a99ad44880a0fd533f96d2fcb1
-    modified: 1685849564533
+    modified: 1686102430909
     created: 1685844111750
-    url: " http://localhost:4000/golongan"
+    url: "{{ _.BASE_URL }}/golongan/000"
     name: Edit Potongan
     description: ""
     method: PUT
-    body: {}
+    body:
+      mimeType: application/json
+      text: |-
+        		{
+        			"ID_Golongan": "00",
+        			"Nama_Golongan": "Golongan 1"
+        		}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_15177a3c57d1421699e06ef5bcb9c1ed
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
+      - name: Content-Type
+        value: application/json
     authentication: {}
     metaSortKey: -1685844111750
     isPrivate: false
@@ -366,15 +465,19 @@ resources:
     _type: request
   - _id: req_86ab7582c1a64ec694bc679b0601efd2
     parentId: fld_4dee93a99ad44880a0fd533f96d2fcb1
-    modified: 1685849569006
+    modified: 1686102285094
     created: 1685843799215
-    url: " http://localhost:4000/golongan"
+    url: "{{ _.BASE_URL }}/golongan"
     name: List Golongan
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_4c3e10a2355b4c21aecf7fd37835e2e9
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843799215
     isPrivate: false
@@ -387,9 +490,9 @@ resources:
     _type: request
   - _id: req_f180ba0bfb3440eb911eeb1cac30112c
     parentId: fld_4dee93a99ad44880a0fd533f96d2fcb1
-    modified: 1685872769709
+    modified: 1686147724986
     created: 1685843502288
-    url: " http://localhost:4000/golongan"
+    url: "{{ _.BASE_URL }}/golongan"
     name: Create Golongan
     description: ""
     method: POST
@@ -397,14 +500,19 @@ resources:
       mimeType: application/json
       text: |-
         {
-        "ID_Golongan": "00001",
-            "Nama_Golongan":"golongan 1",
-            "Tunjangan_Golongan":"500000"
+        "ID_Golongan": "02",
+            "Nama_Golongan":"golongan 3",
+            "Tunjangan_Golongan":300000
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_b23b4d47bb344d46b6fa83e168521fa6
+      - id: pair_ae70362ae3464ac288cdca15d060970a
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843502288
     isPrivate: false
@@ -448,15 +556,19 @@ resources:
     _type: request_group
   - _id: req_742964f999e445438d283a4984382d20
     parentId: fld_76ad25460c9d4c359aeb2789196d24a9
-    modified: 1685849579709
+    modified: 1686102330780
     created: 1685844131640
-    url: " http://localhost:4000/pendapatan"
+    url: "{{ _.BASE_URL }}/pendapatan"
     name: Edit Pendapatan
     description: ""
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_a1099bce16d84db5a5d40e25b5e6adfb
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844131640
     isPrivate: false
@@ -469,7 +581,7 @@ resources:
     _type: request
   - _id: req_3f40439505f14686b15f253ca85008d3
     parentId: fld_76ad25460c9d4c359aeb2789196d24a9
-    modified: 1685849587652
+    modified: 1686102720920
     created: 1685843817585
     url: " http://localhost:4000/pendapatan"
     name: List Pendapatan
@@ -477,7 +589,11 @@ resources:
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_cf358464a6e143d1a9cfe701c6e6b66b
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843817585
     isPrivate: false
@@ -490,9 +606,9 @@ resources:
     _type: request
   - _id: req_02fe5a2037e94bfaa936ad4b517aa1ae
     parentId: fld_76ad25460c9d4c359aeb2789196d24a9
-    modified: 1685872310293
+    modified: 1686142658360
     created: 1685843503433
-    url: " http://localhost:4000/pendapatan"
+    url: "{{ _.BASE_URL }}/pendapatan"
     name: Create Pendapatan
     description: ""
     method: POST
@@ -500,13 +616,18 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"ID_Pendapatan":"00001",
+        	"ID_Pendapatan":"01",
             "Nama_Pendapatan": "Gaji Pokok"
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_66a62768fd434fbb96a8adc2ad77f6ba
+      - id: pair_7977b059d50643f798bcbdd18f79ecbb
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843503433
     isPrivate: false
@@ -550,7 +671,7 @@ resources:
     _type: request_group
   - _id: req_8e5c513852a04db998f7ec200bdb3ac4
     parentId: fld_fe43cca2580a4ab48c680f08b8cfec17
-    modified: 1685849599927
+    modified: 1686102712828
     created: 1685844157661
     url: " http://localhost:4000/jabatan"
     name: Edit Jabatan
@@ -558,7 +679,11 @@ resources:
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_72c7e738755e47de8fe9544e7a824227
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844157661
     isPrivate: false
@@ -571,7 +696,7 @@ resources:
     _type: request
   - _id: req_e1428b80d5834daba011e209586e8d55
     parentId: fld_fe43cca2580a4ab48c680f08b8cfec17
-    modified: 1685849603502
+    modified: 1686102701841
     created: 1685843955297
     url: " http://localhost:4000/jabatan"
     name: LIst Jabatan
@@ -579,7 +704,11 @@ resources:
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_cbb7bffe22fa417bbff63549755d01fb
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843955297
     isPrivate: false
@@ -592,9 +721,9 @@ resources:
     _type: request
   - _id: req_cc42b4e7b19a4e819ab64fa97878acbe
     parentId: fld_fe43cca2580a4ab48c680f08b8cfec17
-    modified: 1685872583286
+    modified: 1686148017002
     created: 1685843504111
-    url: " http://localhost:4000/jabatan"
+    url: "{{ _.BASE_URL }}/jabatan"
     name: Create Jabatan
     description: ""
     method: POST
@@ -602,16 +731,21 @@ resources:
       mimeType: application/json
       text: |-
         {
-        	"ID_Jabatan":"00001",
-           "Nama_Jabatan": "Staff",
-            "Tunjangan_Jabatan":"3000000",
+        	"ID_Jabatan":"01",
+           "Nama_Jabatan": "OB",
+            "Tunjangan_Jabatan":1000000,
             "Tunjangan_Keluarga":"500000",
-        	"Tunjungan_Anak": "500000"
+        	"Tunjungan_Anak": 200000
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_e9975c11783f411599688e324ff33d6e
+      - id: pair_2e45592c43dc4a2f8366fb39cd56e345
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843504111
     isPrivate: false
@@ -624,7 +758,7 @@ resources:
     _type: request
   - _id: req_6388019dfa6b4640a0fab5c242f3cad4
     parentId: fld_71d9eaab16a842c7887410249588933b
-    modified: 1685849949821
+    modified: 1686102694818
     created: 1685849818437
     url: " http://localhost:4000/karyawan"
     name: Delete Karyawan
@@ -632,7 +766,11 @@ resources:
     method: DELETE
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_691730fcf326477990085e18d6cffdb3
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685849818437
     isPrivate: false
@@ -655,7 +793,7 @@ resources:
     _type: request_group
   - _id: req_1b9e2becfd6d413da52a3d9641486027
     parentId: fld_71d9eaab16a842c7887410249588933b
-    modified: 1685849617383
+    modified: 1686102686590
     created: 1685844186629
     url: " http://localhost:4000/karyawan"
     name: Edit Karyawan
@@ -663,7 +801,11 @@ resources:
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_39af2173d28f4c32bc9528c9ac2b337a
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844186629
     isPrivate: false
@@ -676,7 +818,7 @@ resources:
     _type: request
   - _id: req_f2dd0fe373b445758c5cfe2b08c3268f
     parentId: fld_71d9eaab16a842c7887410249588933b
-    modified: 1685849621373
+    modified: 1686102671442
     created: 1685843971017
     url: " http://localhost:4000/karyawan"
     name: List Karyawan
@@ -684,7 +826,11 @@ resources:
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_4f769dec5a744c59ad330a2eaf692d04
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843971017
     isPrivate: false
@@ -697,9 +843,9 @@ resources:
     _type: request
   - _id: req_8d2da0ea077542fea42f19b5d4696b1f
     parentId: fld_71d9eaab16a842c7887410249588933b
-    modified: 1685891200825
+    modified: 1686142711228
     created: 1685843504749
-    url: " http://localhost:4000/karyawan"
+    url: "{{ _.BASE_URL }}/karyawan"
     name: Create Karyawan
     description: ""
     method: POST
@@ -710,7 +856,7 @@ resources:
         	"ID_Karyawan":"00001",
             "Nama_Karyawan":"Ade",
             "Gaji_Pokok ":"5000000",
-            "ID_Golongan":"000",
+            "ID_Golongan":"01",
             "ID_Jabatan":"000",
             "Divisi":"IT",
            "Status_Pernikahan":"Single",
@@ -720,6 +866,11 @@ resources:
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_175a03b9b8f64af39790b1f8d112f015
+      - id: pair_d7a56db87a4041009ec98b8fe7ca6027
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843504749
     isPrivate: false
@@ -763,15 +914,19 @@ resources:
     _type: request_group
   - _id: req_b3b17a71e37145cf9d98e7096d196cd6
     parentId: fld_b01b92fbd8c94f0288e4781100001ae5
-    modified: 1685849630230
+    modified: 1686102663372
     created: 1685844281732
-    url: " http://localhost:4000/gaji"
+    url: " {{ _.BASE_URL }}/gaji"
     name: Edit Gaji
     description: ""
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_a7a1a0be00854155ac8e2e9d2bbdf7ee
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844281732
     isPrivate: false
@@ -784,15 +939,19 @@ resources:
     _type: request
   - _id: req_4e9de4a5811f490ea1941ec403da3d37
     parentId: fld_b01b92fbd8c94f0288e4781100001ae5
-    modified: 1685849634138
+    modified: 1686102648131
     created: 1685844004851
-    url: " http://localhost:4000/gaji"
+    url: "{{ _.BASE_URL }}/gaji"
     name: LIst Gaji
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_28ab4bfb54a64995baa493e64beb334f
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685844004851
     isPrivate: false
@@ -805,9 +964,9 @@ resources:
     _type: request
   - _id: req_8e3e031d5007444d8b6abb5abde662a1
     parentId: fld_b01b92fbd8c94f0288e4781100001ae5
-    modified: 1686027642154
+    modified: 1686147259141
     created: 1685843507437
-    url: " http://localhost:4000/gaji"
+    url: " {{ _.BASE_URL }}/gaji"
     name: Create Gaji
     description: ""
     method: POST
@@ -816,7 +975,7 @@ resources:
       text: |
         {
           "ID_Gaji": "GI00000001",
-          "Tanggal": "6-05-2023",
+          "Tanggal": "2023-04-26",
           "ID_Karyawan": "00001",
           "Total_Pendapatan": "2000",
           "Total_Potongan": "1000",
@@ -829,6 +988,11 @@ resources:
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_b63ea46431134871863a18beed1074a5
+      - id: pair_160dc71f230648f7b754e6b65654bfcf
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843507437
     isPrivate: false
@@ -872,15 +1036,19 @@ resources:
     _type: request_group
   - _id: req_2b59faeb8a00423ebc648899ff090a63
     parentId: fld_8c4c5503719b4beca920b2baa6cde0da
-    modified: 1685849936300
+    modified: 1686102634922
     created: 1685849874226
-    url: " http://localhost:4000/gajidetail"
+    url: "{{ _.BASE_URL }}/gajidetail"
     name: Edit Detail Gaji
     description: ""
     method: PUT
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_83ae8f2c48dc40d5bc70413ce6df03a0
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685849874226
     isPrivate: false
@@ -893,15 +1061,23 @@ resources:
     _type: request
   - _id: req_127690eccea1401d91754b5cf10adf7f
     parentId: fld_8c4c5503719b4beca920b2baa6cde0da
-    modified: 1685849646737
+    modified: 1686102612033
     created: 1685844021655
-    url: " http://localhost:4000/gajidetail"
+    url: "{{ _.BASE_URL }}/gajidetail"
     name: List Gaji Detail
     description: ""
     method: GET
     body: {}
     parameters: []
-    headers: []
+    headers:
+      - id: pair_6cac33c1da774864a103d71df0abc067
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
+      - id: pair_e8022cdefdb7447f923e9495e98e29c0
+        name: ""
+        value: ""
+        description: ""
     authentication: {}
     metaSortKey: -1685844021655
     isPrivate: false
@@ -914,9 +1090,9 @@ resources:
     _type: request
   - _id: req_1d5583787997464dbdf1c472e641ab31
     parentId: fld_8c4c5503719b4beca920b2baa6cde0da
-    modified: 1685977083547
+    modified: 1686147655759
     created: 1685843508451
-    url: " http://localhost:4000/gajidetail"
+    url: "{{ _.BASE_URL }}/gajidetail"
     name: Create GajiDetail
     description: ""
     method: POST
@@ -925,15 +1101,20 @@ resources:
       text: |-
         {
         	    "ID_Gaji":"GI00000001",
-            "ID_Pendapatan":"00",
-            "Jumlah_Pendapatan":"500000",
-            "ID_Potongan":"00",
-            "Jumlah_Potongan":"4000000"
+            "ID_Pendapatan":"01",
+            "Jumlah_Pendapatan":500000,
+            "ID_Potongan":"01",
+            "Jumlah_Potongan":4000000
         }
     parameters: []
     headers:
       - name: Content-Type
         value: application/json
+        id: pair_e4a1ecf769fa4be5964cff6188bafe84
+      - id: pair_67e4d61209c34e4ba46cf8124ff14fa0
+        name: x-access-token
+        value: "{{ _.TOKEN }}"
+        description: ""
     authentication: {}
     metaSortKey: -1685843508451
     isPrivate: false
@@ -946,12 +1127,12 @@ resources:
     _type: request
   - _id: env_12d7e60067622f5b6964fe10be70c1f8c8265234
     parentId: wrk_e69eb47dd72c4eda92e2dfb49ca3e61f
-    modified: 1686027504099
+    modified: 1686052976957
     created: 1685363320369
     name: Base Environment
     data:
       BASE_URL: http://localhost:4000
-      TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1hRGVwYW4iOiJBZGUiLCJOYW1hQmVsYWthbmciOiJNYWhlbmRyYSIsImVtYWlsIjoiQWRlQGdtYWlsLmNvbSIsImlhdCI6MTY4NjAyNzQ4OSwiZXhwIjoxNjg2MTEzODg5fQ.-ZtJ8OgL4hNfEIiFGAGHrzOpsMZ2qcemKMUluMk7Rno
+      TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1hRGVwYW4iOiJBZGUiLCJOYW1hQmVsYWthbmciOiJNYWhlbmRyYSIsImVtYWlsIjoiQWRlQGdtYWlsLmNvbSIsImlhdCI6MTY4NjA1MTk1MSwiZXhwIjoxNjg2MTM4MzUxfQ.AbLOjy4CzOrcJBvRZprzgJnTLcU6pPCZEblURI_NcOY
     dataPropertyOrder:
       "&":
         - BASE_URL
@@ -975,3 +1156,30 @@ resources:
     contents: ""
     contentType: yaml
     _type: api_spec
+  - _id: env_017c66dd87434c558deac55e051d8b69
+    parentId: env_12d7e60067622f5b6964fe10be70c1f8c8265234
+    modified: 1686052969613
+    created: 1686052961834
+    name: New Environment
+    data: {}
+    dataPropertyOrder: {}
+    color: null
+    isPrivate: false
+    metaSortKey: 1686052961834
+    _type: environment
+  - _id: env_f88889b2f07841f290dee7eac48b0fee
+    parentId: env_12d7e60067622f5b6964fe10be70c1f8c8265234
+    modified: 1686150589951
+    created: 1686052994738
+    name: Payroll
+    data:
+      BASE_URL: http://localhost:4000
+      TOKEN: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1hTGVuZ2thcCI6IkFkZW0iLCJlbWFpbCI6IkFkZW1AZ21haWwuY29tIiwiaWF0IjoxNjg2MTQyNTA4LCJleHAiOjE2ODYyMjg5MDh9.WsHsAl7j7aDbXRxrawT9wC-aPu4ivg-sv2ZV5Hz1HDU
+    dataPropertyOrder:
+      "&":
+        - BASE_URL
+        - TOKEN
+    color: "#c20a0a"
+    isPrivate: false
+    metaSortKey: 1686052994738
+    _type: environment
