@@ -37,13 +37,12 @@ const GajiServiceCreate = async (
         email,
         ID_Profil
     };
-
     const isExistingGaji = await BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE)
-        .where({ ID_Gaji })
+        .where({ ID_Gaji, Tanggal })
         .first();
 
     if (isExistingGaji) {
-        throw new Error('ID_Gaji already exists');
+        throw new Error('ID_Gaji dan tanggal already exist');
     }
 
     const existingPendapatanQuery = await BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
