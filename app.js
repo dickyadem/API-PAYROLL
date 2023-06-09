@@ -7,6 +7,7 @@ const app = express();
 app.use(express.json());
 
 app.use("/user", require("./apps/user/UserControllers"));
+app.use("/hello", require("./apps/user/UserControllers"));
 app.use("/profil", require("./apps/profil/ProfilControllers"));
 app.use("/potongan", require("./apps/potongan/PotonganControllers"));
 app.use("/pendapatan", require("./apps/pendapatan/PendapatanControllers"));

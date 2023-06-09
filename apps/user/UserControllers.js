@@ -5,6 +5,7 @@ const UserValidators = require("./UserValidators");
 const UserServiceCreateJWT = require("./services/UserServiceCreateJWT");
 const UserServiceRegister = require("./services/UserServiceRegister");
 const router = require("express").Router();
+const authentication = require("./services/UserServiceTokenAuthentication");
 
 router.post(
     "/login",
@@ -18,6 +19,10 @@ router.post(
         return res.status(200).json(token);
     }
 );
+router.post("/world", [authentication], (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
+  })
+
 router.post(
     "/register",
     [
