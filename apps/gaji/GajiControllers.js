@@ -21,6 +21,7 @@ const BPJSServiceGetSlip = require("../gaji/laporanBPJS/BPJSServiceGetSlip");
 const BPJSServiceFakturExcel = require("../gaji/laporanBPJS/BPJSServiceFakturExcel");
 const BPJSServiceReportPeriodExcel = require("../gaji/laporanBPJS/BPJSServiceReportPeriodExcel");
 const BPJSServiceReportPeriod = require("../gaji/laporanBPJS/BPJSServiceReportPeriod");
+const SlipServiceFakturExcel = require("../gaji/laporanslip/SlipServiceFakturExcel");
 
 GajiControllers.post(
     "/",
@@ -271,6 +272,54 @@ GajiControllers.post(
         );
 
         const xlsx = await BPJSServiceReportPeriodExcel(results); // Inisialisasi objek xlsx
+        await xlsx.write(res);
+        return res.end();
+    }
+);
+GajiControllers.post(
+    "/slip-excel",
+    [
+        UserServiceTokenAuthentication,
+        // BpjsValidators.ID_Gaji("param", false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="slip-${new Date().getTime()}.xlsx"`
+        );
+
+        const xlsx = await SlipServiceFakturExcel();  
+        await xlsx.write(res);
+        return res.end();
+    }
+);
+GajiControllers.post(
+    "/slip-excel/:ID_Gaji",  // Add a route parameter for ID_Gaji
+    [
+        UserServiceTokenAuthentication,
+        // BpjsValidators.ID_Gaji("param", false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="slip-${new Date().getTime()}.xlsx"`
+        );
+
+        const ID_Gaji = req.params.ID_Gaji;  // Get the ID_Gaji from the request parameters
+
+        const xlsx = await SlipServiceFakturExcel(ID_Gaji);  // Pass the ID_Gaji to the function
         await xlsx.write(res);
         return res.end();
     }
