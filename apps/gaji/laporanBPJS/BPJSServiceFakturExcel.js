@@ -1,22 +1,22 @@
 const xl = require('exceljs');
-const BaseServiceExcelColumnResponsive = require('../laporanPPH/BaseServiceExcelColumnResponsive');
+const BaseServiceExcelColumnResponsive = require('../laporanBPJS/BaseServiceExcelColumnResponsive');
 const db = require('../../base/services/BaseServiceQueryBuilder');
 
-const PphServiceFakturExcel = async () => {
+const BPJSServiceFakturExcel = async () => {
     const tblgaji = await db.fetchAll('tblgaji');
     const tblkaryawan = await db.fetchAll('tblkaryawan');
-    const tblgajidetail = await db.fetchAll('tblgajidetail', { ID_Potongan: '02' });
+    const tblgajidetail = await db.fetchAll('tblgajidetail', { ID_Potongan: '01' });
     const tblprofil = await db.fetchAll('tblprofil');
 
     const wb = new xl.Workbook();
-    const ws = wb.addWorksheet('Laporan Potongan PPH');
+    const ws = wb.addWorksheet('Laporan Potongan BPJS');
 
     // Judul di atas tabel
-    ws.getCell('A1').value = 'Laporan Potongan PPH';
+    ws.getCell('A1').value = 'Laporan Potongan BPJS';
     ws.mergeCells('A1:D1');
     ws.getCell('A1').alignment = { horizontal: 'center' };
     ws.getCell('A1').font = { size: 20 };
-
+    
 
     // Menambahkan border pada tabel
     const tableRange = 'A1:E' + (tblgaji.length + 4);
@@ -37,7 +37,7 @@ const PphServiceFakturExcel = async () => {
 
     for (let i = 1; i < profilData.length; i++) {
         const row = i + 1; // Mulai dari baris pertama (A1)
-
+        
         // Menambahkan teks tambahan pada urutan ketiga hingga keenam
         if (i === 3) {
             ws.getCell(`A${row}`).value = 'Telepon: ' + profilData[i][1];
@@ -62,7 +62,6 @@ const PphServiceFakturExcel = async () => {
     ws.getCell('D9').value = 'Jumlah potongan';
     ws.getCell('D9').border = tableBorder;
 
-    // Mengisi data pada tabel
     for (let i = 0; i < tblgaji.length; i++) {
         const row = i + 10; // Mulai dari baris kedelapan (A8)
         ws.getCell(`A${row}`).value = tblgaji[i].ID_Gaji;
@@ -74,7 +73,7 @@ const PphServiceFakturExcel = async () => {
 
         let totalPotongan = 0;
         for (let j = 0; j < tblgajidetail.length; j++) {
-            if (tblgajidetail[j].ID_Potongan === '02' && tblgajidetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
+            if (tblgajidetail[j].ID_Potongan === '01' && tblgajidetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
                 totalPotongan += tblgajidetail[j].Jumlah_Potongan;
             }
         }
@@ -98,7 +97,7 @@ const PphServiceFakturExcel = async () => {
     ws.getCell('A' + (tblgaji.length + 15)).value = 'Dibuat oleh:';
     ws.getCell('A' + (tblgaji.length + 15)).font = { bold: true };
     ws.getCell('A' + (tblgaji.length + 20)).value = '___________________';
-
+  
     // TTD "Disetujui oleh"
     ws.getCell('D' + (tblgaji.length + 15)).value = 'Disetujui oleh:';
     ws.getCell('D' + (tblgaji.length + 15)).font = { bold: true };
@@ -110,4 +109,4 @@ const PphServiceFakturExcel = async () => {
     return wb.xlsx;
 };
 
-module.exports = PphServiceFakturExcel;
+module.exports = BPJSServiceFakturExcel;

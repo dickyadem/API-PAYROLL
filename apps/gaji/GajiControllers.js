@@ -17,6 +17,10 @@ const PphServiceGetSlip = require("../gaji/laporanPPH/PphServiceGetSlip");
 const PphServiceFakturExcel = require("../gaji/laporanPPH/PphServiceFakturExcel");
 const PphServiceReportPeriodExcel = require("../gaji/laporanPPH/PphServiceReportPeriodExcel");
 const PphServiceReportPeriod = require("../gaji/laporanPPH/PphServiceReportPeriod");
+const BPJSServiceGetSlip = require("../gaji/laporanBPJS/BPJSServiceGetSlip");
+const BPJSServiceFakturExcel = require("../gaji/laporanBPJS/BPJSServiceFakturExcel");
+const BPJSServiceReportPeriodExcel = require("../gaji/laporanBPJS/BPJSServiceReportPeriodExcel");
+const BPJSServiceReportPeriod = require("../gaji/laporanBPJS/BPJSServiceReportPeriod");
 
 GajiControllers.post(
     "/",
@@ -215,6 +219,61 @@ GajiControllers.post(
         return res.end();
     }
 );
+GajiControllers.post(
+    "/bpjs-excel",
+    [
+        UserServiceTokenAuthentication,
+        // BpjsValidators.ID_Gaji("param", false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        const bpjs = await BPJSServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
+        const items = await BPJSServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
 
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="bpjs-${new Date().getTime()}.xlsx"`
+        );
+
+        const xlsx = await BPJSServiceFakturExcel(); // Inisialisasi objek xlsx
+        await xlsx.write(res);
+        return res.end();
+    }
+);
+
+GajiControllers.post(
+    "/reportBpjs-period-excel",
+    [
+        UserServiceTokenAuthentication,
+        // BpjsValidators.reportBpjsing.terms(),
+        // BpjsValidators.reportBpjsing.startDate(),
+        // BpjsValidators.reportBpjsing.endDate(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="Report Potongan BPJS - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
+        );
+
+        const results = await BPJSServiceReportPeriod(
+            req.body.startDate,
+            req.body.endDate,
+            req.body.terms
+        );
+
+        const xlsx = await BPJSServiceReportPeriodExcel(results); // Inisialisasi objek xlsx
+        await xlsx.write(res);
+        return res.end();
+    }
+);
 
 module.exports = GajiControllers;

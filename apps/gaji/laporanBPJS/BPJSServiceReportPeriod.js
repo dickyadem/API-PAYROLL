@@ -1,7 +1,7 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
 const { GAJI_CONFIG_MAIN_TABLE, DATAPROFIL_CONFIG_TABLE } = require("../config");
 
-const PphServiceReportPeriod = async (startDate, endDate) => {
+const BPJSServiceReportPeriod = async (startDate, endDate) => {
     try {
         let subQuery = await BaseServiceQueryBuilder.fetchAll(GAJI_CONFIG_MAIN_TABLE)
             .clone()
@@ -22,17 +22,14 @@ const PphServiceReportPeriod = async (startDate, endDate) => {
         const potonganResults = await BaseServiceQueryBuilder.fetchAll('tblgajidetail', { ID_Potongan: '02' });
 
         for (const result of results) {
-            let potonganTotal = 0;
-
-            for (const potongan of potonganResults) {
-                if (potongan.ID_Gaji === result.ID_Gaji && potongan.ID_Potongan === '02') {
-                    potonganTotal += potongan.Jumlah_Potongan;
+            const potonganTotal = potonganResults.reduce((total, potongan) => {
+                if (potongan.ID_Gaji === result.ID_Gaji) {
+                    return total + potongan.Jumlah_Potongan;
                 }
-            }
-
+                return total;
+            }, 0);
             result.Jumlah_potongan = potonganTotal;
         }
-
 
         const profilData = await BaseServiceQueryBuilder.fetchFirst(DATAPROFIL_CONFIG_TABLE);
 
@@ -41,9 +38,9 @@ const PphServiceReportPeriod = async (startDate, endDate) => {
             results
         };
     } catch (error) {
-        console.error('Error generating PPH report for the period:', error);
+        console.error('Error generating BPJS report for the period:', error);
         throw error;
     }
 };
 
-module.exports = PphServiceReportPeriod;
+module.exports = BPJSServiceReportPeriod;
