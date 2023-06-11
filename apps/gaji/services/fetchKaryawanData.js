@@ -19,4 +19,7 @@ const fetchKaryawanData = async (ID_Karyawan) => {
     }
 };
 
+
+
+
 module.exports = fetchKaryawanData;

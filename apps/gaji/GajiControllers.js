@@ -47,7 +47,7 @@ GajiControllers.post(
                 req.body.ID_Profil,
                 req.body.items
             );
-            
+
             res.status(201).json({ Gaji, message });
         } catch (error) {
             console.error("Error:", error);
@@ -107,7 +107,6 @@ GajiControllers.post(
     async (req, res) => {
         const gaji = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
         const items = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
-        
 
         res.setHeader(
             "Content-Type",
@@ -118,11 +117,12 @@ GajiControllers.post(
             `attachment; filename="gaji-${new Date().getTime()}.xlsx"`
         );
 
-        const xlsx = await GajiServiceFakturExcel(...gaji, items);
+        const xlsx = await GajiServiceFakturExcel(gaji);
         await xlsx.write(res);
         return res.end();
-    }   
+    }
 );
+
 GajiControllers.post(
     "/report-period-excel",
     [
@@ -139,7 +139,7 @@ GajiControllers.post(
         );
         res.setHeader(
             "Content-Disposition",
-            `Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx`
+            `attachment; filename="Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
         );
 
         const results = await GajiServiceReportPeriod(
@@ -153,6 +153,7 @@ GajiControllers.post(
         return res.end();
     }
 );
+
 
 
 module.exports = GajiControllers;
