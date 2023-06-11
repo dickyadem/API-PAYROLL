@@ -13,6 +13,11 @@ const GajiServiceReportPeriod = require("./services/GajiServiceReportPeriod");
 const GajiServiceFakturExcel = require("./services/GajiServiceFakturExcel");
 const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
 const message = ConfigCTA.CTA_MESSAGE_SUCCESS_CREATE;
+const PphServiceGetSlip = require("../gaji/laporanPPH/PphServiceGetSlip");
+const PphServiceFakturExcel = require("../gaji/laporanPPH/PphServiceFakturExcel");
+const PphServiceReportPeriodExcel = require("../gaji/laporanPPH/PphServiceReportPeriodExcel");
+const PphServiceReportPeriod = require("../gaji/laporanPPH/PphServiceReportPeriod");
+
 GajiControllers.post(
     "/",
     [
@@ -154,7 +159,62 @@ GajiControllers.post(
         return res.end();
     }
 );
+GajiControllers.post(
+    "/pph-excel",
+    [
+        UserServiceTokenAuthentication,
+        // PphValidators.ID_Gaji("param", false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        const pph = await PphServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
+        const items = await PphServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
 
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="pph-${new Date().getTime()}.xlsx"`
+        );
+
+        const xlsx = await PphServiceFakturExcel(); // Inisialisasi objek xlsx
+        await xlsx.write(res);
+        return res.end();
+    }
+);
+
+GajiControllers.post(
+    "/reportPph-period-excel",
+    [
+        UserServiceTokenAuthentication,
+        // PphValidators.reportPphing.terms(),
+        // PphValidators.reportPphing.startDate(),
+        // PphValidators.reportPphing.endDate(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="Report Potongan PPH - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
+        );
+
+        const results = await PphServiceReportPeriod(
+            req.body.startDate,
+            req.body.endDate,
+            req.body.terms
+        );
+
+        const xlsx = await PphServiceReportPeriodExcel(results); // Inisialisasi objek xlsx
+        await xlsx.write(res);
+        return res.end();
+    }
+);
 
 
 module.exports = GajiControllers;

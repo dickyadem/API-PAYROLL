@@ -28,49 +28,49 @@ const GajiServiceFakturExcel = async () => {
 
   // Kolom pada tabel
   ws.getCell('A2').value = 'ID Gaji';
-  ws.getCell('A2').border = { // Menambahkan border pada sel E
+  ws.getCell('A2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('B2').value = 'Tanggal';
-  ws.getCell('B2').border = { // Menambahkan border pada sel E
+  ws.getCell('B2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('C2').value = 'Nama Karyawan';
-  ws.getCell('C2').border = { // Menambahkan border pada sel E
+  ws.getCell('C2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('D2').value = 'Divisi';
-  ws.getCell('D2').border = { // Menambahkan border pada sel E
+  ws.getCell('D2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('E2').value = 'Total Pendapatan';
-  ws.getCell('E2').border = { // Menambahkan border pada sel E
+  ws.getCell('E2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('F2').value = 'Total Potongan';
-  ws.getCell('F2').border = { // Menambahkan border pada sel E
+  ws.getCell('F2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
     right: { style: 'thin' },
   };
   ws.getCell('G2').value = 'Gaji Bersih';
-  ws.getCell('G2').border = { // Menambahkan border pada sel E
+  ws.getCell('G2').border = { 
     top: { style: 'thin' },
     left: { style: 'thin' },
     bottom: { style: 'thin' },
@@ -85,14 +85,14 @@ const GajiServiceFakturExcel = async () => {
     const rowIndex = index + 3; // Mulai dari baris ketiga (setelah judul dan kolom)
 
     ws.getCell(`A${rowIndex}`).value = item.ID_Gaji;
-    ws.getCell(`A${rowIndex}`).border = { // Menambahkan border pada sel E
+    ws.getCell(`A${rowIndex}`).border = { 
       top: { style: 'thin' },
       left: { style: 'thin' },
       bottom: { style: 'thin' },
       right: { style: 'thin' },
     };
     ws.getCell(`B${rowIndex}`).value = item.Tanggal.toISOString().split('T')[0];
-    ws.getCell(`B${rowIndex}`).border = { // Menambahkan border pada sel E
+    ws.getCell(`B${rowIndex}`).border = { 
       top: { style: 'thin' },
       left: { style: 'thin' },
       bottom: { style: 'thin' },
@@ -103,14 +103,14 @@ const GajiServiceFakturExcel = async () => {
     const karyawan = tblkaryawan.find((k) => k.ID_Karyawan === item.ID_Karyawan);
     if (karyawan) {
       ws.getCell(`C${rowIndex}`).value = karyawan.Nama_Karyawan;
-      ws.getCell(`C${rowIndex}`).border = { // Menambahkan border pada sel E
+      ws.getCell(`C${rowIndex}`).border = { 
         top: { style: 'thin' },
         left: { style: 'thin' },
         bottom: { style: 'thin' },
         right: { style: 'thin' },
       };
       ws.getCell(`D${rowIndex}`).value = karyawan.Divisi;
-      ws.getCell(`D${rowIndex}`).border = { // Menambahkan border pada sel E
+      ws.getCell(`D${rowIndex}`).border = { 
         top: { style: 'thin' },
         left: { style: 'thin' },
         bottom: { style: 'thin' },
