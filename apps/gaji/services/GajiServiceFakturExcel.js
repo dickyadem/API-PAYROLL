@@ -11,7 +11,8 @@ const GajiServiceFakturExcel = async () => {
   // Judul di atas tabel
   ws.getCell('A1').value = 'Laporan Gaji';
   ws.mergeCells('A1:G1'); // Menggabungkan sel untuk judul
-  ws.getCell('A1').alignment = { horizontal: 'center' }; // Mengatur perataan teks ke tengah
+  ws.getCell('A1').alignment = { horizontal: 'center' }; // Mengatur perataan teks ke tenga
+  ws.getCell('A1').font = { size: 20 };
 
   // Menambahkan border pada tabel
   const tableRange = 'A1:G' + (tblgaji.length + 2);

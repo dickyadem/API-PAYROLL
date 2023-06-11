@@ -22,6 +22,11 @@ const fetchPotonganPPHData = async (ID_Gaji) => {
             .whereIn('ID_Karyawan', karyawanIDs)
             .select('ID_Karyawan', 'Nama_Karyawan');
 
+        // Mengambil data dari tblprofil
+        const profilData = await knex('tblprofil')
+            .select('Nama', 'Alamat', 'Telepon', 'Fax', 'Email', 'Website')
+            .first();
+
         // Menggabungkan data potongan PPH dengan data karyawan
         const potonganPPHData = potonganPPH.map((item) => {
             const karyawanData = karyawan.find((k) => k.ID_Karyawan === item.ID_Karyawan);
@@ -33,7 +38,10 @@ const fetchPotonganPPHData = async (ID_Gaji) => {
             };
         });
 
-        return potonganPPHData;
+        return {
+            potonganPPHData,
+            profilData,
+        };
     } catch (error) {
         console.error('Error fetching potongan PPH data:', error);
         throw error;
