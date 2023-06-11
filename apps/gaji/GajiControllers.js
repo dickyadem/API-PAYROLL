@@ -117,9 +117,10 @@ GajiControllers.post(
             `attachment; filename="gaji-${new Date().getTime()}.xlsx"`
         );
 
-        const xlsx = await GajiServiceFakturExcel(gaji);
+        const xlsx = await GajiServiceFakturExcel();
         await xlsx.write(res);
         return res.end();
+
     }
 );
 
