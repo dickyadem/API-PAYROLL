@@ -6,9 +6,13 @@ const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
 const { query, param } = require("express-validator");
 const GajiServiceList = require("./services/GajiServicesList");
 const GajiServiceGet = require("./services/GajiServicesGet");
-const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
 const GajiControllers = require("express").Router();
-
+const ConfigCTA = require("../base/services/ConfigCTA");
+const GajiServiceReportPeriodExcel = require("./services/GajiServiceReportPeriodExcel");
+const GajiServiceReportPeriod = require("./services/GajiServiceReportPeriod");
+const GajiServiceFakturExcel = require("./services/GajiServiceFakturExcel");
+const GajiServiceGetSlip = require("./services/GajiServicesGetSlip");
+const message = ConfigCTA.CTA_MESSAGE_SUCCESS_CREATE;
 GajiControllers.post(
     "/",
     [
@@ -44,7 +48,7 @@ GajiControllers.post(
                 req.body.items
             );
             
-            res.status(201).json(Gaji);
+            res.status(201).json({ Gaji, message });
         } catch (error) {
             console.error("Error:", error);
             res.status(500).json({ error: "Internal server error" });
@@ -93,5 +97,62 @@ GajiControllers.get(
         }
     }
 );
+GajiControllers.post(
+    "/gaji-excel",
+    [
+        UserServiceTokenAuthentication,
+        // GajiValidators.ID_Gaji("param", false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        const gaji = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
+        const items = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
+        
+
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename="gaji-${new Date().getTime()}.xlsx"`
+        );
+
+        const xlsx = await GajiServiceFakturExcel(...gaji, items);
+        await xlsx.write(res);
+        return res.end();
+    }   
+);
+GajiControllers.post(
+    "/report-period-excel",
+    [
+        UserServiceTokenAuthentication,
+        // GajiValidators.reporting.terms(),
+        // GajiValidators.reporting.startDate(),
+        // GajiValidators.reporting.endDate(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        res.setHeader(
+            "Content-Disposition",
+            `Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx`
+        );
+
+        const results = await GajiServiceReportPeriod(
+            req.body.startDate,
+            req.body.endDate,
+            req.body.terms
+        );
+
+        const xlsx = await GajiServiceReportPeriodExcel(results);
+        await xlsx.write(res);
+        return res.end();
+    }
+);
+
 
 module.exports = GajiControllers;

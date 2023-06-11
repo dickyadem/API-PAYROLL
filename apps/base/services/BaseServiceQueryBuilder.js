@@ -8,5 +8,7 @@ const BaseServiceQueryBuilder = require("knex")({
         database: "payroll",
     },
 });
-
+BaseServiceQueryBuilder.fetchAll = async function (table) {
+    return this(table).select("*");
+};
 module.exports = BaseServiceQueryBuilder;

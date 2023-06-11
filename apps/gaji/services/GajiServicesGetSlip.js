@@ -1,15 +1,28 @@
-const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
-const { GAJI_CONFIG_ITEM_BELI_TABLE } = require("../config");
+const knex = require('knex'); // Import library knex.js sesuai versi yang Anda gunakan
+const { GAJI_CONFIG_MAIN_TABLE   } = require('../config');
+const BaseServiceQueryBuilder = require('../../base/services/BaseServiceQueryBuilder');
 
-const GajiServiceGetItemBeli = async (field, value, many = false) => {
-    const results = await BaseServiceQueryBuilder(
-        GAJI_CONFIG_ITEM_BELI_TABLE
-    ).where({ [field]: value });
-    if (many) {
-        return results;
-    }
+// Inisialisasi knex.js
+const knexInstance = knex({
+  // Konfigurasi koneksi database
+  client: 'mysql', // Ganti dengan jenis database yang Anda gunakan
+  connection: {
+    host: "localhost",
+    port: 3306,
+    user: "root",
+    password: "",
+    database: "payroll",
+  },
+});
 
-    return results[0];
+const GajiServiceGetSlip = async (many = false) => {
+  const results = await BaseServiceQueryBuilder.fetchAll(GAJI_CONFIG_MAIN_TABLE);
+  if (many) {
+      return results;
+  }
+
+  return results[0];
 };
 
-module.exports = GajiServiceGetItemBeli;
+
+module.exports = GajiServiceGetSlip;
