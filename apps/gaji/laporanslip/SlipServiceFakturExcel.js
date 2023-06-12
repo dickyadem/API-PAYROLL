@@ -2,7 +2,7 @@ const xl = require('exceljs');
 const BaseServiceExcelColumnResponsive = require('../laporanBPJS/BaseServiceExcelColumnResponsive');
 const db = require('../../base/services/BaseServiceQueryBuilder');
 
-const createPayslipExcel = async () => {
+const createPayslipExcel = async (ID_Gaji) => {
     const tblgaji = await db.fetchAll('tblgaji');
     const tblkaryawan = await db.fetchAll('tblkaryawan');
     const tblgajidetail = await db.fetchAll('tblgajidetail');
@@ -19,6 +19,7 @@ const createPayslipExcel = async () => {
         bottom: { style: 'thin' },
         right: { style: 'thin' },
     };
+
     // Judul
     ws.getCell('A1').value = 'Laporan Slip Gaji Karyawan';
     ws.getCell('A1').font = { size: 20 };
@@ -30,7 +31,6 @@ const createPayslipExcel = async () => {
     ws.getCell('A4').font = { bold: true };
     ws.getCell('A4').textAlign = 'center';
     ws.getCell('B4').value = tblgaji[0].Tanggal;
-
 
     // ID Gaji
     ws.getCell('A3').value = 'ID Gaji';
@@ -61,6 +61,7 @@ const createPayslipExcel = async () => {
     ws.getCell('A7').value = 'Pendapatan';
     ws.getCell('A7').font = { bold: true };
     ws.getCell('A7').border = tableBorder;
+
     // Kolom JUMLAH
     ws.getCell('B7').value = 'Jumlah';
     ws.getCell('B7').font = { bold: true };
@@ -75,55 +76,49 @@ const createPayslipExcel = async () => {
         ws.getCell(`A${row}`).value = namaPendapatan;
 
         // Find gajiDetail based on ID_Gaji and ID_Pendapatan
-        const gajiDetail = tblgajidetail.find(item => item.ID_Gaji === tblgaji[0].ID_Gaji && item.ID_Pendapatan === tblpendapatan[i].ID_Pendapatan);
+        const gajiDetail = tblgajidetail.find(
+            (item) =>
+                item.ID_Gaji === ID_Gaji && item.ID_Pendapatan === tblpendapatan[i].ID_Pendapatan
+        );
         if (gajiDetail) {
             const jumlahPendapatan = gajiDetail.Jumlah_Pendapatan;
-            ws.getCell(`B${row}`).value = jumlahPendapatan;
+            ws.getCell(`B${row}`).value ='Rp .'+ jumlahPendapatan;
         } else {
             ws.getCell(`B${row}`).value = 0;
         }
-
-
-        // Get the ID_Gaji from tblgaji
-        const ID_Gaji = tblgaji[0].ID_Gaji;
-
-        // Filter tblgajidetail based on the ID_Gaji
-        const gajiDetails = tblgajidetail.filter(item => item.ID_Gaji === ID_Gaji);
-
-        // Calculate Total_Jumlah
-        const totalJumlah = gajiDetails.reduce((total, item) => {
-            return total + item.Jumlah_Pendapatan;
-        }, 0);
-
-        // Display Total_Jumlah
-        const totalJumlahRow = tblpendapatan.length + 8;
-        ws.getCell(`A${totalJumlahRow}`).value = 'Total_Jumlah';
-        ws.getCell(`A${totalJumlahRow}`).textAlign = 'center';
-        ws.getCell(`A${totalJumlahRow}`).border = tableBorder;
-        ws.getCell(`B${totalJumlahRow}`).value = totalJumlah;
-        ws.getCell(`B${totalJumlahRow}`).font = { bold: true };
-        ws.getCell(`B${totalJumlahRow}`).border = tableBorder;
-
     }
 
+    // Calculate Total_Jumlah Pendapatan
+    const totalJumlahPendapatan = tblgajidetail
+        .filter((item) => item.ID_Gaji === ID_Gaji)
+        .reduce((total, item) => total + item.Jumlah_Pendapatan, 0);
+
+    // Display Total_Jumlah Pendapatan
+    const totalJumlahPendapatanRow = tblpendapatan.length + 8;
+    ws.getCell(`A${totalJumlahPendapatanRow}`).value = 'Total Pendapatan';
+    ws.getCell(`A${totalJumlahPendapatanRow}`).textAlign = 'center';
+    ws.getCell(`A${totalJumlahPendapatanRow}`).border = tableBorder;
+    ws.getCell(`B${totalJumlahPendapatanRow}`).value ='Rp. '+ totalJumlahPendapatan;
+    ws.getCell(`B${totalJumlahPendapatanRow}`).font = { bold: true };
+    ws.getCell(`B${totalJumlahPendapatanRow}`).border = tableBorder;
+    // Kolom JUMLAH
+    ws.getCell('D7').value = 'Jumlah';
+    ws.getCell('D7').font = { bold: true };
+    ws.getCell('D7').textAlign = 'center';
+    ws.getCell('D7').border = tableBorder;
     // Kolom Potongan
     ws.getCell('C7').value = 'Potongan';
     ws.getCell('C7').font = { bold: true };
     ws.getCell('C7').border = tableBorder;
     ws.getCell('C7').textAlign = 'center';
 
-
     // List Nama Potongan
     for (let i = 0; i < tblpotongan.length; i++) {
         const row = i + 8;
         ws.getCell(`C${row}`).value = tblpotongan[i].Nama_Potongan;
     }
-    ws.getCell('D7').value = 'Jumlah';
-    ws.getCell('D7').font = { bold: true };
-    ws.getCell('D7').textAlign = 'center';
-    ws.getCell('D7').border = tableBorder;
 
-    // List Nama Potongan
+    // List Jumlah Potongan
     for (let i = 0; i < tblpotongan.length; i++) {
         const row = i + 8;
         const namaPotongan = tblpotongan[i].Nama_Potongan;
@@ -131,36 +126,49 @@ const createPayslipExcel = async () => {
         ws.getCell(`A${row}`).value = namaPotongan;
 
         // Find gajiDetail based on ID_Gaji and ID_Potongan
-        const gajiDetail = tblgajidetail.find(item => item.ID_Gaji === tblgaji[0].ID_Gaji && item.ID_Potongan === tblpotongan[i].ID_Potongan);
+        const gajiDetail = tblgajidetail.find(
+            (item) =>
+                item.ID_Gaji === ID_Gaji && item.ID_Potongan === tblpotongan[i].ID_Potongan
+        );
         if (gajiDetail) {
             const jumlahPotongan = gajiDetail.Jumlah_Potongan;
-            ws.getCell(`D${row}`).value = jumlahPotongan;
-
+            ws.getCell(`D${row}`).value ='Rp. '+ jumlahPotongan;
         } else {
             ws.getCell(`D${row}`).value = 0;
         }
-
-        // Get the ID_Gaji from tblgaji
-        const ID_Gaji = tblgaji[0].ID_Gaji;
-
-        // Filter tblgajidetail based on the ID_Gaji
-        const gajiDetails = tblgajidetail.filter(item => item.ID_Gaji === ID_Gaji);
-
-        // Calculate Total_Jumlah
-        const totalJumlah = gajiDetails.reduce((total, item) => {
-            return total + item.Jumlah_Potongan;
-        }, 0);
-
-        // Display Total_Jumlah
-        const totalJumlahRow = tblpotongan.length + 8;
-        ws.getCell(`C${totalJumlahRow}`).value = 'Total_Jumlah';
-        ws.getCell(`C${totalJumlahRow}`).textAlign = 'center';
-        ws.getCell(`C${totalJumlahRow}`).border = tableBorder;
-        ws.getCell(`D${totalJumlahRow}`).value = totalJumlah;
-        ws.getCell(`D${totalJumlahRow}`).font = { bold: true };
-        ws.getCell(`D${totalJumlahRow}`).textAlign = 'center';
-        ws.getCell(`D${totalJumlahRow}`).border = tableBorder;
     }
+
+    // Calculate Total_Jumlah Potongan
+    const totalJumlahPotongan = tblgajidetail
+        .filter((item) => item.ID_Gaji === ID_Gaji)
+        .reduce((total, item) => total + item.Jumlah_Potongan, 0);
+
+    // Display Total_Jumlah Potongan
+    const totalJumlahPotonganRow = tblpotongan.length + 8;
+    ws.getCell(`C${totalJumlahPotonganRow}`).value = 'Total Potongan';
+    ws.getCell(`C${totalJumlahPotonganRow}`).textAlign = 'center';
+    ws.getCell(`C${totalJumlahPotonganRow}`).border = tableBorder;
+    ws.getCell(`D${totalJumlahPotonganRow}`).value ='Rp. '+ totalJumlahPotongan;
+    ws.getCell(`D${totalJumlahPotonganRow}`).font = { bold: true };
+    ws.getCell(`D${totalJumlahPotonganRow}`).textAlign = 'center';
+    ws.getCell(`D${totalJumlahPotonganRow}`).border = tableBorder;
+    const gajibersih = tblpotongan.length + 9;
+    ws.getCell(`C${gajibersih}`).value = 'Gaji Bersih ';
+    ws.getCell(`C${gajibersih}`).textAlign = 'center';
+    ws.getCell(`C${gajibersih}`).border = tableBorder;
+    ws.getCell(`D${gajibersih}`).value = 'Rp. '+tblgaji[0].Gaji_Bersih;
+    ws.getCell(`D${gajibersih}`).border = tableBorder;
+
+    const totalp = tblpotongan.length + 11;
+    ws.getCell('A' + (totalp)).value = 'Bagian Keuangan:';
+    ws.getCell('A' + (totalp)).font = { bold: true };
+    ws.getCell('D' + (totalp)).value = 'Karyawan:';
+    ws.getCell('D' + (totalp)).font = { bold: true };
+    
+
+    const hasilttd = tblpotongan.length + 17;
+    ws.getCell('A' + (hasilttd)).value = '___________________';
+    ws.getCell('D' + (hasilttd)).value = tblkaryawan[0].Nama_Karyawan;
     BaseServiceExcelColumnResponsive(ws);
 
     return wb.xlsx;

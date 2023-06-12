@@ -9,43 +9,56 @@ const knex = require('knex')({
     },
 });
 
-const fetchPotonganBPJSData = async (ID_Gaji) => {
+const fetchAllByCondition = async (table, condition) => {
     try {
-        // Mengambil data potongan BPJS
-        const potonganBPJS = await knex('tblgajidetail')
-            .where({ ID_Gaji: ID_Gaji, ID_Potongan: '01' })
-            .select('ID_Gaji', 'ID_Karyawan', 'Jumlah_Potongan');
-
-        // Mengambil data karyawan
-        const karyawanIDs = potonganBPJS.map((item) => item.ID_Karyawan);
-        const karyawan = await knex('tblkaryawan')
-            .whereIn('ID_Karyawan', karyawanIDs)
-            .select('ID_Karyawan', 'Nama_Karyawan');
-
-        // Mengambil data dari tblprofil
-        const profilData = await knex('tblprofil')
-            .select('Nama', 'Alamat', 'Telepon', 'Fax', 'Email', 'Website')
-            .first();
-
-        // Menggabungkan data potongan BPJS dengan data karyawan
-        const potonganBPJSData = potonganBPJS.map((item) => {
-            const karyawanData = karyawan.find((k) => k.ID_Karyawan === item.ID_Karyawan);
-            return {
-                ID_Gaji: item.ID_Gaji,
-                ID_Karyawan: item.ID_Karyawan,
-                Nama_Karyawan: karyawanData ? karyawanData.Nama_Karyawan : '',
-                Jumlah_Potongan: item.Jumlah_Potongan,
-            };
-        });
-
-        return {
-            potonganBPJSData,
-            profilData,
-        };
+        const records = await knex(table).where(condition);
+        return records;
     } catch (error) {
-        console.error('Error fetching potongan BPJS data:', error);
+        console.error(`Error fetching data from ${table} with condition:`, condition);
         throw error;
     }
 };
 
-module.exports = fetchPotonganBPJSData;
+const fetchByID = async (tblgaji, ID_Gaji) => {
+    try {
+        const tblgajiRecord = await knex(tblgaji).where({ ID_Gaji }).first();
+
+        if (!tblgajiRecord) {
+            throw new Error(`No record found for ${tblgaji} with ID ${ID_Gaji}`);
+        }
+
+        const ID_Karyawan = tblgajiRecord.ID_Karyawan;
+
+        const tblkaryawan = await fetchAllByCondition('tblkaryawan', { ID_Karyawan });
+
+        const tblgajidetail = await fetchAllByCondition('tblgajidetail', { ID_Gaji });
+
+        const tblgolongan = await fetchAllByCondition('tblgolongan', { ID_Karyawan });
+
+        const tbljabatan = await fetchAllByCondition('tbljabatan', { ID_Karyawan });
+
+        const idPendapatanList = tblgajidetail.map((detail) => detail.ID_Pendapatan);
+
+        const tblpendapatan = await fetchAllByCondition('tblpendapatan', { ID_Pendapatan: idPendapatanList });
+
+        const tblpotongan = await fetchAllByCondition('tblpotongan', { ID_Potongan: idPendapatanList });
+
+        return {
+            tblgaji: tblgajiRecord,
+            tblkaryawan,
+            tblgajidetail,
+            tblgolongan,
+            tbljabatan,
+            tblpendapatan,
+            tblpotongan,
+        };
+    } catch (error) {
+        console.error(`Error mengambil data dari ${tblgaji} dengan ID ${ID_Gaji}:`, error);
+        throw error;
+    }
+};
+
+module.exports = {
+    fetchAllByCondition,
+    fetchByID,
+};

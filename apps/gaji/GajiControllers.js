@@ -21,7 +21,7 @@ const BPJSServiceGetSlip = require("../gaji/laporanBPJS/BPJSServiceGetSlip");
 const BPJSServiceFakturExcel = require("../gaji/laporanBPJS/BPJSServiceFakturExcel");
 const BPJSServiceReportPeriodExcel = require("../gaji/laporanBPJS/BPJSServiceReportPeriodExcel");
 const BPJSServiceReportPeriod = require("../gaji/laporanBPJS/BPJSServiceReportPeriod");
-const SlipServiceFakturExcel = require("../gaji/laporanslip/SlipServiceFakturExcel");
+const createPayslipExcel = require("../gaji/laporanslip/SlipServiceFakturExcel");
 
 GajiControllers.post(
     "/",
@@ -317,9 +317,9 @@ GajiControllers.post(
             `attachment; filename="slip-${new Date().getTime()}.xlsx"`
         );
 
-        const ID_Gaji = req.params.ID_Gaji;  // Get the ID_Gaji from the request parameters
+        const ID_Gaji = req.params.ID_Gaji; // Assuming ID_Gaji is available in the request parameters
 
-        const xlsx = await SlipServiceFakturExcel(ID_Gaji);  // Pass the ID_Gaji to the function
+        const xlsx = await createPayslipExcel(ID_Gaji);
         await xlsx.write(res);
         return res.end();
     }
