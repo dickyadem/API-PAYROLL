@@ -17,7 +17,6 @@ GolonganControllers.post(
         UserServiceTokenAuthentication,
         GolonganValidators.ID_Golongan(),
         GolonganValidators.Nama_Golongan(),
-        GolonganValidators.Tunjangan_Golongan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {

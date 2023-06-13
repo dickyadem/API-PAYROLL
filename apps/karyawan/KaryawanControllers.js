@@ -17,7 +17,6 @@ KaryawanControllers.post(
         UserServiceTokenAuthentication,
         KaryawanValidators.ID_Karyawan(),
         KaryawanValidators.Nama_Karyawan(),
-        KaryawanValidators.Gaji_Pokok(),
         KaryawanValidators.ID_Golongan(),
         KaryawanValidators.ID_Jabatan(),
         KaryawanValidators.Divisi(),
@@ -29,7 +28,6 @@ KaryawanControllers.post(
         const karyawan = await KaryawanServiceCreate(
             req.body.ID_Karyawan,
             req.body.Nama_Karyawan,
-            req.body.Gaji_Pokokan,
             req.body.ID_Golongan,
             req.body.ID_Jabatan,
             req.body.Divisi,

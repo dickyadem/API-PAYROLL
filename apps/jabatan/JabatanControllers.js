@@ -17,7 +17,6 @@ JabatanControllers.post(
         UserServiceTokenAuthentication,
         JabatanValidators.ID_Jabatan(),
         JabatanValidators.Nama_Jabatan(),
-        JabatanValidators.Tunjangan_Jabatan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {

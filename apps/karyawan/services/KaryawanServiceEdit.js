@@ -4,7 +4,7 @@ const { KARYAWAN_CONFIG_MAIN_TABLE } = require("../config");
 const KaryawanServiceEdit = async (
     ID_Karyawan,
     Nama_Karyawan,
-    Gaji_Pokok,
+     
     ID_Golongan,
     ID_Jabatan,
     Divisi,
@@ -14,7 +14,7 @@ const KaryawanServiceEdit = async (
   const data = {
     ID_Karyawan,
     Nama_Karyawan,
-    Gaji_Pokok,
+     
     ID_Golongan,
     ID_Jabatan,
     Divisi,

@@ -294,7 +294,7 @@ GajiControllers.post(
             `attachment; filename="slip-${new Date().getTime()}.xlsx"`
         );
 
-        const xlsx = await SlipServiceFakturExcel();  
+        const xlsx = await createPayslipExcel();  
         await xlsx.write(res);
         return res.end();
     }
