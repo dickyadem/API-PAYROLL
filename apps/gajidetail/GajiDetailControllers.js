@@ -4,9 +4,27 @@ const UserServiceTokenAuthentication = require("../user/services/UserServiceToke
 const GajiDetailServiceGet = require("./services/GajiDetailServiceGet");
 const GajiDetailServiceList = require("./services/GajiDetailServiceList");
 const BaseValidatorQueryPage = require("../base/validators/BaseValidatorQueryPage");
+const gajidetailServiceCreate = require("./services/GajiDetailServiceCreate");
 const GajiDetailControllers = require("express").Router();
 
 
+GajiDetailControllers.post(
+    "/",
+    [
+        UserServiceTokenAuthentication,
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        const gajidetail = await gajidetailServiceCreate(
+            req.body.ID_Gaji,
+            req.body.ID_Pendapatan,
+            req.body.Jumlah_Pendapatan,
+            req.body.ID_Potongan,
+            req.body.Jumlah_Potongan
+        );
+        return res.status(201).json(gajidetail);
+    }
+);
 
 GajiDetailControllers.get(
     "/",
