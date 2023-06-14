@@ -15,4 +15,5 @@ app.use("/karyawan", require("./apps/karyawan/KaryawanControllers"));
 app.use("/jabatan", require("./apps/jabatan/JabatanControllers"));
 app.use("/golongan", require("./apps/golongan/GolonganControllers"));
 app.use("/gaji", require("./apps/gaji/GajiControllers"));
+app.use("/gajidetail", require("./apps/gajidetail/GajiDetailControllers"));
 module.exports = app;
