@@ -79,6 +79,11 @@ KaryawanControllers.put(
         const karyawan = await KaryawanServiceEdit(
             req.params.ID_Karyawan,
             req.body.Nama_Karyawan,
+            req.body.ID_Golongan,
+            req.body.ID_Jabatan,
+            req.body.Divisi,
+            req.body.Status_Pernikahan,
+            req.body.Jumlah_Anak
         );
         return res.status(200).json(karyawan);
     }

@@ -69,7 +69,6 @@ GolonganControllers.put(
         const golongan = await GolonganServiceEdit(
             req.params.ID_Golongan,
             req.body.Nama_Golongan,
-            req.body.Tunjangan_Golongan
         );
         return res.status(200).json(golongan);
     }

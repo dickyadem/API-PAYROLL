@@ -69,7 +69,6 @@ JabatanControllers.put(
         const jabatan = await JabatanServiceEdit(
             req.params.ID_Jabatan,
             req.body.Nama_Jabatan,
-            req.body.Tunjangan_Jabatan
         );
         return res.status(200).json(jabatan);
     }

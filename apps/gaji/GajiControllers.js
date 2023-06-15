@@ -300,7 +300,7 @@ GajiControllers.post(
     }
 );
 GajiControllers.post(
-    "/slip-excel/:ID_Gaji",  // Add a route parameter for ID_Gaji
+    "/:ID_Gaji/slip-excel",  // Add a route parameter for ID_Gaji
     [
         UserServiceTokenAuthentication,
         // BpjsValidators.ID_Gaji("param", false),
