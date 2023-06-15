@@ -48,10 +48,10 @@ const GajiValidators = {
         self: (location = body, field = "items") => {
             return location(field)
                 .notEmpty()
-                .withMessage("Item pembelian wajib.")
+                .withMessage("Item penggajian wajib.")
                 .bail()
                 .isArray({ min: 1 })
-                .withMessage("Item harus berupa array dan minimal 1 barang di dalamnya.");
+                .withMessage("Item harus berupa array dan minimal 1 jenis di dalamnya.");
         },
         inner: {
             ID_Pendapatan: (location = body, field = "items.*.ID_Pendapatan") => {

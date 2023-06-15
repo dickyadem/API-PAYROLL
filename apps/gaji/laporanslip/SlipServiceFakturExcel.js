@@ -76,7 +76,7 @@ const createPayslipExcel = async (ID_Gaji) => {
         ws.getCell(`A${row}`).value = namaPendapatan;
 
         // Find gajiDetail based on ID_Gaji and ID_Pendapatan
-        const gajiDetail = tblgajidetail.find(
+        const gajiDetail = await tblgajidetail.find(
             (item) =>
                 item.ID_Gaji === ID_Gaji && item.ID_Pendapatan === tblpendapatan[i].ID_Pendapatan
         );
