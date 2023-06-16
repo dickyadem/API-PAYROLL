@@ -1,7 +1,9 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
 const {
     GAJI_CONFIG_MAIN_TABLE,
-    GAJIDETAIL_CONFIG_MAIN_TABLE
+    PENDAPATANDETAIL_CONFIG_MAIN_TABLE,
+    POTONGANDETAIL_CONFIG_MAIN_TABLE
+
 } = require("../config");
 const knex = require('knex')({
     client: "mysql",
@@ -24,8 +26,9 @@ const GajiServiceCreate = async (
     Keterangan,
     email,
     ID_Profil,
-    items
-) => {
+    itemsPendapatan,
+    itemsPotongan
+) => { 
     const dataGaji = {
         ID_Gaji,
         Tanggal,
@@ -45,12 +48,12 @@ const GajiServiceCreate = async (
         throw new Error('ID_Gaji dan tanggal already exist');
     }
 
-    const existingPendapatanQuery = await BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
+    const existingPendapatanQuery = await BaseServiceQueryBuilder(PENDAPATANDETAIL_CONFIG_MAIN_TABLE)
         .where({ ID_Gaji })
         .sum('Jumlah_Pendapatan as Total_Pendapatan')
         .first();
 
-    const existingPotonganQuery = await BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
+    const existingPotonganQuery = await BaseServiceQueryBuilder(POTONGANDETAIL_CONFIG_MAIN_TABLE)
         .where({ ID_Gaji })
         .sum('Jumlah_Potongan as Total_Potongan')
         .first();
@@ -58,14 +61,19 @@ const GajiServiceCreate = async (
     const existingPendapatan = existingPendapatanQuery.Total_Pendapatan || 0;
     const existingPotongan = existingPotonganQuery.Total_Potongan || 0;
 
-    const dataItemGaji = items.map((item) => {
+    const dataItemPendapatanGaji = itemsPendapatan.map((item) => {
         const Jumlah_Pendapatan = item.Jumlah_Pendapatan || 0;
-        const Jumlah_Potongan = item.Jumlah_Potongan || 0;
-
         return {
             ID_Gaji,
             ID_Pendapatan: item.ID_Pendapatan,
             Jumlah_Pendapatan: existingPendapatan + Jumlah_Pendapatan,
+        };
+    });
+    const dataItemPotonganGaji = itemsPotongan.map((item) => {
+        const Jumlah_Potongan = item.Jumlah_Potongan || 0;
+
+        return {
+            ID_Gaji,
             ID_Potongan: item.ID_Potongan,
             Jumlah_Potongan: existingPotongan + Jumlah_Potongan
         };
@@ -76,16 +84,19 @@ const GajiServiceCreate = async (
             .insert(dataGaji)
             .transacting(trx);
 
-        await BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
-            .insert(dataItemGaji)
+        await BaseServiceQueryBuilder(PENDAPATANDETAIL_CONFIG_MAIN_TABLE)
+            .insert(dataItemPendapatanGaji)
+            .transacting(trx);
+        await BaseServiceQueryBuilder(POTONGANDETAIL_CONFIG_MAIN_TABLE)
+            .insert(dataItemPotonganGaji)
             .transacting(trx);
 
-        const totalPotonganQuery = BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
+        const totalPotonganQuery = BaseServiceQueryBuilder(POTONGANDETAIL_CONFIG_MAIN_TABLE)
             .where({ ID_Gaji })
             .sum('Jumlah_Potongan as Total_Potongan')
             .first();
 
-        const totalPendapatanQuery = BaseServiceQueryBuilder(GAJIDETAIL_CONFIG_MAIN_TABLE)
+        const totalPendapatanQuery = BaseServiceQueryBuilder(PENDAPATANDETAIL_CONFIG_MAIN_TABLE)
             .where({ ID_Gaji })
             .sum('Jumlah_Pendapatan as Total_Pendapatan')
             .first();
@@ -105,7 +116,10 @@ const GajiServiceCreate = async (
             .transacting(trx);
     });
 
-    return { ...dataGaji, items: dataItemGaji };
+    return { 
+        ...dataGaji, 
+        itemsPendapatan: dataItemPendapatanGaji, 
+        itemsPotongan: dataItemPotonganGaji};
 };
 
 

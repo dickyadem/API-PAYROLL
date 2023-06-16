@@ -36,11 +36,13 @@ GajiControllers.post(
         GajiValidators.Keterangan(),
         GajiValidators.email(),
         GajiValidators.ID_Profil(),
-        GajiValidators.items.self(),
-        GajiValidators.items.inner.ID_Potongan(),
-        GajiValidators.items.inner.Jumlah_Potongan(),
-        GajiValidators.items.inner.ID_Pendapatan(),
-        GajiValidators.items.inner.Jumlah_Pendapatan(),
+        GajiValidators.itemsPendapatan.self(),
+        GajiValidators.itemsPendapatan.innerPendapatan.ID_Pendapatan(),
+        GajiValidators.itemsPendapatan.innerPendapatan.Jumlah_Pendapatan(),
+        GajiValidators.itemsPotongan.self(),
+        GajiValidators.itemsPotongan.innerPotongan.ID_Potongan(),
+        GajiValidators.itemsPotongan.innerPotongan.Jumlah_Potongan(),
+
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -55,7 +57,9 @@ GajiControllers.post(
                 req.body.Keterangan,
                 req.body.email,
                 req.body.ID_Profil,
-                req.body.items
+                req.body.itemsPendapatan,
+                req.body.itemsPotongan,
+                
             );
 
             res.status(201).json({ Gaji, message });
@@ -168,7 +172,6 @@ GajiControllers.post(
     "/pph-excel",
     [
         UserServiceTokenAuthentication,
-        // PphValidators.ID_Gaji("param", false),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -194,9 +197,6 @@ GajiControllers.post(
     "/reportPph-period-excel",
     [
         UserServiceTokenAuthentication,
-        // PphValidators.reportPphing.terms(),
-        // PphValidators.reportPphing.startDate(),
-        // PphValidators.reportPphing.endDate(),
         BaseValidatorRun(),
     ],
     async (req, res) => {

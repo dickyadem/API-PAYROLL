@@ -31,6 +31,7 @@ const GajiValidators = {
     Tanggal: (location = body, field = "Tanggal") => {
         return location(field)
             .notEmpty()
+            .isDate()
             .withMessage("Tanggal transaksi wajib")
             .bail()
             .trim();
@@ -44,17 +45,14 @@ const GajiValidators = {
     ID_Pendapatan: (location = body, field = "ID_Pendapatan") => {
         return PendapatanValidators.ID_Pendapatan(location, false, field);
     },
-    items: {
-        self: (location = body, field = "items") => {
+    itemsPendapatan: {
+        self: (location = body, field = "itemsPendapatan") => {
             return location(field)
                 .notEmpty()
-                .withMessage("Item penggajian wajib.")
-                .bail()
-                .isArray({ min: 1 })
-                .withMessage("Item harus berupa array dan minimal 1 jenis di dalamnya.");
+                .withMessage("Item Pendapatan wajib.")
         },
-        inner: {
-            ID_Pendapatan: (location = body, field = "items.*.ID_Pendapatan") => {
+        innerPendapatan: {
+            ID_Pendapatan: (location = body, field = "itemsPendapatan.*.ID_Pendapatan") => {
                 return PendapatanValidators.ID_Pendapatan(location, false, field);
             },
             Jumlah_Pendapatan: (location = body, field = "items.*.Jumlah_Pendapatan") => {
@@ -73,7 +71,16 @@ const GajiValidators = {
                         return true;
                     });
             },
-            ID_Potongan: (location = body, field = "items.*.ID_Potongan") => {
+        },
+    },
+    itemsPotongan: {
+        self: (location = body, field = "itemsPotongan") => {
+            return location(field)
+                .notEmpty()
+                .withMessage("Item Potongan wajib.")
+        },
+        innerPotongan: {
+            ID_Potongan: (location = body, field = "itemsPotongan.*.ID_Potongan") => {
                 return PotonganValidators.ID_Potongan(location, false, field);
             },
             Jumlah_Potongan: (location = body, field = "items.*.Jumlah_Potongan") => {

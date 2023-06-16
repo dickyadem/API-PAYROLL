@@ -1,5 +1,6 @@
 module.exports = {
     GAJI_CONFIG_MAIN_TABLE: "tblgaji",
-    GAJIDETAIL_CONFIG_MAIN_TABLE:"tblgajidetail",
+    PENDAPATANDETAIL_CONFIG_MAIN_TABLE:"tblpendapatandetail",
+    POTONGANDETAIL_CONFIG_MAIN_TABLE:"tblpotongandetail"
   };
   

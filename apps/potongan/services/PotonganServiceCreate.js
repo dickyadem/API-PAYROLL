@@ -3,7 +3,8 @@ const { POTONGAN_CONFIG_MAIN_TABLE } = require("../config");
 
 const PotonganServiceCreate = async (
     ID_Potongan,
-    Nama_Potongan
+    Nama_Potongan,
+    
 ) => {
     const data = {
         ID_Potongan,
