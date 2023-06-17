@@ -73,7 +73,7 @@ const BPJSServiceFakturExcel = async () => {
 
         let totalPotongan = 0;
         for (let j = 0; j < tblpotongandetail.length; j++) {
-            if (tblpotongandetail[j].ID_Potongan === '01' && tblpotongandetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
+            if (tblpotongandetail[j].ID_Potongan === '02' && tblpotongandetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
                 totalPotongan += tblpotongandetail[j].Jumlah_Potongan;
             }
         }
@@ -84,15 +84,15 @@ const BPJSServiceFakturExcel = async () => {
 
     // Menampilkan total potongan di baris terakhir
     const totalPotongan = tblpotongandetail.reduce((total, item) => {
-        if (item.ID_Potongan === '02') {
+        if (item.ID_Potongan === '02') { // Ubah ID_Potongan sesuai dengan kondisi yang diinginkan
             return total + item.Jumlah_Potongan;
         }
         return total;
     }, 0);
+    
     ws.getCell('C' + (tblgaji.length + 10)).value = 'Total';
     ws.getCell('D' + (tblgaji.length + 10)).value = 'Rp. ' + totalPotongan;
     ws.getCell('D' + (tblgaji.length + 10)).border = tableBorder;
-
 
     ws.getCell('A' + (tblgaji.length + 15)).value = 'Dibuat oleh:';
     ws.getCell('A' + (tblgaji.length + 15)).font = { bold: true };
