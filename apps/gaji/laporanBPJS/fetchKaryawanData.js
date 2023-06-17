@@ -12,7 +12,7 @@ const knex = require('knex')({
 const fetchPotonganBPJSData = async (ID_Gaji) => {
     try {
         // Mengambil data potongan BPJS
-        const potonganBPJS = await knex('tblgajidetail')
+        const potonganBPJS = await knex('tblpotongandetail')
             .where({ ID_Gaji: ID_Gaji, ID_Potongan: '01' })
             .select('ID_Gaji', 'ID_Karyawan', 'Jumlah_Potongan');
 

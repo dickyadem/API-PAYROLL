@@ -5,7 +5,7 @@ const db = require('../../base/services/BaseServiceQueryBuilder');
 const PphServiceFakturExcel = async () => {
     const tblgaji = await db.fetchAll('tblgaji');
     const tblkaryawan = await db.fetchAll('tblkaryawan');
-    const tblgajidetail = await db.fetchAll('tblgajidetail', { ID_Potongan: '02' });
+    const tblpotongandetail = await db.fetchAll('tblpotongandetail', { ID_Potongan: '02' });
     const tblprofil = await db.fetchAll('tblprofil');
 
     const wb = new xl.Workbook();
@@ -73,9 +73,9 @@ const PphServiceFakturExcel = async () => {
         ws.getCell(`C${row}`).border = tableBorder;
 
         let totalPotongan = 0;
-        for (let j = 0; j < tblgajidetail.length; j++) {
-            if (tblgajidetail[j].ID_Potongan === '02' && tblgajidetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
-                totalPotongan += tblgajidetail[j].Jumlah_Potongan;
+        for (let j = 0; j < tblpotongandetail.length; j++) {
+            if (tblpotongandetail[j].ID_Potongan === '02' && tblpotongandetail[j].ID_Gaji === tblgaji[i].ID_Gaji) {
+                totalPotongan += tblpotongandetail[j].Jumlah_Potongan;
             }
         }
 
@@ -84,7 +84,7 @@ const PphServiceFakturExcel = async () => {
     }
 
     // Menampilkan total potongan di baris terakhir
-    const totalPotongan = tblgajidetail.reduce((total, item) => {
+    const totalPotongan = tblpotongandetail.reduce((total, item) => {
         if (item.ID_Potongan === '02') {
             return total + item.Jumlah_Potongan;
         }

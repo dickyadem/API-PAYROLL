@@ -19,7 +19,7 @@ const PphServiceReportPeriod = async (startDate, endDate) => {
             .innerJoin("tblkaryawan", "tblgaji.ID_Karyawan", "tblkaryawan.ID_Karyawan")
             .whereIn("tblgaji.ID_Gaji", subQuery);
 
-        const potonganResults = await BaseServiceQueryBuilder.fetchAll('tblgajidetail', { ID_Potongan: '02' });
+        const potonganResults = await BaseServiceQueryBuilder.fetchAll('tblpotongandetail', { ID_Potongan: '02' });
 
         for (const result of results) {
             let potonganTotal = 0;

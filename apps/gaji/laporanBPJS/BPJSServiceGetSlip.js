@@ -20,7 +20,7 @@ const BPJSServiceGetSlip = async () => {
     try {
         const gajiResults = await knexInstance(GAJI_CONFIG_MAIN_TABLE).select('*');
         const karyawanResults = await knexInstance('tblkaryawan').select('*');
-        const potonganResults = await knexInstance('tblgajidetail').where({ ID_Potongan: '02' }).select('*');
+        const potonganResults = await knexInstance('tblpotongandetail').where({ ID_Potongan: '02' }).select('*');
 
         const slips = [];
 

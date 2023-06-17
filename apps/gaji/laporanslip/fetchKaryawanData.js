@@ -31,13 +31,13 @@ const fetchByID = async (tblgaji, ID_Gaji) => {
 
         const tblkaryawan = await fetchAllByCondition('tblkaryawan', { ID_Karyawan });
 
-        const tblgajidetail = await fetchAllByCondition('tblgajidetail', { ID_Gaji });
-
+        const tblpendapatandetail = await fetchAllByCondition('tblpendapatandetail', { ID_Gaji });
+        const tblpotongandetail = await fetchAllByCondition('tblpotongandetail', { ID_Gaji });
         const tblgolongan = await fetchAllByCondition('tblgolongan', { ID_Karyawan });
 
         const tbljabatan = await fetchAllByCondition('tbljabatan', { ID_Karyawan });
 
-        const idPendapatanList = tblgajidetail.map((detail) => detail.ID_Pendapatan);
+        const idPendapatanList = tblpendapatandetail.map((detail) => detail.ID_Pendapatan);
 
         const tblpendapatan = await fetchAllByCondition('tblpendapatan', { ID_Pendapatan: idPendapatanList });
 
@@ -46,7 +46,7 @@ const fetchByID = async (tblgaji, ID_Gaji) => {
         return {
             tblgaji: tblgajiRecord,
             tblkaryawan,
-            tblgajidetail,
+            tblpendapatandetail,
             tblgolongan,
             tbljabatan,
             tblpendapatan,
