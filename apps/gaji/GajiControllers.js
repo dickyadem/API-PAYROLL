@@ -46,6 +46,7 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
+        console.log('Request body:', JSON.stringify(req.body, null, 2));
         try {
             const Gaji = await GajiServiceCreate(
                 req.body.ID_Gaji,
@@ -59,7 +60,7 @@ GajiControllers.post(
                 req.body.ID_Profil,
                 req.body.itemsPendapatan,
                 req.body.itemsPotongan,
-                
+
             );
 
             res.status(201).json({ Gaji, message });

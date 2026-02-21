@@ -17,11 +17,19 @@ PotonganControllers.post(
         UserServiceTokenAuthentication,
         PotonganValidators.ID_Potongan(),
         PotonganValidators.Nama_Potongan(),
+        PotonganValidators.Nominal(),
+        PotonganValidators.ID_Jabatan(),
+        PotonganValidators.Keterangan(),
+        BaseValidatorRun(),
     ],
     async (req, res) => {
+        console.log('Request body:', req.body);
         const potongan = await PotonganServiceCreate(
             req.body.ID_Potongan,
             req.body.Nama_Potongan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
         );
         return res.status(201).json(potongan);
     }
@@ -62,12 +70,18 @@ PotonganControllers.put(
         UserServiceTokenAuthentication,
         PotonganValidators.ID_Potongan(param, false),
         PotonganValidators.Nama_Potongan(),
+        PotonganValidators.Nominal(),
+        PotonganValidators.ID_Jabatan(),
+        PotonganValidators.Keterangan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const potongan = await PotonganServiceEdit(
             req.params.ID_Potongan,
             req.body.Nama_Potongan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
         );
         return res.status(200).json(potongan);
     }

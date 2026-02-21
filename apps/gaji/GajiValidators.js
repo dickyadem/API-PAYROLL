@@ -40,7 +40,11 @@ const GajiValidators = {
         return KaryawanValidators.ID_Karyawan(location, false, field);
     },
     email: (location = body, field = "email") => {
-        return UserValidators.email(location, false, field);
+        return location(field)
+            .optional({ nullable: true, checkFalsy: true })
+            .trim()
+            .isEmail()
+            .withMessage("Format email tidak valid.");
     },
     ID_Pendapatan: (location = body, field = "ID_Pendapatan") => {
         return PendapatanValidators.ID_Pendapatan(location, false, field);

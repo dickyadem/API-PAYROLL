@@ -95,7 +95,20 @@ const KaryawanValidators = {
                 return true;
             });
     },
-    
+    Email: (location = body, field = "email") => {
+        return location(field)
+            .notEmpty()
+            .withMessage("Email wajib diisi.")
+            .bail()
+            .trim()
+            .toLowerCase()
+            .isEmail()
+            .withMessage("Format Email tidak valid.")
+            .bail()
+            .isLength({ max: 255 })
+            .withMessage("Email maksimal 255 karakter.");
+    },
+
 
 };
 

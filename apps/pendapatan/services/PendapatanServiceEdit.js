@@ -3,11 +3,17 @@ const { PENDAPATAN_CONFIG_MAIN_TABLE } = require("../config");
 
 const PendapatanServiceEdit = async (
     ID_Pendapatan,
-    Nama_Pendapatan
+    Nama_Pendapatan,
+    Nominal,
+    ID_Jabatan,
+    Keterangan
 ) => {
   const data = {
     ID_Pendapatan,
-    Nama_Pendapatan
+    Nama_Pendapatan,
+    Nominal,
+    ID_Jabatan: ID_Jabatan || null,
+    Keterangan: Keterangan || null
   };
 
   await BaseServiceQueryBuilder(PENDAPATAN_CONFIG_MAIN_TABLE)

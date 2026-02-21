@@ -17,6 +17,7 @@ KaryawanControllers.post(
         UserServiceTokenAuthentication,
         KaryawanValidators.ID_Karyawan(),
         KaryawanValidators.Nama_Karyawan(),
+        KaryawanValidators.Email(),
         KaryawanValidators.ID_Golongan(),
         KaryawanValidators.ID_Jabatan(),
         KaryawanValidators.Divisi(),
@@ -28,6 +29,7 @@ KaryawanControllers.post(
         const karyawan = await KaryawanServiceCreate(
             req.body.ID_Karyawan,
             req.body.Nama_Karyawan,
+            req.body.email,
             req.body.ID_Golongan,
             req.body.ID_Jabatan,
             req.body.Divisi,
@@ -73,12 +75,14 @@ KaryawanControllers.put(
         UserServiceTokenAuthentication,
         KaryawanValidators.ID_Karyawan(param, false),
         KaryawanValidators.Nama_Karyawan(),
+        KaryawanValidators.Email(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const karyawan = await KaryawanServiceEdit(
             req.params.ID_Karyawan,
             req.body.Nama_Karyawan,
+            req.body.email,
             req.body.ID_Golongan,
             req.body.ID_Jabatan,
             req.body.Divisi,

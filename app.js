@@ -1,10 +1,15 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:3000",
+    credentials: true
+}));
 
 app.use("/user", require("./apps/user/UserControllers"));
 app.use("/hello", require("./apps/user/UserControllers"));

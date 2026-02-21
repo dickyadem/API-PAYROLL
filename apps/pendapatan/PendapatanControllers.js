@@ -17,12 +17,18 @@ PendapatanControllers.post(
         UserServiceTokenAuthentication,
         PendapatanValidators.ID_Pendapatan(),
         PendapatanValidators.Nama_Pendapatan(),
+        PendapatanValidators.Nominal(),
+        PendapatanValidators.ID_Jabatan(),
+        PendapatanValidators.Keterangan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const pendapatan = await PendapatanServiceCreate(
             req.body.ID_Pendapatan,
             req.body.Nama_Pendapatan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
         );
         return res.status(201).json(pendapatan);
     }
@@ -63,12 +69,18 @@ PendapatanControllers.put(
         UserServiceTokenAuthentication,
         PendapatanValidators.ID_Pendapatan(param, false),
         PendapatanValidators.Nama_Pendapatan(),
+        PendapatanValidators.Nominal(),
+        PendapatanValidators.ID_Jabatan(),
+        PendapatanValidators.Keterangan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         const pendapatan = await PendapatanServiceEdit(
             req.params.ID_Pendapatan,
             req.body.Nama_Pendapatan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
         );
         return res.status(200).json(pendapatan);
     }
