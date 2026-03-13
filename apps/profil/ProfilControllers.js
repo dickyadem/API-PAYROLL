@@ -23,16 +23,21 @@ ProfilControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const profil = await ProfilServiceCreate(
-            req.body.ID_Profil,
-            req.body.Nama,
-            req.body.Alamat,
-            req.body.Telepon,
-            req.body.Fax,
-            req.body.Email,
-            req.body.Website
-        );
-        return res.status(201).json(profil);
+        try {
+            const profil = await ProfilServiceCreate(
+                req.body.ID_Profil,
+                req.body.Nama,
+                req.body.Alamat,
+                req.body.Telepon,
+                req.body.Fax,
+                req.body.Email,
+                req.body.Website
+            );
+            return res.status(201).json(profil);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -44,11 +49,16 @@ ProfilControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const daftarProfil = await ProfilServiceList(
-            req.query.terms,
-            req.query.page
-        );
-        return res.status(200).json(daftarProfil);
+        try {
+            const daftarProfil = await ProfilServiceList(
+                req.query.terms,
+                req.query.page
+            );
+            return res.status(200).json(daftarProfil);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -60,8 +70,13 @@ ProfilControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const profil = await ProfilServiceGet("ID_Profil", req.params.ID_Profil);
-        return res.status(200).json(profil);
+        try {
+            const profil = await ProfilServiceGet("ID_Profil", req.params.ID_Profil);
+            return res.status(200).json(profil);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -79,16 +94,21 @@ ProfilControllers.put(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const profil = await ProfilServiceEdit(
-            req.params.ID_Profil,
-            req.body.Nama,
-            req.body.Alamat,
-            req.body.Telepon,
-            req.body.Fax,
-            req.body.Email,
-            req.body.Website,
-        );
-        return res.status(200).json(profil);
+        try {
+            const profil = await ProfilServiceEdit(
+                req.params.ID_Profil,
+                req.body.Nama,
+                req.body.Alamat,
+                req.body.Telepon,
+                req.body.Fax,
+                req.body.Email,
+                req.body.Website,
+            );
+            return res.status(200).json(profil);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -100,8 +120,13 @@ ProfilControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const profil = await ProfilServiceDelete(req.params.ID_Profil);
-        return res.status(204).json(profil);
+        try {
+            await ProfilServiceDelete(req.params.ID_Profil);
+            return res.status(204).send();
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 

@@ -14,8 +14,13 @@ router.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const token = await UserServiceCreateJWT(req.body.email);
-        return res.status(200).json(token);
+        try {
+            const token = await UserServiceCreateJWT(req.body.email);
+            return res.status(200).json(token);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 router.post(
@@ -27,20 +32,25 @@ router.post(
         UserValidators.NamaBelakang(),
         UserValidators.NamaDepan(),
         UserValidators.ID_User(),
-        
+
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const user = await UserServiceRegister(
-            req.body.ID_User,
-            req.body.NamaDepan,
-            req.body.NamaBelakang,
-            req.body.Status,
-            req.body.email,
-            req.body.password
-        );
+        try {
+            const user = await UserServiceRegister(
+                req.body.ID_User,
+                req.body.NamaDepan,
+                req.body.NamaBelakang,
+                req.body.Status,
+                req.body.email,
+                req.body.password
+            );
 
-        return res.status(200).json(user);
+            return res.status(200).json(user);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 

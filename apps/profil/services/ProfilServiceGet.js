@@ -1,5 +1,4 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
-const _ = require("lodash");
 const { PROFIL_CONFIG_MAIN_TABLE } = require("../config");
 
 const ProfilServiceGet = async (field, value, many = false) => {

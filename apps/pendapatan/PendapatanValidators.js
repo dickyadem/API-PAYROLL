@@ -9,7 +9,7 @@ const PendapatanValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const pendapatan = await PendapatanServiceGet("ID_pendapatan", value);
+                const pendapatan = await PendapatanServiceGet("ID_Pendapatan", value);
 
                 if (forCreate && pendapatan) {
                     return Promise.reject("ID_Pendapatan sudah digunakan.");

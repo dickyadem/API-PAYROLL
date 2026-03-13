@@ -20,11 +20,16 @@ PendapatanControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const pendapatan = await PendapatanServiceCreate(
-            req.body.ID_Pendapatan,
-            req.body.Nama_Pendapatan,
-        );
-        return res.status(201).json(pendapatan);
+        try {
+            const pendapatan = await PendapatanServiceCreate(
+                req.body.ID_Pendapatan,
+                req.body.Nama_Pendapatan,
+            );
+            return res.status(201).json(pendapatan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -36,11 +41,16 @@ PendapatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const daftarPendapatan = await PendapatanServiceList(
-            req.query.terms,
-            req.query.page
-        );
-        return res.status(200).json(daftarPendapatan);
+        try {
+            const daftarPendapatan = await PendapatanServiceList(
+                req.query.terms,
+                req.query.page
+            );
+            return res.status(200).json(daftarPendapatan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -52,8 +62,13 @@ PendapatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const pendapatan = await PendapatanServiceGet("ID_Pendapatan", req.params.ID_Pendapatan);
-        return res.status(200).json(pendapatan);
+        try {
+            const pendapatan = await PendapatanServiceGet("ID_Pendapatan", req.params.ID_Pendapatan);
+            return res.status(200).json(pendapatan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -66,11 +81,16 @@ PendapatanControllers.put(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const pendapatan = await PendapatanServiceEdit(
-            req.params.ID_Pendapatan,
-            req.body.Nama_Pendapatan,
-        );
-        return res.status(200).json(pendapatan);
+        try {
+            const pendapatan = await PendapatanServiceEdit(
+                req.params.ID_Pendapatan,
+                req.body.Nama_Pendapatan,
+            );
+            return res.status(200).json(pendapatan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -82,8 +102,13 @@ PendapatanControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const pendapatan = await PendapatanServiceDelete(req.params.ID_Pendapatan);
-        return res.status(204).json(pendapatan);
+        try {
+            await PendapatanServiceDelete(req.params.ID_Pendapatan);
+            return res.status(204).send();
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 

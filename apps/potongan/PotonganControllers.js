@@ -17,13 +17,19 @@ PotonganControllers.post(
         UserServiceTokenAuthentication,
         PotonganValidators.ID_Potongan(),
         PotonganValidators.Nama_Potongan(),
+        BaseValidatorRun(),
     ],
     async (req, res) => {
-        const potongan = await PotonganServiceCreate(
-            req.body.ID_Potongan,
-            req.body.Nama_Potongan,
-        );
-        return res.status(201).json(potongan);
+        try {
+            const potongan = await PotonganServiceCreate(
+                req.body.ID_Potongan,
+                req.body.Nama_Potongan,
+            );
+            return res.status(201).json(potongan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -35,11 +41,16 @@ PotonganControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const daftarPotongan = await PotonganServiceList(
-            req.query.terms,
-            req.query.page
-        );
-        return res.status(200).json(daftarPotongan);
+        try {
+            const daftarPotongan = await PotonganServiceList(
+                req.query.terms,
+                req.query.page
+            );
+            return res.status(200).json(daftarPotongan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -51,8 +62,13 @@ PotonganControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const potongan = await PotonganServiceGet("ID_Potongan", req.params.ID_Potongan);
-        return res.status(200).json(potongan);
+        try {
+            const potongan = await PotonganServiceGet("ID_Potongan", req.params.ID_Potongan);
+            return res.status(200).json(potongan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -65,11 +81,16 @@ PotonganControllers.put(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const potongan = await PotonganServiceEdit(
-            req.params.ID_Potongan,
-            req.body.Nama_Potongan,
-        );
-        return res.status(200).json(potongan);
+        try {
+            const potongan = await PotonganServiceEdit(
+                req.params.ID_Potongan,
+                req.body.Nama_Potongan,
+            );
+            return res.status(200).json(potongan);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 
@@ -81,8 +102,13 @@ PotonganControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const potongan = await PotonganServiceDelete(req.params.ID_Potongan);
-        return res.status(204).json(potongan);
+        try {
+            await PotonganServiceDelete(req.params.ID_Potongan);
+            return res.status(204).send();
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: "Terjadi kesalahan server." });
+        }
     }
 );
 

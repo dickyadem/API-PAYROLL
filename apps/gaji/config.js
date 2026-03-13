@@ -1,4 +1,4 @@
 module.exports = {
-    BARANG_CONFIG_MAIN_TABLE: "tblgaji",
+    GAJI_CONFIG_MAIN_TABLE: "tblgaji",
   };
   

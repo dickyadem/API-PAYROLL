@@ -5,7 +5,7 @@ const UserServiceTokenAuthentication = async (req, res, next) => {
         req.body.token ||
         req.query.token ||
         req.headers["x-access-token"] ||
-        req.headers["Authorization"];
+        req.headers["authorization"];
 
     if (!token) {
         return res.status(401).json({

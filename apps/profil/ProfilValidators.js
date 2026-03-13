@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const ProfilServiceGet = require("./services/ProfilServiceGet");
+const UserServiceIsEmailExist = require("../user/services/UserServiceIsEmailExist");
 
 const ProfilValidators = {
     ID_Profil: (location = body, forCreate = true, field = "ID_Profil") => {
@@ -9,7 +10,7 @@ const ProfilValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const profil = await ProfilServiceGet("ID_profil", value);
+                const profil = await ProfilServiceGet("ID_Profil", value);
 
                 if (forCreate && profil) {
                     return Promise.reject("ID_Profil sudah digunakan.");
@@ -76,7 +77,7 @@ const ProfilValidators = {
                 return true;
             });
     },
-   Email: (location = body, forCreate = true, field = "email") => {
+   Email: (location = body, forCreate = true, field = "Email") => {
         return location(field)
             .notEmpty()
             .withMessage("Email wajib diisi.")
@@ -96,7 +97,7 @@ const ProfilValidators = {
                 return Promise.resolve(true);
             });
     },
-  Website: (location = body, field = "website") => {
+  Website: (location = body, field = "Website") => {
         return location(field)
             .notEmpty()
             .withMessage("Website wajib diisi.")

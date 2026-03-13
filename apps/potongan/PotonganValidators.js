@@ -9,7 +9,7 @@ const PotonganValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const potongan = await PotonganServiceGet("ID_potongan", value);
+                const potongan = await PotonganServiceGet("ID_Potongan", value);
 
                 if (forCreate && potongan) {
                     return Promise.reject("ID_Potongan sudah digunakan.");
