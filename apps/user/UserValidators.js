@@ -46,15 +46,29 @@ const UserValidators = {
     },
     NamaLengkap: (location = body, field = "NamaLengkap") => {
         return location(field)
-            .notEmpty()
-            .withMessage("Nama depan wajib diisi")
-            .bail()
+            .optional()
             .trim()
             .customSanitizer((value) =>
                 value.replace(/\w\S*/g, function (txt) {
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 })
             );
+    },
+
+    firstName: (location = body, field = "firstName") => {
+        return location(field)
+            .notEmpty()
+            .withMessage("Nama depan wajib diisi")
+            .bail()
+            .trim()
+            .isLength({ min: 2, max: 50 })
+            .withMessage("Nama depan minimal 2 karakter");
+    },
+
+    lastName: (location = body, field = "lastName") => {
+        return location(field)
+            .optional()
+            .trim();
     },
 
    Status: (location = body, field = "Status") => {

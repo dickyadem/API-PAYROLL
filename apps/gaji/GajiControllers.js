@@ -6,6 +6,8 @@ const BaseValidatorFields = require("../base/validators/BaseValidatorFields");
 const { query, param } = require("express-validator");
 const GajiServiceList = require("./services/GajiServicesList");
 const GajiServiceGet = require("./services/GajiServicesGet");
+const GajiServiceDelete = require("./services/GajiServicesDelete");
+const { RBACPermissionCheck } = require("../rbac/services/RBACMiddleware");
 const GajiControllers = require("express").Router();
 const ConfigCTA = require("../base/services/ConfigCTA");
 const GajiServiceReportPeriodExcel = require("./services/GajiServiceReportPeriodExcel");
@@ -27,6 +29,7 @@ GajiControllers.post(
     "/",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.create'),
         GajiValidators.ID_Gaji(),
         GajiValidators.Tanggal(),
         GajiValidators.ID_Karyawan(),
@@ -75,6 +78,7 @@ GajiControllers.get(
     "/",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.read'),
         BaseValidatorFields.page(),
         BaseValidatorFields.terms(query),
         BaseValidatorRun(),
@@ -94,6 +98,7 @@ GajiControllers.get(
     "/:ID_Gaji",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.read'),
         GajiValidators.ID_Gaji(param, false),
         BaseValidatorRun(),
     ],
@@ -112,10 +117,31 @@ GajiControllers.get(
         }
     }
 );
+
+GajiControllers.delete(
+    "/:ID_Gaji",
+    [
+        UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.delete'),
+        GajiValidators.ID_Gaji(param, false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const result = await GajiServiceDelete(req.params.ID_Gaji);
+            res.status(200).json(result);
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(400).json({ error: error.message });
+        }
+    }
+);
+
 GajiControllers.post(
     "/gaji-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.export'),
         // GajiValidators.ID_Gaji("param", false),
         BaseValidatorRun(),
     ],
@@ -143,6 +169,7 @@ GajiControllers.post(
     "/report-period-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.period'),
         // GajiValidators.reporting.terms(),
         // GajiValidators.reporting.startDate(),
         // GajiValidators.reporting.endDate(),
@@ -173,6 +200,7 @@ GajiControllers.post(
     "/pph-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.pph'),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -198,6 +226,7 @@ GajiControllers.post(
     "/reportPph-period-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.pph'),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -225,6 +254,7 @@ GajiControllers.post(
     "/bpjs-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.bpjs'),
         // BpjsValidators.ID_Gaji("param", false),
         BaseValidatorRun(),
     ],
@@ -251,6 +281,7 @@ GajiControllers.post(
     "/reportBpjs-period-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.bpjs'),
         // BpjsValidators.reportBpjsing.terms(),
         // BpjsValidators.reportBpjsing.startDate(),
         // BpjsValidators.reportBpjsing.endDate(),
@@ -281,6 +312,7 @@ GajiControllers.post(
     "/slip-excel",
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.slip'),
         // BpjsValidators.ID_Gaji("param", false),
         BaseValidatorRun(),
     ],
@@ -304,6 +336,7 @@ GajiControllers.post(
     "/:ID_Gaji/slip-excel",  // Add a route parameter for ID_Gaji
     [
         UserServiceTokenAuthentication,
+        RBACPermissionCheck('laporan.slip'),
         // BpjsValidators.ID_Gaji("param", false),
         BaseValidatorRun(),
     ],

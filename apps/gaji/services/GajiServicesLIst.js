@@ -1,6 +1,10 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
 const BaseServicePaginator = require("../../base/services/BaseServicePaginator");
-const { GAJI_CONFIG_MAIN_TABLE } = require("../config");
+const { 
+  GAJI_CONFIG_MAIN_TABLE,
+  PENDAPATANDETAIL_CONFIG_MAIN_TABLE,
+  POTONGANDETAIL_CONFIG_MAIN_TABLE
+} = require("../config");
 
 const GajiServiceList = async (terms, page) => {
   const queryBuilder = BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE);
@@ -9,8 +13,30 @@ const GajiServiceList = async (terms, page) => {
     queryBuilder.whereILike("ID_Gaji", `%${terms}%`);
   }
 
+  const result = await BaseServicePaginator(page, queryBuilder);
+
+  // Include itemsPendapatan and itemsPotongan for each gaji
+  const gajiWithItems = await Promise.all(
+    result.results.map(async (gaji) => {
+      const itemsPendapatan = await BaseServiceQueryBuilder(
+        PENDAPATANDETAIL_CONFIG_MAIN_TABLE
+      ).where({ ID_Gaji: gaji.ID_Gaji });
+
+      const itemsPotongan = await BaseServiceQueryBuilder(
+        POTONGANDETAIL_CONFIG_MAIN_TABLE
+      ).where({ ID_Gaji: gaji.ID_Gaji });
+
+      return {
+        ...gaji,
+        itemsPendapatan: itemsPendapatan || [],
+        itemsPotongan: itemsPotongan || []
+      };
+    })
+  );
+
   return {
-    ...(await BaseServicePaginator(page, queryBuilder)),
+    ...result,
+    results: gajiWithItems,
     terms: terms ? terms : "",
   };
 };

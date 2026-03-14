@@ -23,4 +23,6 @@ app.use("/gaji", require("./apps/gaji/GajiControllers"));
 app.use("/gajidetail", require("./apps/gajidetail/GajiDetailControllers"));
 app.use("/potongandetail", require("./apps/potongandetail/PotonganDetailControllers"));
 app.use("/pendapatandetail", require("./apps/pendapatandetail/PendapatanDetailControllers"));
+app.use("/rbac", require("./apps/rbac/RBACControllers"));
+
 module.exports = app;
