@@ -49,7 +49,6 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        console.log('Request body:', JSON.stringify(req.body, null, 2));
         try {
             const Gaji = await GajiServiceCreate(
                 req.body.ID_Gaji,
@@ -146,22 +145,23 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const gaji = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
-        const items = await GajiServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="gaji-${new Date().getTime()}.xlsx"`
+            );
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="gaji-${new Date().getTime()}.xlsx"`
-        );
-
-        const xlsx = await GajiServiceFakturExcel();
-        await xlsx.write(res);
-        return res.end();
-
+            const xlsx = await GajiServiceFakturExcel();
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error gaji-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor data gaji" });
+        }
     }
 );
 
@@ -170,30 +170,34 @@ GajiControllers.post(
     [
         UserServiceTokenAuthentication,
         RBACPermissionCheck('laporan.period'),
-        // GajiValidators.reporting.terms(),
-        // GajiValidators.reporting.startDate(),
-        // GajiValidators.reporting.endDate(),
+        GajiValidators.reporting.startDate(),
+        GajiValidators.reporting.endDate(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
-        );
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="Report Gaji - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
+            );
 
-        const results = await GajiServiceReportPeriod(
-            req.body.startDate,
-            req.body.endDate,
-            req.body.terms
-        );
+            const results = await GajiServiceReportPeriod(
+                req.body.startDate,
+                req.body.endDate,
+                req.body.terms
+            );
 
-        const xlsx = await GajiServiceReportPeriodExcel(results);
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await GajiServiceReportPeriodExcel(results);
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error report-period-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor laporan periode gaji" });
+        }
     }
 );
 GajiControllers.post(
@@ -204,21 +208,23 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const pph = await PphServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
-        const items = await PphServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="pph-${new Date().getTime()}.xlsx"`
+            );
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="pph-${new Date().getTime()}.xlsx"`
-        );
-
-        const xlsx = await PphServiceFakturExcel(); // Inisialisasi objek xlsx
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await PphServiceFakturExcel();
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error pph-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor data PPH" });
+        }
     }
 );
 
@@ -227,27 +233,34 @@ GajiControllers.post(
     [
         UserServiceTokenAuthentication,
         RBACPermissionCheck('laporan.pph'),
+        GajiValidators.reporting.startDate(),
+        GajiValidators.reporting.endDate(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="Report Potongan PPH - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
-        );
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="Report Potongan PPH - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
+            );
 
-        const results = await PphServiceReportPeriod(
-            req.body.startDate,
-            req.body.endDate,
-            req.body.terms
-        );
+            const results = await PphServiceReportPeriod(
+                req.body.startDate,
+                req.body.endDate,
+                req.body.terms
+            );
 
-        const xlsx = await PphServiceReportPeriodExcel(results); // Inisialisasi objek xlsx
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await PphServiceReportPeriodExcel(results);
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error reportPph-period-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor laporan periode PPH" });
+        }
     }
 );
 GajiControllers.post(
@@ -259,21 +272,23 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        const bpjs = await BPJSServiceGetSlip("ID_Gaji", req.params.ID_Gaji, false);
-        const items = await BPJSServiceGetSlip("ID_Gaji", req.params.ID_Gaji, true);
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="bpjs-${new Date().getTime()}.xlsx"`
+            );
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="bpjs-${new Date().getTime()}.xlsx"`
-        );
-
-        const xlsx = await BPJSServiceFakturExcel(); // Inisialisasi objek xlsx
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await BPJSServiceFakturExcel();
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error bpjs-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor data BPJS" });
+        }
     }
 );
 
@@ -282,30 +297,34 @@ GajiControllers.post(
     [
         UserServiceTokenAuthentication,
         RBACPermissionCheck('laporan.bpjs'),
-        // BpjsValidators.reportBpjsing.terms(),
-        // BpjsValidators.reportBpjsing.startDate(),
-        // BpjsValidators.reportBpjsing.endDate(),
+        GajiValidators.reporting.startDate(),
+        GajiValidators.reporting.endDate(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="Report Potongan BPJS - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
-        );
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="Report Potongan BPJS - ${req.body.startDate} sd ${req.body.endDate}.xlsx"`
+            );
 
-        const results = await BPJSServiceReportPeriod(
-            req.body.startDate,
-            req.body.endDate,
-            req.body.terms
-        );
+            const results = await BPJSServiceReportPeriod(
+                req.body.startDate,
+                req.body.endDate,
+                req.body.terms
+            );
 
-        const xlsx = await BPJSServiceReportPeriodExcel(results); // Inisialisasi objek xlsx
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await BPJSServiceReportPeriodExcel(results);
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error reportBpjs-period-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor laporan periode BPJS" });
+        }
     }
 );
 GajiControllers.post(
@@ -317,19 +336,23 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="slip-${new Date().getTime()}.xlsx"`
+            );
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="slip-${new Date().getTime()}.xlsx"`
-        );
-
-        const xlsx = await createPayslipExcel();  
-        await xlsx.write(res);
-        return res.end();
+            const xlsx = await createPayslipExcel();
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error slip-excel:", error);
+            res.status(500).json({ error: "Gagal mengekspor slip gaji" });
+        }
     }
 );
 GajiControllers.post(
@@ -341,21 +364,24 @@ GajiControllers.post(
         BaseValidatorRun(),
     ],
     async (req, res) => {
+        try {
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            res.setHeader(
+                "Content-Disposition",
+                `attachment; filename="slip-${new Date().getTime()}.xlsx"`
+            );
 
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="slip-${new Date().getTime()}.xlsx"`
-        );
-
-        const ID_Gaji = req.params.ID_Gaji; // Assuming ID_Gaji is available in the request parameters
-
-        const xlsx = await createPayslipExcel(ID_Gaji);
-        await xlsx.write(res);
-        return res.end();
+            const ID_Gaji = req.params.ID_Gaji;
+            const xlsx = await createPayslipExcel(ID_Gaji);
+            await xlsx.write(res);
+            return res.end();
+        } catch (error) {
+            console.error("Error slip-excel by ID:", error);
+            res.status(500).json({ error: "Gagal mengekspor slip gaji" });
+        }
     }
 );
 

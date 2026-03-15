@@ -129,6 +129,25 @@ const GajiValidators = {
         return location(field)
     },
 
+    reporting: {
+        startDate: (location = body, field = "startDate") => {
+            return location(field)
+                .notEmpty()
+                .withMessage("Tanggal awal wajib diisi.")
+                .bail()
+                .isDate()
+                .withMessage("Format tanggal awal tidak valid (YYYY-MM-DD).");
+        },
+        endDate: (location = body, field = "endDate") => {
+            return location(field)
+                .notEmpty()
+                .withMessage("Tanggal akhir wajib diisi.")
+                .bail()
+                .isDate()
+                .withMessage("Format tanggal akhir tidak valid (YYYY-MM-DD).");
+        },
+    },
+
 };
 
 module.exports = GajiValidators;
