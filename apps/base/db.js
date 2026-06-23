@@ -17,4 +17,4 @@ if (process.env.DB_SSL === "true") {
     connection.ssl = ssl;
 }
 
-module.exports = knex({ client: "mysql", connection });
+module.exports = knex({ client: "mysql2", connection });

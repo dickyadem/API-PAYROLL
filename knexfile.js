@@ -17,7 +17,7 @@ if (process.env.DB_SSL === "true") {
 }
 
 module.exports = {
-    client: "mysql",
+    client: "mysql2",
     connection,
     migrations: {
         directory: "./migrations",
