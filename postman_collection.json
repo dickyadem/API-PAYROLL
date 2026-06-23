@@ -1,0 +1,872 @@
+{
+  "info": {
+    "name": "API Payroll",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection untuk testing API Payroll. Set variable `base_url` dan `token` sebelum mulai."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api-payroll.vercel.app",
+      "description": "Ganti dengan URL deployment Anda"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "description": "Diisi otomatis setelah login"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.token) {",
+                  "    pm.collectionVariables.set('token', json.token);",
+                  "    pm.test('Token tersimpan', () => pm.expect(json.token).to.be.a('string'));",
+                  "  }",
+                  "}",
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{base_url}}/user/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Register User (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/user/register",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"USER\",\n  \"department\": \"HRD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Test Token (Welcome)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/user/world"
+          }
+        },
+        {
+          "name": "Ganti Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/user/change-password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Reset Password (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/user/reset-password/john.doe@example.com",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"newPassword\": \"resetpassword123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "List User",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/user?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["user"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/user/admin@example.com"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profil Perusahaan",
+      "item": [
+        {
+          "name": "Tambah Profil",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/profil",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Profil\": \"PRF001\",\n  \"Nama\": \"PT Contoh Indonesia\",\n  \"Alamat\": \"Jl. Merdeka No. 1, Jakarta\",\n  \"Telepon\": \"021-12345678\",\n  \"Fax\": \"021-87654321\",\n  \"Email\": \"info@contoh.co.id\",\n  \"Website\": \"www.contoh.co.id\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Profil",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/profil?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["profil"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Profil by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/profil/PRF001"
+          }
+        },
+        {
+          "name": "Update Profil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/profil/PRF001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama\": \"PT Contoh Indonesia Baru\",\n  \"Alamat\": \"Jl. Merdeka No. 2, Jakarta\",\n  \"Telepon\": \"021-11112222\",\n  \"Fax\": \"021-33334444\",\n  \"Email\": \"info@contohibaru.co.id\",\n  \"Website\": \"www.contohibaru.co.id\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Profil",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/profil/PRF001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Golongan",
+      "item": [
+        {
+          "name": "Tambah Golongan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/golongan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Golongan\": \"GOL001\",\n  \"Nama_Golongan\": \"Golongan I\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Golongan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/golongan?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["golongan"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Golongan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/golongan/GOL001"
+          }
+        },
+        {
+          "name": "Update Golongan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/golongan/GOL001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama_Golongan\": \"Golongan I - Update\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Golongan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/golongan/GOL001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Jabatan",
+      "item": [
+        {
+          "name": "Tambah Jabatan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/jabatan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Jabatan\": \"JAB001\",\n  \"Nama_Jabatan\": \"Staff HRD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Jabatan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/jabatan?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["jabatan"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Jabatan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/jabatan/JAB001"
+          }
+        },
+        {
+          "name": "Update Jabatan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/jabatan/JAB001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama_Jabatan\": \"Senior Staff HRD\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Jabatan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/jabatan/JAB001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Karyawan",
+      "item": [
+        {
+          "name": "Tambah Karyawan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/karyawan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Karyawan\": \"KRY001\",\n  \"Nama_Karyawan\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"ID_Golongan\": \"GOL001\",\n  \"ID_Jabatan\": \"JAB001\",\n  \"Divisi\": \"HRD\",\n  \"Status_Pernikahan\": \"Menikah\",\n  \"Jumlah_Anak\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "List Karyawan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/karyawan?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["karyawan"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Karyawan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/karyawan/KRY001"
+          }
+        },
+        {
+          "name": "Update Karyawan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/karyawan/KRY001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama_Karyawan\": \"Budi Santoso Updated\",\n  \"email\": \"budi@example.com\",\n  \"ID_Golongan\": \"GOL001\",\n  \"ID_Jabatan\": \"JAB001\",\n  \"Divisi\": \"HRD\",\n  \"Status_Pernikahan\": \"Menikah\",\n  \"Jumlah_Anak\": 3\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Karyawan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/karyawan/KRY001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pendapatan",
+      "item": [
+        {
+          "name": "Tambah Pendapatan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/pendapatan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Pendapatan\": \"PDT001\",\n  \"Nama_Pendapatan\": \"Gaji Pokok\",\n  \"Nominal\": 5000000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Gaji pokok bulanan\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Pendapatan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/pendapatan?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["pendapatan"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Pendapatan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/pendapatan/PDT001"
+          }
+        },
+        {
+          "name": "Update Pendapatan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/pendapatan/PDT001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama_Pendapatan\": \"Gaji Pokok\",\n  \"Nominal\": 5500000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Gaji pokok bulanan - update\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Pendapatan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/pendapatan/PDT001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Potongan",
+      "item": [
+        {
+          "name": "Tambah Potongan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/potongan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Potongan\": \"PTG001\",\n  \"Nama_Potongan\": \"BPJS Kesehatan\",\n  \"Nominal\": 250000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Potongan BPJS Kesehatan 1%\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Potongan",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/potongan?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["potongan"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Potongan by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/potongan/PTG001"
+          }
+        },
+        {
+          "name": "Update Potongan",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/potongan/PTG001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"Nama_Potongan\": \"BPJS Kesehatan\",\n  \"Nominal\": 300000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Potongan BPJS Kesehatan - update\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Potongan",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/potongan/PTG001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gaji",
+      "item": [
+        {
+          "name": "Buat Gaji",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/gaji",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Gaji\": \"GJI001\",\n  \"Tanggal\": \"2026-06-01\",\n  \"ID_Karyawan\": \"KRY001\",\n  \"Total_Pendapatan\": 5500000,\n  \"Total_Potongan\": 300000,\n  \"Gaji_Bersih\": 5200000,\n  \"Keterangan\": \"Gaji bulan Juni 2026\",\n  \"email\": \"budi@example.com\",\n  \"ID_Profil\": \"PRF001\",\n  \"itemsPendapatan\": [\n    {\n      \"ID_Pendapatan\": \"PDT001\",\n      \"Jumlah_Pendapatan\": 5500000\n    }\n  ],\n  \"itemsPotongan\": [\n    {\n      \"ID_Potongan\": \"PTG001\",\n      \"Jumlah_Potongan\": 300000\n    }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "List Gaji",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/gaji?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["gaji"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Gaji by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/GJI001"
+          }
+        },
+        {
+          "name": "Hapus Gaji",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/GJI001"
+          }
+        },
+        {
+          "name": "Export Gaji (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/gaji-excel"
+          }
+        },
+        {
+          "name": "Export Slip Gaji (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/slip-excel"
+          }
+        },
+        {
+          "name": "Export Slip Gaji by ID (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/GJI001/slip-excel"
+          }
+        },
+        {
+          "name": "Laporan Periode (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/gaji/report-period-excel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-06-30\",\n  \"terms\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Laporan PPH (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/pph-excel"
+          }
+        },
+        {
+          "name": "Laporan PPH Periode (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/gaji/reportPph-period-excel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-06-30\",\n  \"terms\": \"\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Laporan BPJS (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gaji/bpjs-excel"
+          }
+        },
+        {
+          "name": "Laporan BPJS Periode (Excel)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/gaji/reportBpjs-period-excel",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-01-01\",\n  \"endDate\": \"2026-06-30\",\n  \"terms\": \"\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Gaji Detail",
+      "item": [
+        {
+          "name": "List Gaji Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/gajidetail?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["gajidetail"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Gaji Detail by ID Gaji",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/gajidetail/GJI001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pendapatan Detail",
+      "item": [
+        {
+          "name": "List Pendapatan Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/pendapatandetail?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["pendapatandetail"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Pendapatan Detail by ID Gaji",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/pendapatandetail/GJI001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Potongan Detail",
+      "item": [
+        {
+          "name": "List Potongan Detail",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/potongandetail?page=1&terms=",
+              "host": ["{{base_url}}"],
+              "path": ["potongandetail"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "terms", "value": "" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Potongan Detail by ID Gaji",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/potongandetail/GJI001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "RBAC",
+      "item": [
+        {
+          "name": "Tambah Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/rbac/roles",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Role\": \"ROLE001\",\n  \"Nama_Role\": \"MANAGER\",\n  \"Keterangan\": \"Role untuk manager\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/rbac/roles"
+          }
+        },
+        {
+          "name": "Tambah Permission",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/rbac/permissions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Permission\": \"PERM001\",\n  \"Nama_Permission\": \"gaji.read\",\n  \"Module\": \"gaji\",\n  \"Description\": \"Akses baca data gaji\"\n}"
+            }
+          }
+        },
+        {
+          "name": "List Permissions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/rbac/permissions"
+          }
+        },
+        {
+          "name": "Get Permissions by Role",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/rbac/roles/ROLE001/permissions"
+          }
+        },
+        {
+          "name": "Assign Permission ke Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/rbac/roles/ROLE001/permissions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Permission\": \"PERM001\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Hapus Permission dari Role",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{base_url}}/rbac/roles/ROLE001/permissions/PERM001"
+          }
+        },
+        {
+          "name": "Assign Role ke User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/rbac/users/john.doe@example.com/role",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Role\": \"ROLE001\"\n}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
