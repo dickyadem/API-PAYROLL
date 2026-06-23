@@ -1,20 +1,7 @@
 const xl = require('exceljs');
-const knex = require('knex');
+const knexInstance = require('../../base/db');
 const { GAJI_CONFIG_MAIN_TABLE } = require('../config');
 const BaseServiceQueryBuilder = require('../../base/services/BaseServiceQueryBuilder');
-
-// Inisialisasi knex.js
-const knexInstance = knex({
-    // Konfigurasi koneksi database
-    client: 'mysql', // Ganti dengan jenis database yang Anda gunakan
-    connection: {
-        host: "localhost",
-        port: 3306,
-        user: "root",
-        password: "",
-        database: "payroll",
-    },
-});
 
 const PphServiceGetSlip = async () => {
     try {

@@ -11,3 +11,6 @@ coverage
 # Benchmarking
 benchmarks/graphs
 /.claude
+
+# Environment variables
+.env
