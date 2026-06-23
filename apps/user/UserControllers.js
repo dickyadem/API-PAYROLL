@@ -1,12 +1,22 @@
-const { body } = require("express-validator");
+
+const { body } = require("express-validator")
+const { param } = require("express-validator");
+const bcrypt = require("bcryptjs");
 const BaseValidatorRun = require("../base/validators/BaseValidatorRun");
 const UserValidators = require("./UserValidators");
 const UserServiceCreateJWT = require("./services/UserServiceCreateJWT");
 const UserServiceRegister = require("./services/UserServiceRegister");
+const UserServiceList = require("./services/UserServiceList");
+const BaseValidatorQueryPage = require("../base/validators/BaseValidatorQueryPage");
+const UserServiceTokenAuthentication = require("./services/UserServiceTokenAuthentication");
+const UserServiceFetch = require("./services/UserServiceFetch");
+const BaseServiceQueryBuilder = require("../base/services/BaseServiceQueryBuilder");
+const { USER_CONFIG_MAIN_TABLE } = require("./config");
+const { RBACRoleCheck } = require("../rbac/services/RBACMiddleware");
 
-const router = require("express").Router();
+const UserControllers = require("express").Router();
 
-router.post(
+UserControllers.post(
     "/login",
     [
         UserValidators.email(body, false),
@@ -15,43 +25,233 @@ router.post(
     ],
     async (req, res) => {
         try {
-            const token = await UserServiceCreateJWT(req.body.email);
-            return res.status(200).json(token);
+            const user = await UserServiceFetch(req.body.email);
+
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Email atau password salah"
+                });
+            }
+
+            const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+
+            if (!isPasswordValid) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Email atau password salah"
+                });
+            }
+
+            const { token } = await UserServiceCreateJWT(req.body.email);
+
+            return res.status(200).json({
+                success: true,
+                token: token,
+                user: {
+                    email: user.email,
+                    username: user.NamaLengkap,
+                    role: user.role || 'user',
+                    department: user.department || null
+                }
+            });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
+            console.error("Login error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error"
+            });
         }
     }
 );
-router.post(
+
+UserControllers.post("/world", [UserServiceTokenAuthentication], (req, res) => {
+    res.status(200).send("Welcome 🙌 ");
+});
+
+UserControllers.post(
     "/register",
     [
-        UserValidators.email(),
-        UserValidators.password(),
-        UserValidators.Status(),
-        UserValidators.NamaBelakang(),
-        UserValidators.NamaDepan(),
-        UserValidators.ID_User(),
-
+        UserServiceTokenAuthentication,
+        RBACRoleCheck(['ADMIN']),
+        UserValidators.password(body),
+        UserValidators.firstName(body),
+        UserValidators.lastName(body),
+        UserValidators.email(body),
         BaseValidatorRun(),
     ],
     async (req, res) => {
         try {
+            const firstName = req.body.firstName || '';
+            const lastName = req.body.lastName || '';
+            const NamaLengkap = `${firstName} ${lastName}`.trim();
+
             const user = await UserServiceRegister(
-                req.body.ID_User,
-                req.body.NamaDepan,
-                req.body.NamaBelakang,
-                req.body.Status,
+                NamaLengkap,
+                req.body.Status || true,
                 req.body.email,
-                req.body.password
+                req.body.password,
+                req.body.role || 'user',
+                req.body.department || null
             );
 
-            return res.status(200).json(user);
+            return res.status(201).json({
+                success: true,
+                message: "User berhasil didaftarkan",
+                data: {
+                    email: user.email,
+                    username: user.NamaLengkap,
+                    role: user.role,
+                    department: user.department
+                }
+            });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
+            console.error("Register error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error"
+            });
         }
     }
 );
 
-module.exports = router;
+UserControllers.get(
+    "/",
+    [
+        UserServiceTokenAuthentication,
+        BaseValidatorQueryPage(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const daftarUser = await UserServiceList(
+                req.query.terms,
+                req.query.page
+            );
+            return res.status(200).json(daftarUser);
+        } catch (error) {
+            console.error("User list error:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
+UserControllers.put(
+    "/change-password",
+    [
+        UserServiceTokenAuthentication,
+        body("oldPassword")
+            .notEmpty()
+            .withMessage("Password lama wajib diisi."),
+        body("newPassword")
+            .notEmpty()
+            .withMessage("Password baru wajib diisi.")
+            .isLength({ min: 8 })
+            .withMessage("Password baru minimal 8 karakter."),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const user = await UserServiceFetch(req.user.email);
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User tidak ditemukan"
+                });
+            }
+
+            const isOldPasswordValid = await bcrypt.compare(req.body.oldPassword, user.password);
+
+            if (!isOldPasswordValid) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Password lama tidak sesuai"
+                });
+            }
+
+            const newPasswordHash = await bcrypt.hash(req.body.newPassword, 10);
+
+            await BaseServiceQueryBuilder(USER_CONFIG_MAIN_TABLE)
+                .where({ email: req.user.email })
+                .update({ password: newPasswordHash });
+
+            return res.status(200).json({
+                success: true,
+                message: "Password berhasil diubah"
+            });
+        } catch (error) {
+            console.error("Change password error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error"
+            });
+        }
+    }
+);
+
+UserControllers.put(
+    "/reset-password/:email",
+    [
+        UserServiceTokenAuthentication,
+        RBACRoleCheck(['ADMIN']),
+        body("newPassword")
+            .notEmpty()
+            .withMessage("Password baru wajib diisi.")
+            .isLength({ min: 8 })
+            .withMessage("Password baru minimal 8 karakter."),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const user = await UserServiceFetch(req.params.email);
+
+            if (!user) {
+                return res.status(404).json({
+                    success: false,
+                    message: "User tidak ditemukan"
+                });
+            }
+
+            const newPasswordHash = await bcrypt.hash(req.body.newPassword, 10);
+
+            await BaseServiceQueryBuilder(USER_CONFIG_MAIN_TABLE)
+                .where({ email: req.params.email })
+                .update({ password: newPasswordHash });
+
+            return res.status(200).json({
+                success: true,
+                message: `Password untuk ${req.params.email} berhasil direset`
+            });
+        } catch (error) {
+            console.error("Reset password error:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error"
+            });
+        }
+    }
+);
+
+UserControllers.get(
+    "/:email",
+    [
+        UserServiceTokenAuthentication,
+        UserValidators.email(param, false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const user = await UserServiceFetch(req.params.email);
+            if (!user) {
+                return res.status(404).json({ error: "User tidak ditemukan" });
+            }
+            return res.status(200).json(user);
+        } catch (error) {
+            console.error("User fetch error:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
+module.exports = UserControllers;

@@ -1,4 +1,5 @@
 const BaseServiceQueryBuilder = require("../../base/services/BaseServiceQueryBuilder");
+const _ = require("lodash");
 const { GOLONGAN_CONFIG_MAIN_TABLE } = require("../config");
 
 const GolonganServiceGet = async (field, value, many = false) => {

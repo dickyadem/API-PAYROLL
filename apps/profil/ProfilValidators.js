@@ -85,17 +85,6 @@ const ProfilValidators = {
             .trim()
             .isEmail()
             .withMessage("Email tidak valid.")
-            .bail()
-            .custom(async (value) => {
-                const user = await UserServiceIsEmailExist(value);
-                if (forCreate && user) {
-                    return Promise.reject("Email sudah terdaftar.");
-                } else if (!forCreate && !user) {
-                    return Promise.reject("User tidak tersedia.");
-                }
-
-                return Promise.resolve(true);
-            });
     },
   Website: (location = body, field = "Website") => {
         return location(field)

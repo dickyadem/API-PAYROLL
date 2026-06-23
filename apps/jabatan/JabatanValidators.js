@@ -9,7 +9,7 @@ const JabatanValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const jabatan = await JabatanServiceGet("ID_Jabatan", value);
+                const jabatan = await JabatanServiceGet("ID_jabatan", value);
 
                 if (forCreate && jabatan) {
                     return Promise.reject("ID_Jabatan sudah digunakan.");

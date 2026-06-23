@@ -9,7 +9,7 @@ const GolonganValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const golongan = await GolonganServiceGet("ID_Golongan", value);
+                const golongan = await GolonganServiceGet("ID_golongan", value);
 
                 if (forCreate && golongan) {
                     return Promise.reject("ID_Golongan sudah digunakan.");
@@ -28,7 +28,7 @@ const GolonganValidators = {
             .trim()
             .customSanitizer((value) =>
                 value.replace(/\w\S*/g, function (txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                    return txt.toUpperCase();
                 })
             );
     },

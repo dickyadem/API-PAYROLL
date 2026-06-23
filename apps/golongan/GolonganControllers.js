@@ -17,20 +17,14 @@ GolonganControllers.post(
         UserServiceTokenAuthentication,
         GolonganValidators.ID_Golongan(),
         GolonganValidators.Nama_Golongan(),
-        GolonganValidators.Tunjangan_Golongan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const golongan = await GolonganServiceCreate(
-                req.body.ID_Golongan,
-                req.body.Nama_Golongan,
-            );
-            return res.status(201).json(golongan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const golongan = await GolonganServiceCreate(
+            req.body.ID_Golongan,
+            req.body.Nama_Golongan,
+        );
+        return res.status(201).json(golongan);
     }
 );
 
@@ -42,16 +36,11 @@ GolonganControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const daftarGolongan = await GolonganServiceList(
-                req.query.terms,
-                req.query.page
-            );
-            return res.status(200).json(daftarGolongan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const daftarGolongan = await GolonganServiceList(
+            req.query.terms,
+            req.query.page
+        );
+        return res.status(200).json(daftarGolongan);
     }
 );
 
@@ -63,13 +52,8 @@ GolonganControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const golongan = await GolonganServiceGet("ID_Golongan", req.params.ID_Golongan);
-            return res.status(200).json(golongan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const golongan = await GolonganServiceGet("ID_Golongan", req.params.ID_Golongan);
+        return res.status(200).json(golongan);
     }
 );
 
@@ -82,17 +66,11 @@ GolonganControllers.put(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const golongan = await GolonganServiceEdit(
-                req.params.ID_Golongan,
-                req.body.Nama_Golongan,
-                req.body.Tunjangan_Golongan
-            );
-            return res.status(200).json(golongan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const golongan = await GolonganServiceEdit(
+            req.params.ID_Golongan,
+            req.body.Nama_Golongan,
+        );
+        return res.status(200).json(golongan);
     }
 );
 
@@ -104,13 +82,8 @@ GolonganControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            await GolonganServiceDelete(req.params.ID_Golongan);
-            return res.status(204).send();
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const golongan = await GolonganServiceDelete(req.params.ID_Golongan);
+        return res.status(204).json(golongan);
     }
 );
 

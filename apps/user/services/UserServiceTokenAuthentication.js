@@ -1,11 +1,16 @@
 const jwt = require("jsonwebtoken");
 
 const UserServiceTokenAuthentication = async (req, res, next) => {
+    const authHeader = req.headers["authorization"] || req.headers["Authorization"];
+    const bearerToken = authHeader && authHeader.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
+
     const token =
-        req.body.token ||
-        req.query.token ||
+        bearerToken ||
         req.headers["x-access-token"] ||
-        req.headers["authorization"];
+        req.query.token ||
+        req.body.token;
 
     if (!token) {
         return res.status(401).json({

@@ -17,20 +17,14 @@ JabatanControllers.post(
         UserServiceTokenAuthentication,
         JabatanValidators.ID_Jabatan(),
         JabatanValidators.Nama_Jabatan(),
-        JabatanValidators.Tunjangan_Jabatan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const jabatan = await JabatanServiceCreate(
-                req.body.ID_Jabatan,
-                req.body.Nama_Jabatan,
-            );
-            return res.status(201).json(jabatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const jabatan = await JabatanServiceCreate(
+            req.body.ID_Jabatan,
+            req.body.Nama_Jabatan,
+        );
+        return res.status(201).json(jabatan);
     }
 );
 
@@ -42,16 +36,11 @@ JabatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const daftarJabatan = await JabatanServiceList(
-                req.query.terms,
-                req.query.page
-            );
-            return res.status(200).json(daftarJabatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const daftarJabatan = await JabatanServiceList(
+            req.query.terms,
+            req.query.page
+        );
+        return res.status(200).json(daftarJabatan);
     }
 );
 
@@ -63,13 +52,8 @@ JabatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const jabatan = await JabatanServiceGet("ID_Jabatan", req.params.ID_Jabatan);
-            return res.status(200).json(jabatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const jabatan = await JabatanServiceGet("ID_Jabatan", req.params.ID_Jabatan);
+        return res.status(200).json(jabatan);
     }
 );
 
@@ -82,17 +66,11 @@ JabatanControllers.put(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const jabatan = await JabatanServiceEdit(
-                req.params.ID_Jabatan,
-                req.body.Nama_Jabatan,
-                req.body.Tunjangan_Jabatan
-            );
-            return res.status(200).json(jabatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const jabatan = await JabatanServiceEdit(
+            req.params.ID_Jabatan,
+            req.body.Nama_Jabatan,
+        );
+        return res.status(200).json(jabatan);
     }
 );
 
@@ -104,13 +82,8 @@ JabatanControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            await JabatanServiceDelete(req.params.ID_Jabatan);
-            return res.status(204).send();
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const jabatan = await JabatanServiceDelete(req.params.ID_Jabatan);
+        return res.status(204).json(jabatan);
     }
 );
 

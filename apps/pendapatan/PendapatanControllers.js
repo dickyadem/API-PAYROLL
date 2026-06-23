@@ -17,19 +17,20 @@ PendapatanControllers.post(
         UserServiceTokenAuthentication,
         PendapatanValidators.ID_Pendapatan(),
         PendapatanValidators.Nama_Pendapatan(),
+        PendapatanValidators.Nominal(),
+        PendapatanValidators.ID_Jabatan(),
+        PendapatanValidators.Keterangan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const pendapatan = await PendapatanServiceCreate(
-                req.body.ID_Pendapatan,
-                req.body.Nama_Pendapatan,
-            );
-            return res.status(201).json(pendapatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const pendapatan = await PendapatanServiceCreate(
+            req.body.ID_Pendapatan,
+            req.body.Nama_Pendapatan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
+        );
+        return res.status(201).json(pendapatan);
     }
 );
 
@@ -41,16 +42,11 @@ PendapatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const daftarPendapatan = await PendapatanServiceList(
-                req.query.terms,
-                req.query.page
-            );
-            return res.status(200).json(daftarPendapatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const daftarPendapatan = await PendapatanServiceList(
+            req.query.terms,
+            req.query.page
+        );
+        return res.status(200).json(daftarPendapatan);
     }
 );
 
@@ -62,13 +58,8 @@ PendapatanControllers.get(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const pendapatan = await PendapatanServiceGet("ID_Pendapatan", req.params.ID_Pendapatan);
-            return res.status(200).json(pendapatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const pendapatan = await PendapatanServiceGet("ID_Pendapatan", req.params.ID_Pendapatan);
+        return res.status(200).json(pendapatan);
     }
 );
 
@@ -78,19 +69,20 @@ PendapatanControllers.put(
         UserServiceTokenAuthentication,
         PendapatanValidators.ID_Pendapatan(param, false),
         PendapatanValidators.Nama_Pendapatan(),
+        PendapatanValidators.Nominal(),
+        PendapatanValidators.ID_Jabatan(),
+        PendapatanValidators.Keterangan(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            const pendapatan = await PendapatanServiceEdit(
-                req.params.ID_Pendapatan,
-                req.body.Nama_Pendapatan,
-            );
-            return res.status(200).json(pendapatan);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const pendapatan = await PendapatanServiceEdit(
+            req.params.ID_Pendapatan,
+            req.body.Nama_Pendapatan,
+            req.body.Nominal,
+            req.body.ID_Jabatan,
+            req.body.Keterangan
+        );
+        return res.status(200).json(pendapatan);
     }
 );
 
@@ -102,13 +94,8 @@ PendapatanControllers.delete(
         BaseValidatorRun(),
     ],
     async (req, res) => {
-        try {
-            await PendapatanServiceDelete(req.params.ID_Pendapatan);
-            return res.status(204).send();
-        } catch (error) {
-            console.error(error);
-            return res.status(500).json({ message: "Terjadi kesalahan server." });
-        }
+        const pendapatan = await PendapatanServiceDelete(req.params.ID_Pendapatan);
+        return res.status(204).json(pendapatan);
     }
 );
 

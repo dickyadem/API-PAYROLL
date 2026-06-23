@@ -1,5 +1,6 @@
 const { body } = require("express-validator");
 const PotonganServiceGet = require("./services/PotonganServiceGet");
+const JabatanValidators = require("../jabatan/JabatanValidators");
 
 const PotonganValidators = {
     ID_Potongan: (location = body, forCreate = true, field = "ID_Potongan") => {
@@ -9,7 +10,7 @@ const PotonganValidators = {
             .bail()
             .trim()
             .custom(async (value) => {
-                const potongan = await PotonganServiceGet("ID_Potongan", value);
+                const potongan = await PotonganServiceGet("ID_potongan", value);
 
                 if (forCreate && potongan) {
                     return Promise.reject("ID_Potongan sudah digunakan.");
@@ -31,6 +32,33 @@ const PotonganValidators = {
                     return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                 })
             );
+    },
+    Nominal: (location = body, field = "Nominal") => {
+        return location(field)
+            .notEmpty()
+            .withMessage("Nominal wajib diisi.")
+            .bail()
+            .isNumeric()
+            .withMessage("Nominal harus berupa angka.")
+            .bail()
+            .custom((value) => {
+                if (value < 0) {
+                    throw new Error("Nominal tidak boleh negatif.");
+                }
+                return true;
+            });
+    },
+    ID_Jabatan: (location = body, field = "ID_Jabatan") => {
+        return location(field)
+            .optional({ nullable: true })
+            .trim();
+    },
+    Keterangan: (location = body, field = "Keterangan") => {
+        return location(field)
+            .optional({ checkFalsy: true })
+            .trim()
+            .isLength({ max: 255 })
+            .withMessage("Keterangan maksimal 255 karakter.");
     },
 
 };

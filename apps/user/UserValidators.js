@@ -5,16 +5,7 @@ const UserServiceFetch = require("./services/UserServiceFetch");
 const BaseValidatorHandleUndefined = require("../base/validators/BaseValidatorHandleUndefined");
 
 const UserValidators = {
-    ID_User: (location = body, field = "ID_User") => {
-        return location(field)
-            .notEmpty()
-            .withMessage("ID User wajib diisi.")
-            .bail()
-            .trim()
-            .customSanitizer((value) =>
-                value.toUpperCase()
-            );
-    },
+
     email: (location = body, forCreate = true, field = "email") => {
         return location(field)
             .notEmpty()
@@ -38,59 +29,48 @@ const UserValidators = {
     password: (location = body, forCreate = true, field = "password") => {
         return location(field)
             .notEmpty()
-            .withMessage("Password wajib diisi.")
-            .bail()
+            .withMessage("Passsword wajib diisi.")
             .trim()
             .isLength({ min: 8, max: 100 })
-            .withMessage("Password minimal 8 karakter, maksimal 100 karakter.")
-            .bail()
-            .matches(/[A-Z]/)
-            .withMessage("Password harus mengandung minimal 1 huruf besar.")
-            .bail()
-            .matches(/[a-z]/)
-            .withMessage("Password harus mengandung minimal 1 huruf kecil.")
-            .bail()
-            .matches(/[0-9]/)
-            .withMessage("Password harus mengandung minimal 1 angka.")
-            .bail()
-            .matches(/[!@#$%^&*(),.?":{}|<>]/)
-            .withMessage("Password harus mengandung minimal 1 karakter spesial.")
+            .withMessage("password minimal 8 karakter.")
             .bail()
             .custom(async (value, { req }) => {
                 if (!forCreate) {
                     const user = await UserServiceFetch(req.body.email);
-                    BaseValidatorHandleUndefined(user, "Email");
-                    const isValidPassword = await bcrypt.compare(value, user.password);
-                    if (!isValidPassword) return Promise.reject("password tidak sesuai.");
+                    BaseValidatorHandleUndefined(user, "email");
+                    // const isValidPassword = await bcrypt.compare(value, user.password);
+                    // if (!isValidPassword) return Promise.reject("password tidak sesuai.");
                 }
-
                 return Promise.resolve(true);
             });
     },
-    NamaDepan: (location = body, field = "NamaDepan") => {
+    NamaLengkap: (location = body, field = "NamaLengkap") => {
+        return location(field)
+            .optional()
+            .trim()
+            .customSanitizer((value) =>
+                value.replace(/\w\S*/g, function (txt) {
+                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                })
+            );
+    },
+
+    firstName: (location = body, field = "firstName") => {
         return location(field)
             .notEmpty()
             .withMessage("Nama depan wajib diisi")
             .bail()
             .trim()
-            .customSanitizer((value) =>
-                value.replace(/\w\S*/g, function (txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                })
-            );
+            .isLength({ min: 2, max: 50 })
+            .withMessage("Nama depan minimal 2 karakter");
     },
-    NamaBelakang: (location = body, field = "NamaBelakang") => {
+
+    lastName: (location = body, field = "lastName") => {
         return location(field)
-            .notEmpty()
-            .withMessage("Nama belakang wajib diisi.")
-            .bail()
-            .trim()
-            .customSanitizer((value) =>
-                value.replace(/\w\S*/g, function (txt) {
-                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                })
-            );
+            .optional()
+            .trim();
     },
+
    Status: (location = body, field = "Status") => {
         return location(field)
             .notEmpty()
