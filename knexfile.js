@@ -9,7 +9,11 @@ const connection = {
 };
 
 if (process.env.DB_SSL === "true") {
-    connection.ssl = { rejectUnauthorized: false };
+    const ssl = { rejectUnauthorized: true };
+    if (process.env.DB_CA_CERT) {
+        ssl.ca = Buffer.from(process.env.DB_CA_CERT, "base64").toString("utf-8");
+    }
+    connection.ssl = ssl;
 }
 
 module.exports = {
