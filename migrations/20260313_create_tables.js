@@ -5,11 +5,14 @@ exports.up = function (knex) {
     return knex.schema
         .createTable("tbluser", (table) => {
             table.string("ID_User", 20).primary();
-            table.string("NamaDepan", 100).notNullable();
-            table.string("NamaBelakang", 100).notNullable();
-            table.string("Status", 50).notNullable();
+            table.string("NamaDepan", 100).nullable();
+            table.string("NamaBelakang", 100).nullable();
+            table.string("NamaLengkap", 200).nullable();
+            table.string("Status", 50).notNullable().defaultTo("Active");
             table.string("email", 100).notNullable().unique();
             table.string("password", 255).notNullable();
+            table.string("role", 50).defaultTo("USER");
+            table.string("department", 100).nullable();
             table.timestamps(true, true);
         })
         .createTable("tblprofil", (table) => {
