@@ -33,6 +33,7 @@ const BPJSServiceFakturExcel = async () => {
         right: tableBorder,
     };
 
+    if (!tblprofil.length) return wb.xlsx;
     const profilData = Object.entries(tblprofil[0]);
 
     for (let i = 1; i < profilData.length; i++) {

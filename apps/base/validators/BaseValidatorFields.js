@@ -13,9 +13,7 @@ const BaseValidatorFields = {
     },
     terms: (location = body, field = "terms") => {
         return location(field)
-            .optional()
-            .notEmpty()
-            .withMessage("Term harus diisi.")
+            .optional({ checkFalsy: true })
             .trim();
     },
 };

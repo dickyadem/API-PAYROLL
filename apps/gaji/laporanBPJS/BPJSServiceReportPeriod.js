@@ -3,14 +3,14 @@ const { GAJI_CONFIG_MAIN_TABLE, DATAPROFIL_CONFIG_TABLE } = require("../config")
 
 const BPJSServiceReportPeriod = async (startDate, endDate) => {
     try {
-        let subQuery = await BaseServiceQueryBuilder.fetchAll(GAJI_CONFIG_MAIN_TABLE)
+        let subQuery = await BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE)
             .clone()
             .select("ID_Gaji")
             .whereBetween("Tanggal", [startDate, endDate]);
 
         subQuery = subQuery.map((item) => item.ID_Gaji);
 
-        let results = await BaseServiceQueryBuilder.fetchAll(GAJI_CONFIG_MAIN_TABLE)
+        let results = await BaseServiceQueryBuilder(GAJI_CONFIG_MAIN_TABLE)
             .select([
                 "tblgaji.ID_Gaji",
                 "tblgaji.ID_Karyawan",

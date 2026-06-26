@@ -5,7 +5,6 @@ const db = require('../../base/services/BaseServiceQueryBuilder');
 const createPayslipExcel = async (ID_Gaji) => {
     const tblgaji = await db.fetchAll('tblgaji');
     const tblkaryawan = await db.fetchAll('tblkaryawan');
-    const tblgajidetail = await db.fetchAll('tblgajidetail');
     const tblpendapatandetail = await db.fetchAll('tblpendapatandetail');
     const tblpotongandetail = await db.fetchAll('tblpotongandetail');
     const tblgolongan = await db.fetchAll('tblgolongan');
@@ -200,7 +199,7 @@ const createPayslipExcel = async (ID_Gaji) => {
 
     const hasilttd = tblpotongan.length + 17;
     ws.getCell('A' + (hasilttd)).value = '___________________';
-    ws.getCell('D' + (hasilttd)).value = tblkaryawan[0].Nama_Karyawan;
+    ws.getCell('D' + (hasilttd)).value = tblkaryawan.length ? tblkaryawan[0].Nama_Karyawan : '';
     BaseServiceExcelColumnResponsive(ws);
 
     return wb.xlsx;

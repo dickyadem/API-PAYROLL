@@ -57,7 +57,7 @@
             "url": "{{base_url}}/user/login",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
             }
           }
         },
@@ -72,7 +72,7 @@
             "url": "{{base_url}}/user/register",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"USER\",\n  \"department\": \"HRD\"\n}"
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password12345\",\n  \"role\": \"USER\",\n  \"department\": \"HRD\"\n}"
             }
           }
         },
@@ -95,7 +95,7 @@
             "url": "{{base_url}}/user/change-password",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+              "raw": "{\n  \"oldPassword\": \"admin123\",\n  \"newPassword\": \"admin123\"\n}"
             }
           }
         },
@@ -350,6 +350,36 @@
       "name": "Karyawan",
       "item": [
         {
+          "name": "Setup: Buat Golongan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/golongan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Golongan\": \"GOL001\",\n  \"Nama_Golongan\": \"Golongan A\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Setup: Buat Jabatan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/jabatan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Jabatan\": \"JAB001\",\n  \"Nama_Jabatan\": \"Manager\"\n}"
+            }
+          }
+        },
+        {
           "name": "Tambah Karyawan",
           "request": {
             "method": "POST",
@@ -427,7 +457,7 @@
             "url": "{{base_url}}/pendapatan",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"ID_Pendapatan\": \"PDT001\",\n  \"Nama_Pendapatan\": \"Gaji Pokok\",\n  \"Nominal\": 5000000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Gaji pokok bulanan\"\n}"
+              "raw": "{\n  \"ID_Pendapatan\": \"PDT001\",\n  \"Nama_Pendapatan\": \"Gaji Pokok\",\n  \"Nominal\": 5000000,\n  \"Keterangan\": \"Gaji pokok bulanan\"\n}"
             }
           }
         },
@@ -494,7 +524,7 @@
             "url": "{{base_url}}/potongan",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"ID_Potongan\": \"PTG001\",\n  \"Nama_Potongan\": \"BPJS Kesehatan\",\n  \"Nominal\": 250000,\n  \"ID_Jabatan\": \"JAB001\",\n  \"Keterangan\": \"Potongan BPJS Kesehatan 1%\"\n}"
+              "raw": "{\n  \"ID_Potongan\": \"PTG001\",\n  \"Nama_Potongan\": \"BPJS Kesehatan\",\n  \"Nominal\": 250000,\n  \"Keterangan\": \"Potongan BPJS Kesehatan 1%\"\n}"
             }
           }
         },
@@ -550,6 +580,66 @@
     {
       "name": "Gaji",
       "item": [
+        {
+          "name": "Setup: Buat Profil",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/profil",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Profil\": \"PRF001\",\n  \"Nama\": \"PT Contoh Indonesia\",\n  \"Alamat\": \"Jl. Raya Contoh No. 123\",\n  \"Telepon\": \"0211234567\",\n  \"Fax\": \"0211234568\",\n  \"Email\": \"info@ptcontoh.com\",\n  \"Website\": \"www.ptcontoh.com\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Setup: Buat Karyawan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/karyawan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Karyawan\": \"KRY001\",\n  \"Nama_Karyawan\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"ID_Golongan\": \"GOL001\",\n  \"ID_Jabatan\": \"JAB001\",\n  \"Divisi\": \"HRD\",\n  \"Status_Pernikahan\": \"Menikah\",\n  \"Jumlah_Anak\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Setup: Buat Pendapatan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/pendapatan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Pendapatan\": \"PDT001\",\n  \"Nama_Pendapatan\": \"Gaji Pokok\",\n  \"Nominal\": 5000000,\n  \"Keterangan\": \"Gaji pokok bulanan\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Setup: Buat Potongan",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": "{{base_url}}/potongan",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ID_Potongan\": \"PTG001\",\n  \"Nama_Potongan\": \"BPJS Kesehatan\",\n  \"Nominal\": 250000,\n  \"Keterangan\": \"Potongan BPJS Kesehatan 1%\"\n}"
+            }
+          }
+        },
         {
           "name": "Buat Gaji",
           "request": {
