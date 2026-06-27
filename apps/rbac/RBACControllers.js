@@ -38,6 +38,37 @@ RBACControllers.get(
     }
 );
 
+// Update role
+RBACControllers.put(
+    "/roles/:ID_Role",
+    [
+        UserServiceTokenAuthentication,
+        RBACPermissionCheck('role.manage'),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const db = require("../base/services/BaseServiceQueryBuilder");
+            const role = await db("tblroles").where({ ID_Role: req.params.ID_Role }).first();
+            if (!role) return res.status(404).json({ error: "Role tidak ditemukan" });
+
+            const updateData = {};
+            if (req.body.Nama_Role !== undefined) updateData.Nama_Role = req.body.Nama_Role;
+            if (req.body.Keterangan !== undefined) updateData.Keterangan = req.body.Keterangan;
+
+            if (Object.keys(updateData).length === 0)
+                return res.status(400).json({ error: "Tidak ada data yang diupdate" });
+
+            await db("tblroles").where({ ID_Role: req.params.ID_Role }).update(updateData);
+            const updated = await db("tblroles").where({ ID_Role: req.params.ID_Role }).first();
+            res.status(200).json({ success: true, data: updated });
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
 // Create new role
 RBACControllers.post(
     "/roles",
@@ -138,6 +169,38 @@ RBACControllers.get(
         try {
             const permissions = await RBACServiceListPermissions();
             res.status(200).json(permissions);
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
+// Update permission
+RBACControllers.put(
+    "/permissions/:ID_Permission",
+    [
+        UserServiceTokenAuthentication,
+        RBACPermissionCheck('role.manage'),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const db = require("../base/services/BaseServiceQueryBuilder");
+            const perm = await db("tblpermissions").where({ ID_Permission: req.params.ID_Permission }).first();
+            if (!perm) return res.status(404).json({ error: "Permission tidak ditemukan" });
+
+            const updateData = {};
+            if (req.body.Nama_Permission !== undefined) updateData.Nama_Permission = req.body.Nama_Permission;
+            if (req.body.Module !== undefined) updateData.Module = req.body.Module;
+            if (req.body.Description !== undefined) updateData.Description = req.body.Description;
+
+            if (Object.keys(updateData).length === 0)
+                return res.status(400).json({ error: "Tidak ada data yang diupdate" });
+
+            await db("tblpermissions").where({ ID_Permission: req.params.ID_Permission }).update(updateData);
+            const updated = await db("tblpermissions").where({ ID_Permission: req.params.ID_Permission }).first();
+            res.status(200).json({ success: true, data: updated });
         } catch (error) {
             console.error("Error:", error);
             res.status(500).json({ error: "Internal server error" });

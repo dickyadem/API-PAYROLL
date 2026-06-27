@@ -117,6 +117,39 @@ GajiControllers.get(
     }
 );
 
+GajiControllers.put(
+    "/:ID_Gaji",
+    [
+        UserServiceTokenAuthentication,
+        RBACPermissionCheck('gaji.update'),
+        GajiValidators.ID_Gaji(param, false),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const db = require("../base/services/BaseServiceQueryBuilder");
+            const { GAJI_CONFIG_MAIN_TABLE } = require("./config");
+
+            const gaji = await db(GAJI_CONFIG_MAIN_TABLE).where({ ID_Gaji: req.params.ID_Gaji }).first();
+            if (!gaji) return res.status(404).json({ error: "Data gaji tidak ditemukan" });
+
+            const updateData = {};
+            const allowed = ["Tanggal", "Total_Pendapatan", "Total_Potongan", "Gaji_Bersih", "Keterangan", "email", "ID_Profil"];
+            allowed.forEach(f => { if (req.body[f] !== undefined) updateData[f] = req.body[f]; });
+
+            if (Object.keys(updateData).length === 0)
+                return res.status(400).json({ error: "Tidak ada data yang diupdate" });
+
+            await db(GAJI_CONFIG_MAIN_TABLE).where({ ID_Gaji: req.params.ID_Gaji }).update(updateData);
+            const updated = await db(GAJI_CONFIG_MAIN_TABLE).where({ ID_Gaji: req.params.ID_Gaji }).first();
+            res.status(200).json({ success: true, data: updated });
+        } catch (error) {
+            console.error("Error:", error);
+            res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
 GajiControllers.delete(
     "/:ID_Gaji",
     [

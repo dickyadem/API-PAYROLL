@@ -56,4 +56,37 @@ PendapatanDetailControllers.get(
 
 
 
+PendapatanDetailControllers.put(
+    "/:ID_Gaji/:ID_Pendapatan",
+    [
+        UserServiceTokenAuthentication,
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const db = require("../base/services/BaseServiceQueryBuilder");
+            const row = await db("tblpendapatandetail")
+                .where({ ID_Gaji: req.params.ID_Gaji, ID_Pendapatan: req.params.ID_Pendapatan })
+                .first();
+            if (!row) return res.status(404).json({ error: "Data tidak ditemukan" });
+
+            const { Jumlah_Pendapatan } = req.body;
+            if (Jumlah_Pendapatan === undefined)
+                return res.status(400).json({ error: "Jumlah_Pendapatan wajib diisi" });
+
+            await db("tblpendapatandetail")
+                .where({ ID_Gaji: req.params.ID_Gaji, ID_Pendapatan: req.params.ID_Pendapatan })
+                .update({ Jumlah_Pendapatan });
+
+            const updated = await db("tblpendapatandetail")
+                .where({ ID_Gaji: req.params.ID_Gaji, ID_Pendapatan: req.params.ID_Pendapatan })
+                .first();
+            return res.status(200).json({ success: true, data: updated });
+        } catch (error) {
+            console.error("Error:", error);
+            return res.status(500).json({ error: "Internal server error" });
+        }
+    }
+);
+
 module.exports = PendapatanDetailControllers;
