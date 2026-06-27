@@ -233,6 +233,48 @@ UserControllers.put(
     }
 );
 
+UserControllers.put(
+    "/:email",
+    [
+        UserServiceTokenAuthentication,
+        RBACRoleCheck(['ADMIN']),
+        UserValidators.email(param, false),
+        body("NamaLengkap").optional().trim().isLength({ min: 1 }).withMessage("Nama tidak boleh kosong."),
+        body("role").optional().trim(),
+        body("department").optional().trim(),
+        body("Status").optional().trim(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const user = await UserServiceFetch(req.params.email);
+            if (!user) {
+                return res.status(404).json({ success: false, message: "User tidak ditemukan" });
+            }
+
+            const updateData = {};
+            if (req.body.NamaLengkap !== undefined) updateData.NamaLengkap = req.body.NamaLengkap;
+            if (req.body.role !== undefined) updateData.role = req.body.role;
+            if (req.body.department !== undefined) updateData.department = req.body.department;
+            if (req.body.Status !== undefined) updateData.Status = req.body.Status;
+
+            if (Object.keys(updateData).length === 0) {
+                return res.status(400).json({ success: false, message: "Tidak ada data yang diupdate" });
+            }
+
+            await BaseServiceQueryBuilder(USER_CONFIG_MAIN_TABLE)
+                .where({ email: req.params.email })
+                .update(updateData);
+
+            const updated = await UserServiceFetch(req.params.email);
+            return res.status(200).json({ success: true, message: "User berhasil diupdate", data: updated });
+        } catch (error) {
+            console.error("User update error:", error);
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
+    }
+);
+
 UserControllers.get(
     "/:email",
     [
