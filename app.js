@@ -53,6 +53,7 @@ app.use("/gajidetail", require("./apps/gajidetail/GajiDetailControllers"));
 app.use("/potongandetail", require("./apps/potongandetail/PotonganDetailControllers"));
 app.use("/pendapatandetail", require("./apps/pendapatandetail/PendapatanDetailControllers"));
 app.use("/rbac", require("./apps/rbac/RBACControllers"));
+app.use("/notifications", require("./apps/notifications/NotificationControllers"));
 
 // Fix #14 — Health check endpoint
 app.get("/health", (req, res) => {

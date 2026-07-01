@@ -307,7 +307,9 @@ Body request harus menyertakan semua field yang diwajibkan validator:
 
 ## Kebutuhan API Baru dari Frontend (Update: 1 Juli 2026)
 
-Dua fitur di frontend saat ini masih pakai data dummy/hardcode karena belum ada endpoint BE yang sesuai. Catatan ini untuk BE supaya tahu bentuk data yang diharapkan frontend.
+> **Update 1 Juli 2026**: Endpoint `/user/me` (GET & PUT) dan `/notifications` (GET, PATCH read, PATCH read-all) sudah **dibuat dan bisa dipakai**. FE bisa mulai sambungkan halaman Profile dan dropdown notifikasi ke API.
+
+Dua fitur di frontend sebelumnya masih pakai data dummy. Berikut spesifikasi endpoint yang sudah dibuat:
 
 ### 1. Notifikasi (Bell icon di navbar)
 
@@ -574,11 +576,13 @@ Dua fitur di frontend saat ini masih pakai data dummy/hardcode karena belum ada 
 
 | Endpoint | Kebutuhan | Status |
 |---|---|---|
-| `GET /notifications` | Notifikasi bell icon FE | ❌ Belum dibuat |
-| `PATCH /notifications/:id/read` | Mark as read | ❌ Belum dibuat |
-| `PATCH /notifications/read-all` | Mark all read | ❌ Belum dibuat |
-| `GET /user/me` | Profil user login | ❌ Belum dibuat |
-| `PUT /user/me` | Update profil user | ❌ Belum dibuat |
+| `GET /notifications` | Notifikasi bell icon FE | ✅ Dibuat 1 Juli 2026 |
+| `PATCH /notifications/read-all` | Mark all read | ✅ Dibuat 1 Juli 2026 |
+| `PATCH /notifications/:id/read` | Mark as read | ✅ Dibuat 1 Juli 2026 |
+| `GET /user/me` | Profil user login | ✅ Dibuat 1 Juli 2026 |
+| `PUT /user/me` | Update profil user | ✅ Dibuat 1 Juli 2026 |
+
+> ⚠️ Perlu **migration** sebelum endpoint ini bisa dipakai di production: `tblnotifikasi` (tabel baru) + kolom `phone`, `position`, `joinDate`, `address`, `avatar` di `tbluser`.
 
 ---
 
