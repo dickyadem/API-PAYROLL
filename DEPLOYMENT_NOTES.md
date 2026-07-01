@@ -258,14 +258,25 @@ npm run dev
 - **Fix**: Buka console.aiven.io → klik **Power On** di MySQL service
 - **Catatan**: Test Newman yang lama (>5 menit) rentan kena masalah ini
 
-### ~~CORS Error — Frontend GitHub Pages diblokir~~ ✅ SELESAI (2026-07-01)
-- **Gejala**: Login dari `https://dickyadem.github.io` gagal CORS policy
-- **Root cause**: `CORS_ORIGIN` di Vercel hanya berisi `http://localhost:3000`
-- **Fix yang dilakukan**:
-  - Update `app.js` — CORS middleware sekarang support multi-origin (split by comma)
-  - Update env var `CORS_ORIGIN` di Vercel: `http://localhost:3000,https://dickyadem.github.io`
-  - Sudah di-deploy dan diverifikasi — kedua origin mengembalikan header CORS yang benar
-- **Untuk tambah origin baru**: Edit `CORS_ORIGIN` di Vercel, tambahkan URL baru dipisah koma, redeploy
+### CORS Error — Frontend GitHub Pages diblokir
+- **Gejala** (ditemukan 2026-07-01): Login dari `https://dickyadem.github.io/AplikasiPenggajianReactJS/` gagal dengan:
+  ```
+  Access to XMLHttpRequest at 'https://api-payroll.vercel.app/user/login' from origin
+  'https://dickyadem.github.io' has been blocked by CORS policy: Response to preflight
+  request doesn't pass access control check: The 'Access-Control-Allow-Origin' header
+  has a value 'http://localhost:3000' that is not equal to the supplied origin.
+  ```
+  Login dari `localhost:3000` tetap aman karena origin-nya cocok dengan `CORS_ORIGIN` yang tersimpan di Vercel.
+- **Root cause**: Env var `CORS_ORIGIN` di Vercel project `api-payroll` masih diset ke `http://localhost:3000` (dev), belum menyertakan origin production `https://dickyadem.github.io`.
+- **Fix (belum dilakukan)**:
+  1. Buka **Vercel Dashboard → api-payroll → Settings → Environment Variables**, update `CORS_ORIGIN`.
+  2. Kalau perlu localhost (dev) dan GitHub Pages (production) berfungsi bersamaan, cek middleware `cors()` di `app.js` — kalau cuma baca satu string origin dari env var, ubah supaya mendukung multi-origin, misal:
+     ```js
+     const allowedOrigins = process.env.CORS_ORIGIN.split(",");
+     app.use(cors({ origin: allowedOrigins }));
+     ```
+     lalu set `CORS_ORIGIN=http://localhost:3000,https://dickyadem.github.io` di Vercel, dan **Redeploy**.
+  3. Repo backend (`API-PAYROLL`) terpisah dari repo frontend ini — perubahan kode & env var harus dilakukan di sana.
 
 ### Karyawan POST butuh field lengkap
 Body request harus menyertakan semua field yang diwajibkan validator:
@@ -291,6 +302,283 @@ Body request harus menyertakan semua field yang diwajibkan validator:
   "Nominal": 5000000
 }
 ```
+
+---
+
+## Kebutuhan API Baru dari Frontend (Update: 1 Juli 2026)
+
+Dua fitur di frontend saat ini masih pakai data dummy/hardcode karena belum ada endpoint BE yang sesuai. Catatan ini untuk BE supaya tahu bentuk data yang diharapkan frontend.
+
+### 1. Notifikasi (Bell icon di navbar)
+
+- **Lokasi frontend**: `src/widgets/commons/NavigationWidget.js` (`INITIAL_NOTIFICATIONS`, ada komentar `TODO` di kode).
+- **Status**: dropdown notifikasi sudah jadi & berfungsi (badge unread count, mark as read, mark all as read), tapi datanya statis 3 item hardcode di frontend — belum pernah fetch ke server.
+- **Endpoint yang dibutuhkan**:
+  - `GET /notifications` — list notifikasi milik user yang login. Bentuk item yang diharapkan frontend:
+    ```json
+    {
+      "id": 1,
+      "type": "success",           // "success" | "warning" | "info" — dipakai untuk pilih warna & icon
+      "title": "Penggajian berhasil diproses",
+      "message": "Periode Juli 2026 untuk 24 karyawan sudah selesai dihitung.",
+      "time": "2026-07-01T09:12:00Z",   // atau string relatif, frontend tinggal format
+      "read": false
+    }
+    ```
+  - `PATCH /notifications/:id/read` — tandai satu notifikasi sebagai sudah dibaca.
+  - `PATCH /notifications/read-all` — tandai semua notifikasi milik user sebagai sudah dibaca.
+  - Perlu didiskusikan: notifikasi dipicu event apa saja di BE (penggajian selesai diproses, karyawan baru ditambahkan, laporan BPJS/PPh jatuh tempo, dll)? Kalau belum ada tabel notifikasi, perlu migration baru (mis. `tblnotifikasi`: id, ID_User, type, title, message, is_read, created_at).
+
+### 2. Profil User ("Informasi Pribadi" di halaman Profile)
+
+- **Lokasi frontend**: `src/pages/profile/Profile.js`.
+- **Status**: form Informasi Pribadi (Username, Email, Telepon, Departemen, Posisi, Tanggal Bergabung, Alamat, foto) 100% dummy hardcode di `useState`, tidak pernah fetch dari server. Tombol "Simpan" juga palsu (cuma `setTimeout` + toast sukses, tidak mengirim apa pun ke backend).
+- **Yang SUDAH nyambung ke API** (tidak perlu disentuh): bagian "Ubah Password" — sudah pakai `AuthService.changePassword()` → endpoint yang sudah ada.
+- **Endpoint yang dibutuhkan**:
+  - `GET /profile` (atau `GET /user/me`) — ambil data profil user yang sedang login berdasarkan token. Field yang dibutuhkan frontend:
+    ```json
+    {
+      "username": "Admin",
+      "email": "admin@perusahaan.com",
+      "phone": "0812-3456-7890",
+      "department": "IT",
+      "position": "System Administrator",
+      "joinDate": "2023-01-15",
+      "address": "Jl. Sudirman No. 123, Jakarta",
+      "avatar": null
+    }
+    ```
+  - `PUT /profile` (atau `PATCH /user/me`) — update field-field di atas.
+  - Perlu dicek: kolom `phone`, `position`, `joinDate`, `address`, `avatar` kemungkinan belum ada di `tbluser` (yang sudah pasti ada: `NamaLengkap`/username, `email`, `role`, `department`). Kalau belum ada, perlu migration tambah kolom.
+  - Upload foto profil (`avatar`): saat ini frontend cuma simpan base64 di state lokal (`FileReader.readAsDataURL`), belum ada endpoint upload — perlu didiskusikan mau disimpan sebagai base64 di DB, atau upload ke storage (S3/Cloudinary/dll) dan simpan URL-nya saja.
+
+---
+
+## API Reference (Update: 1 Juli 2026)
+
+**Base URL**: `https://api-payroll.vercel.app`  
+**Auth Header**: `Authorization: Bearer <token>` atau `x-access-token: <token>`
+
+---
+
+### Auth & User — `/user`
+
+| Method | Endpoint | Auth | Deskripsi |
+|---|---|---|---|
+| POST | `/user/login` | - | Login, dapat token |
+| POST | `/user/register` | Admin | Daftarkan user baru |
+| POST | `/user/world` | Ya | Test token valid |
+| GET | `/user/` | Ya | List semua user |
+| GET | `/user/:email` | Ya | Get user by email |
+| **PUT** | **`/user/:email`** | **Admin** | **Edit data user** ✨ |
+| PUT | `/user/change-password` | Ya | Ganti password sendiri |
+| PUT | `/user/reset-password/:email` | Admin | Reset password user lain |
+
+**Body PUT `/user/:email`** (semua opsional):
+```json
+{ "NamaLengkap": "Budi Santoso", "role": "user", "department": "Finance", "Status": "aktif" }
+```
+
+---
+
+### Profil Perusahaan — `/profil`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/profil/` | Tambah profil |
+| GET | `/profil/?page=1&terms=` | List profil |
+| GET | `/profil/:ID_Profil` | Get by ID |
+| PUT | `/profil/:ID_Profil` | Update profil |
+| DELETE | `/profil/:ID_Profil` | Hapus profil |
+
+---
+
+### Golongan — `/golongan`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/golongan/` | Tambah |
+| GET | `/golongan/?page=1&terms=` | List |
+| GET | `/golongan/:ID_Golongan` | Get by ID |
+| PUT | `/golongan/:ID_Golongan` | Update |
+| DELETE | `/golongan/:ID_Golongan` | Hapus |
+
+---
+
+### Jabatan — `/jabatan`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/jabatan/` | Tambah |
+| GET | `/jabatan/?page=1&terms=` | List |
+| GET | `/jabatan/:ID_Jabatan` | Get by ID |
+| PUT | `/jabatan/:ID_Jabatan` | Update |
+| DELETE | `/jabatan/:ID_Jabatan` | Hapus |
+
+---
+
+### Karyawan — `/karyawan`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/karyawan/` | Tambah karyawan |
+| GET | `/karyawan/?page=1&terms=` | List |
+| GET | `/karyawan/:ID_Karyawan` | Get by ID |
+| PUT | `/karyawan/:ID_Karyawan` | Update |
+| DELETE | `/karyawan/:ID_Karyawan` | Hapus |
+
+**Body POST** (semua field wajib):
+```json
+{
+  "ID_Karyawan": "KRY001", "Nama_Karyawan": "Budi Santoso",
+  "ID_Golongan": "GOL001", "ID_Jabatan": "JAB001",
+  "email": "budi@example.com", "Divisi": "IT",
+  "Status_Pernikahan": "Menikah", "Jumlah_Anak": 2, "Gaji_Pokok": 5000000
+}
+```
+
+---
+
+### Pendapatan — `/pendapatan`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/pendapatan/` | Tambah jenis pendapatan |
+| GET | `/pendapatan/?page=1&terms=` | List |
+| GET | `/pendapatan/:ID_Pendapatan` | Get by ID |
+| PUT | `/pendapatan/:ID_Pendapatan` | Update |
+| DELETE | `/pendapatan/:ID_Pendapatan` | Hapus |
+
+**Body POST**: `{ "ID_Pendapatan": "PDT001", "Nama_Pendapatan": "Gaji Pokok", "Nominal": 5000000 }`
+
+---
+
+### Potongan — `/potongan`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/potongan/` | Tambah jenis potongan |
+| GET | `/potongan/?page=1&terms=` | List |
+| GET | `/potongan/:ID_Potongan` | Get by ID |
+| PUT | `/potongan/:ID_Potongan` | Update |
+| DELETE | `/potongan/:ID_Potongan` | Hapus |
+
+**Body POST**: `{ "ID_Potongan": "PTG001", "Nama_Potongan": "BPJS", "Nominal": 100000 }`
+
+---
+
+### Gaji — `/gaji`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/gaji/` | Buat data gaji |
+| GET | `/gaji/?page=1&terms=` | List gaji |
+| GET | `/gaji/:ID_Gaji` | Get by ID |
+| **PUT** | **`/gaji/:ID_Gaji`** | **Update data gaji** ✨ |
+| DELETE | `/gaji/:ID_Gaji` | Hapus |
+
+**Body PUT** (semua opsional):
+```json
+{ "Tanggal": "2026-07-01", "Total_Pendapatan": 5000000, "Total_Potongan": 500000, "Gaji_Bersih": 4500000, "Keterangan": "Gaji Juli" }
+```
+
+**Body POST**:
+```json
+{
+  "ID_Gaji": "GJI001", "ID_Karyawan": "KRY001", "Tanggal": "2026-07-01",
+  "Total_Pendapatan": 5000000, "Total_Potongan": 500000, "Gaji_Bersih": 4500000,
+  "email": "admin@example.com", "ID_Profil": "PRF001",
+  "itemsPendapatan": [{ "ID_Pendapatan": "PDT001", "Jumlah_Pendapatan": 5000000 }],
+  "itemsPotongan": [{ "ID_Potongan": "PTG001", "Jumlah_Potongan": 500000 }]
+}
+```
+
+---
+
+### Gaji — Export Excel
+
+| Method | Endpoint | Body | Deskripsi |
+|---|---|---|---|
+| POST | `/gaji/gaji-excel` | - | Export daftar gaji |
+| POST | `/gaji/slip-excel` | - | Export semua slip gaji |
+| POST | `/gaji/:ID_Gaji/slip-excel` | - | Export slip per ID |
+| POST | `/gaji/report-period-excel` | `{ startDate, endDate }` | Laporan periode per karyawan |
+| POST | `/gaji/pph-excel` | - | Laporan PPH |
+| POST | `/gaji/reportPph-period-excel` | `{ startDate, endDate }` | Laporan PPH periode |
+| POST | `/gaji/bpjs-excel` | - | Laporan BPJS |
+| POST | `/gaji/reportBpjs-period-excel` | `{ startDate, endDate }` | Laporan BPJS periode |
+
+**Response**: file `.xlsx`
+
+---
+
+### Gaji Detail — `/gajidetail`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/gajidetail/` | Tambah detail |
+| GET | `/gajidetail/` | List semua |
+| GET | `/gajidetail/:ID_Gaji` | Get by ID_Gaji |
+
+---
+
+### Pendapatan Detail — `/pendapatandetail`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/pendapatandetail/` | Tambah detail |
+| GET | `/pendapatandetail/` | List semua |
+| GET | `/pendapatandetail/:ID_Gaji` | Get by ID_Gaji |
+| **PUT** | **`/pendapatandetail/:ID_Gaji/:ID_Pendapatan`** | **Update jumlah** ✨ |
+
+**Body PUT**: `{ "Jumlah_Pendapatan": 3000000 }`
+
+---
+
+### Potongan Detail — `/potongandetail`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| POST | `/potongandetail/` | Tambah detail |
+| GET | `/potongandetail/` | List semua |
+| GET | `/potongandetail/:ID_Gaji` | Get by ID_Gaji |
+| **PUT** | **`/potongandetail/:ID_Gaji/:ID_Potongan`** | **Update jumlah** ✨ |
+
+**Body PUT**: `{ "Jumlah_Potongan": 200000 }`
+
+---
+
+### RBAC — `/rbac`
+
+| Method | Endpoint | Deskripsi |
+|---|---|---|
+| GET | `/rbac/roles` | List semua role |
+| POST | `/rbac/roles` | Tambah role |
+| **PUT** | **`/rbac/roles/:ID_Role`** | **Update role** ✨ |
+| GET | `/rbac/permissions` | List semua permission |
+| POST | `/rbac/permissions` | Tambah permission |
+| **PUT** | **`/rbac/permissions/:ID_Permission`** | **Update permission** ✨ |
+| GET | `/rbac/roles/:ID_Role/permissions` | Permission milik role |
+| POST | `/rbac/roles/:ID_Role/permissions` | Assign permission ke role |
+| DELETE | `/rbac/roles/:ID_Role/permissions/:ID_Permission` | Cabut permission dari role |
+| POST | `/rbac/users/:email/role` | Assign role ke user |
+
+**Body PUT role**: `{ "Nama_Role": "Staff Senior", "Keterangan": "Staff berpengalaman" }`  
+**Body PUT permission**: `{ "Nama_Permission": "Lihat Gaji", "Module": "gaji", "Description": "Read only" }`
+
+> ✨ = endpoint baru ditambahkan 27 Juni 2026
+
+---
+
+### Endpoint yang Direncanakan (Belum Ada)
+
+| Endpoint | Kebutuhan | Status |
+|---|---|---|
+| `GET /notifications` | Notifikasi bell icon FE | ❌ Belum dibuat |
+| `PATCH /notifications/:id/read` | Mark as read | ❌ Belum dibuat |
+| `PATCH /notifications/read-all` | Mark all read | ❌ Belum dibuat |
+| `GET /user/me` | Profil user login | ❌ Belum dibuat |
+| `PUT /user/me` | Update profil user | ❌ Belum dibuat |
 
 ---
 
