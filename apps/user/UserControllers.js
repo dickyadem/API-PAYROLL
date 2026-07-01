@@ -233,6 +233,65 @@ UserControllers.put(
     }
 );
 
+// GET /user/me dan PUT /user/me harus sebelum /:email agar tidak tertangkap wildcard
+UserControllers.get(
+    "/me",
+    [UserServiceTokenAuthentication],
+    async (req, res) => {
+        try {
+            const user = await UserServiceFetch(req.user.email);
+            if (!user) {
+                return res.status(404).json({ success: false, message: "User tidak ditemukan" });
+            }
+            const { password, ...safeUser } = user;
+            return res.status(200).json({ success: true, data: safeUser });
+        } catch (error) {
+            console.error("User me error:", error);
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
+    }
+);
+
+UserControllers.put(
+    "/me",
+    [
+        UserServiceTokenAuthentication,
+        body("NamaLengkap").optional().trim().isLength({ min: 1 }).withMessage("Nama tidak boleh kosong."),
+        body("phone").optional().trim(),
+        body("position").optional().trim(),
+        body("joinDate").optional().isISO8601().withMessage("Format tanggal tidak valid (YYYY-MM-DD)."),
+        body("address").optional().trim(),
+        body("avatar").optional(),
+        BaseValidatorRun(),
+    ],
+    async (req, res) => {
+        try {
+            const updateData = {};
+            if (req.body.NamaLengkap !== undefined) updateData.NamaLengkap = req.body.NamaLengkap;
+            if (req.body.phone !== undefined) updateData.phone = req.body.phone;
+            if (req.body.position !== undefined) updateData.position = req.body.position;
+            if (req.body.joinDate !== undefined) updateData.joinDate = req.body.joinDate;
+            if (req.body.address !== undefined) updateData.address = req.body.address;
+            if (req.body.avatar !== undefined) updateData.avatar = req.body.avatar;
+
+            if (Object.keys(updateData).length === 0) {
+                return res.status(400).json({ success: false, message: "Tidak ada data yang diupdate" });
+            }
+
+            await BaseServiceQueryBuilder(USER_CONFIG_MAIN_TABLE)
+                .where({ email: req.user.email })
+                .update(updateData);
+
+            const updated = await UserServiceFetch(req.user.email);
+            const { password, ...safeUser } = updated;
+            return res.status(200).json({ success: true, message: "Profil berhasil diupdate", data: safeUser });
+        } catch (error) {
+            console.error("User me update error:", error);
+            return res.status(500).json({ success: false, message: "Internal server error" });
+        }
+    }
+);
+
 UserControllers.put(
     "/:email",
     [
@@ -270,66 +329,6 @@ UserControllers.put(
             return res.status(200).json({ success: true, message: "User berhasil diupdate", data: updated });
         } catch (error) {
             console.error("User update error:", error);
-            return res.status(500).json({ success: false, message: "Internal server error" });
-        }
-    }
-);
-
-// GET /user/me — profil user yang sedang login (harus sebelum /:email)
-UserControllers.get(
-    "/me",
-    [UserServiceTokenAuthentication],
-    async (req, res) => {
-        try {
-            const user = await UserServiceFetch(req.user.email);
-            if (!user) {
-                return res.status(404).json({ success: false, message: "User tidak ditemukan" });
-            }
-            const { password, ...safeUser } = user;
-            return res.status(200).json({ success: true, data: safeUser });
-        } catch (error) {
-            console.error("User me error:", error);
-            return res.status(500).json({ success: false, message: "Internal server error" });
-        }
-    }
-);
-
-// PUT /user/me — update profil sendiri (harus sebelum /:email)
-UserControllers.put(
-    "/me",
-    [
-        UserServiceTokenAuthentication,
-        body("NamaLengkap").optional().trim().isLength({ min: 1 }).withMessage("Nama tidak boleh kosong."),
-        body("phone").optional().trim(),
-        body("position").optional().trim(),
-        body("joinDate").optional().isISO8601().withMessage("Format tanggal tidak valid (YYYY-MM-DD)."),
-        body("address").optional().trim(),
-        body("avatar").optional(),
-        BaseValidatorRun(),
-    ],
-    async (req, res) => {
-        try {
-            const updateData = {};
-            if (req.body.NamaLengkap !== undefined) updateData.NamaLengkap = req.body.NamaLengkap;
-            if (req.body.phone !== undefined) updateData.phone = req.body.phone;
-            if (req.body.position !== undefined) updateData.position = req.body.position;
-            if (req.body.joinDate !== undefined) updateData.joinDate = req.body.joinDate;
-            if (req.body.address !== undefined) updateData.address = req.body.address;
-            if (req.body.avatar !== undefined) updateData.avatar = req.body.avatar;
-
-            if (Object.keys(updateData).length === 0) {
-                return res.status(400).json({ success: false, message: "Tidak ada data yang diupdate" });
-            }
-
-            await BaseServiceQueryBuilder(USER_CONFIG_MAIN_TABLE)
-                .where({ email: req.user.email })
-                .update(updateData);
-
-            const updated = await UserServiceFetch(req.user.email);
-            const { password, ...safeUser } = updated;
-            return res.status(200).json({ success: true, message: "Profil berhasil diupdate", data: safeUser });
-        } catch (error) {
-            console.error("User me update error:", error);
             return res.status(500).json({ success: false, message: "Internal server error" });
         }
     }
