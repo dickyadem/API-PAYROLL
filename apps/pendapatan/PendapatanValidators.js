@@ -60,7 +60,12 @@ const PendapatanValidators = {
             .isLength({ max: 255 })
             .withMessage("Keterangan maksimal 255 karakter.");
     },
-
+    Jenis: (location = body, field = "Jenis") => {
+        return location(field)
+            .optional({ nullable: true })
+            .isIn(["Tetap", "Tidak Tetap"])
+            .withMessage("Jenis harus 'Tetap' atau 'Tidak Tetap'.");
+    },
 };
 
 module.exports = PendapatanValidators;

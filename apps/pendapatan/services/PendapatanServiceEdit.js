@@ -6,14 +6,16 @@ const PendapatanServiceEdit = async (
     Nama_Pendapatan,
     Nominal,
     ID_Jabatan,
-    Keterangan
+    Keterangan,
+    Jenis
 ) => {
   const data = {
     ID_Pendapatan,
     Nama_Pendapatan,
     Nominal,
     ID_Jabatan: ID_Jabatan || null,
-    Keterangan: Keterangan || null
+    Keterangan: Keterangan || null,
+    Jenis: Jenis || 'Tetap'
   };
 
   await BaseServiceQueryBuilder(PENDAPATAN_CONFIG_MAIN_TABLE)

@@ -420,6 +420,7 @@ Sama dengan POST tapi semua field opsional.
     {
       "ID_Pendapatan": "PDT001",
       "Nama_Pendapatan": "Gaji Pokok",
+      "Jenis": "Tetap",
       "Nominal": "5000000.00",
       "ID_Jabatan": null,
       "Keterangan": "Gaji pokok bulanan",
@@ -436,14 +437,16 @@ Sama dengan POST tapi semua field opsional.
 {
   "ID_Pendapatan": "PDT002",
   "Nama_Pendapatan": "Tunjangan Makan",
+  "Jenis": "Tidak Tetap",
   "Nominal": 500000,
   "Keterangan": "Tunjangan makan harian"
 }
 ```
+> `Jenis` opsional, default `"Tetap"`. Nilai valid: `"Tetap"` | `"Tidak Tetap"`.
 
 #### PUT /pendapatan/:ID_Pendapatan
 ```json
-{ "Nama_Pendapatan": "Tunjangan Makan", "Nominal": 600000 }
+{ "Nama_Pendapatan": "Tunjangan Makan", "Jenis": "Tidak Tetap", "Nominal": 600000 }
 ```
 
 ---

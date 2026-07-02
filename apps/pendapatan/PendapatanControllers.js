@@ -20,6 +20,7 @@ PendapatanControllers.post(
         PendapatanValidators.Nominal(),
         PendapatanValidators.ID_Jabatan(),
         PendapatanValidators.Keterangan(),
+        PendapatanValidators.Jenis(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -28,7 +29,8 @@ PendapatanControllers.post(
             req.body.Nama_Pendapatan,
             req.body.Nominal,
             req.body.ID_Jabatan,
-            req.body.Keterangan
+            req.body.Keterangan,
+            req.body.Jenis
         );
         return res.status(201).json(pendapatan);
     }
@@ -72,6 +74,7 @@ PendapatanControllers.put(
         PendapatanValidators.Nominal(),
         PendapatanValidators.ID_Jabatan(),
         PendapatanValidators.Keterangan(),
+        PendapatanValidators.Jenis(),
         BaseValidatorRun(),
     ],
     async (req, res) => {
@@ -80,7 +83,8 @@ PendapatanControllers.put(
             req.body.Nama_Pendapatan,
             req.body.Nominal,
             req.body.ID_Jabatan,
-            req.body.Keterangan
+            req.body.Keterangan,
+            req.body.Jenis
         );
         return res.status(200).json(pendapatan);
     }
